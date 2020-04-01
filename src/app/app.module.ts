@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,13 +11,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { HammerModule } from '@angular/platform-browser';
 import {
   IgxButtonModule, IgxCardModule, IgxCarouselModule,
   IgxIconModule, IgxInputGroupModule, IgxLayoutModule,
   IgxNavbarModule, IgxNavigationDrawerModule, IgxRippleModule, IgxSelectModule
 } from 'igniteui-angular';
+import { MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS } from '@angular/material/bottom-sheet';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatFabMenuModule } from '@angular-material-extensions/fab-menu';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
 
 import { SidenavMenuComponent } from './views/sidenav-menu/sidenav-menu.component';
 import { HomeComponent } from './views/home/home.component';
@@ -49,6 +60,7 @@ import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.compo
     MatIconModule,
     MatListModule,
     FormsModule,
+    ReactiveFormsModule,
     HammerModule,
     IgxButtonModule,
     IgxCardModule,
@@ -60,8 +72,23 @@ import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.compo
     IgxNavigationDrawerModule,
     IgxRippleModule,
     IgxSelectModule,
+    MatBottomSheetModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatFabMenuModule,
+    HttpClientModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatGridListModule,
+    MatFormFieldModule,
+    FlexLayoutModule,
+    MatInputModule
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },
+    { provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: true} }
+  ],
+  schemas: [NO_ERRORS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule {

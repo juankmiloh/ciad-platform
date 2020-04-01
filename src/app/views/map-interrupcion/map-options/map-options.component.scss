@@ -1,0 +1,32 @@
+// CSS Boton flotante
+.fix-bottom {
+    position: fixed;
+    bottom: 195px;
+    right: 15px;
+}
+
+.example-month-picker .mat-calendar-period-button {
+    pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+    display: none;
+}
+
+// mat-grid-tile {
+//     background: lightblue;
+// }
+.example-h2 {
+    margin: 10px;
+}
+
+.example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.example-margin {
+    margin: 0 10px;
+}

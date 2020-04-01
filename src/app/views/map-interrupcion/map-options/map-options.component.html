@@ -1,1 +1,59 @@
-<p>map-options works!</p>
+<div class="example-container" [class.mat-elevation-z2]="0.1" [class.mat-elevation-z8]="0.1">
+    <mat-toolbar color="primary" style="height: 5em;">
+        <mat-toolbar-row style="padding-top: 3em;">
+            <span>Configuración</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>
+<button mat-fab color="accent" class="fix-bottom" (click)="updateMap()">
+    <mat-icon aria-label="Side nav toggle icon">check</mat-icon>
+</button>
+<div style="padding-top: 2.5em; padding-bottom: 1em; border: 0px solid red;">
+    <mat-nav-list>
+        <!-- <mat-divider></mat-divider> -->
+        <mat-grid-list cols="2" rowHeight="80px">
+            <mat-grid-tile>
+                <mat-form-field style="width: 70%;">
+                    <mat-label>Año</mat-label>
+                    <mat-select [(value)]="selectAnio" (selectionChange)="somethingChanged(selectAnio)">
+                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.anio">
+                            {{anio.anio}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field style="width: 70% !important;">
+                    <mat-label>Mes</mat-label>
+                    <input matInput [matDatepicker]="dp" [formControl]="date" disabled>
+                    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #dp disabled="false" startView="year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
+                    </mat-datepicker>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="2" rowHeight="80px">
+            <mat-grid-tile>
+                <mat-form-field style="width: 70% !important;">
+                    <mat-label>Empresa</mat-label>
+                    <mat-select>
+                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.value">
+                            {{anio.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field style="width: 70% !important;">
+                    <mat-label>Causas</mat-label>
+                    <mat-select>
+                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.value">
+                            {{anio.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <!-- <mat-divider></mat-divider> -->
+    </mat-nav-list>
+</div>
