@@ -1,0 +1,51 @@
+.sidenav-container {
+    height: 100%;
+}
+
+.sidenav {
+    width: 23em;
+}
+
+.sidenav .mat-toolbar {
+    background: white;
+    color: gray;
+}
+
+.mat-toolbar.mat-primary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.imgSmRedonda {
+    width: 30px;
+    height: 40px;
+    border-radius: 160px;
+    // border: 1px solid #666;
+}
+
+// CSS cuando se selecciona una opcion del navbar
+.is-active {
+    background-color: #3f51b5;
+    color: white;
+}
+
+// CSS para cambiar el color del icono cuando se seleccione
+.is-active mat-icon {
+    color: #ffeb3b;
+}
+
+// CSS para cambiar el color del texto cuando se pase el mouse por encima y este la opcion seleccionada
+.mat-list-option:hover,
+.mat-nav-list .mat-list-item:hover,
+.mat-action-list .mat-list-item:hover,
+.is-active :hover {
+    color: black;
+}
+
+// CSS cuando se pase el mouse por encima de las opciones del navbar
+.mat-list-option:hover,
+.mat-nav-list .mat-list-item:hover,
+.mat-action-list .mat-list-item:hover {
+    background-color: #e8eaf6;
+}

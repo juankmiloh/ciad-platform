@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// @import "~igniteui-angular/lib/core/styles/themes/index";
+// // Uncomment the following lines if you want to add a custom palette:
+// // $primary: #731963 !default;
+// // $secondary: #ce5712 !default;
+// // $app-palette: igx-palette($primary, $secondary);
+// /* autoprefixer grid: on */
+// @include igx-core();
+// @include igx-theme($default-palette);
+// CSS Reset, comment out if not required or using a different module
+@import '~minireset.css/minireset';
+
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/theming';
+@include mat-core();
+$my-app-primary: mat-palette($mat-indigo);
+$my-app-accent: mat-palette($mat-pink, 500, 900, A100);
+$my-app-warn: mat-palette($mat-grey, 900, 900, 900);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);
+.alternate-theme {
+    $alternate-primary: mat-palette($mat-light-blue);
+    $alternate-accent: mat-palette($mat-yellow, 400);
+    $alternate-theme: mat-light-theme($alternate-primary, $alternate-accent);
+    @include angular-material-theme($alternate-theme);
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// CSS para el cuadro Legend pantalla web
+.juank-theme .esri-legend--card {
+    height: 8em;
+    width: 15em;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+// CSS para el cuadro Legend pantalla dispositivo movil
+.juank-theme .esri-legend--stacked {
+    height: 10em;
+    min-width: 3em;
+}
+
+// CSS para que el bottom-sheet ocupe todo el ancho de la pantalla
+.mat-bottom-sheet-container {
+    min-width: 100vw !important;
+    padding: 0px !important;
+}
+
+// CSS propiedad para poner encima el popup sobre el boton flotante
+.juank-theme .esri-ui {
+    position: static;
+}
+
+mat-calendar-header {
+    display: none;
+}
+
+mat-datepicker-content {
+    overflow: hidden !important;
+}
+
+.mat-datepicker-content-touch {
+    height: 16.5em !important;
+}
