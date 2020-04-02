@@ -22,20 +22,20 @@ export class HomeComponent implements OnInit {
   public addSlides() {
     this.slides.push(
       {
-        description: '30+ Material-based Angular components to code speedy web apps faster.',
-        heading: 'Ignite UI for Angular',
+        description: 'Centro de Investigación y Análisis de Datos',
+        heading: 'CIAD',
         image: './assets/img/image.jpg',
         link: 'https://www.infragistics.com/products/ignite-ui-angular'
       },
       {
-        description: 'A complete JavaScript UI library empowering you to build data-rich responsive web apps.',
-        heading: 'Ignite UI for Javascript',
+        description: 'Informática Forense',
+        heading: 'CIAD',
         image: './assets/img/image1.jpg',
         link: 'https://www.infragistics.com/products/ignite-ui'
       },
       {
-        description: 'Build full-featured business apps with the most versatile set of ASP.NET AJAX UI controls',
-        heading: 'Ultimate UI for ASP.NET',
+        description: 'Desarrollo de software',
+        heading: 'CIAD',
         image: './assets/img/image2.jpg',
         link: 'https://www.infragistics.com/products/aspnet'
       }
