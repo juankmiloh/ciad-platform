@@ -29,6 +29,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 
 import { SidenavMenuComponent } from './views/sidenav-menu/sidenav-menu.component';
 import { HomeComponent } from './views/home/home.component';
@@ -82,7 +84,8 @@ import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.compo
     MatGridListModule,
     MatFormFieldModule,
     FlexLayoutModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressBarModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },
