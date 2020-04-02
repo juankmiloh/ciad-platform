@@ -4,37 +4,53 @@ $theme: igx-carousel-theme( $slide-background: #333);
     @include igx-carousel($theme);
 }
 
-.slide-wrapper {
-    max-height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 10px;
-    img {
+// Pantallas superiores a 800px (PC)
+@media screen and (min-width: 800px) {
+    .slide-wrapper {
+        min-height: 600px;
+        height: 100%;
+        padding-top: 0em;
+        img {
+            width: 100%;
+            height: 90vh;
+        }
+    }
+    .carousel-wrapper {
+        height: 100%;
         width: 100%;
+        margin: 0px auto;
+    }
+    .carousel-animation-wrapper {
+        height: 90%;
+        margin: 0px auto;
+        display: flex;
+        flex-flow: column;
     }
 }
 
-.carousel-wrapper {
-    max-height: 600px;
-    height: 100%;
-    width: 90%;
-    margin: 20px auto;
-}
-
-.action-wrapper {
-    height: 40px;
-    width: 70%;
-    display: flex;
-    align-items: baseline;
-    margin-bottom: 1rem;
-    margin-left: 1rem;
-}
-
-.carousel-animation-wrapper {
-    height: 700px;
-    margin: 16px auto;
-    display: flex;
-    flex-flow: column;
+// Pantallas inferiores a 800px (mobile)
+@media screen and (max-width: 800px) {
+    .slide-wrapper {
+        max-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 0px;
+        img {
+            width: 100%;
+        }
+    }
+    .carousel-wrapper {
+        max-height: 600px;
+        height: 100%;
+        width: 100%;
+        margin: 0px auto;
+    }
+    .carousel-animation-wrapper {
+        // height: 700px;
+        margin: 0px auto;
+        display: flex;
+        flex-flow: column;
+    }
 }
