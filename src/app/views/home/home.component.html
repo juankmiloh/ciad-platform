@@ -2,8 +2,8 @@
     <igx-carousel #carousel animationType="fade" [interval]="2000" [gesturesSupport]="true">
         <igx-slide *ngFor="let slide of slides;">
             <div class="textSlide">
-                <span style="font-size: larger;">{{slide.description}}</span><br>
-                <span>{{slide.heading}}</span>
+                <span class="text1">{{slide.description}}</span><br>
+                <span class="text2">{{slide.heading}}</span>
             </div>
             <div class="image-container">
                 <img [src]="slide.image">

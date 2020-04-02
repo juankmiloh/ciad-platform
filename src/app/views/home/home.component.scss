@@ -20,6 +20,9 @@ $theme: igx-carousel-theme( $slide-background: #333);
         padding-top: 33em;
         background-color: rgba(0, 0, 0, 0.356);
     }
+    .text1 {
+        font-size: larger;
+    }
 }
 
 // Pantallas inferiores a 800px (mobile)
@@ -37,6 +40,14 @@ $theme: igx-carousel-theme( $slide-background: #333);
         text-align: center;
         padding-top: 14.5em;
         background-color: rgba(0, 0, 0, 0.356);
+    }
+    .text1 {
+        font-size: small;
+        font-weight: bold;
+    }
+    .text2 {
+        font-size: smaller;
+        font-weight: bold;
     }
 }
 
