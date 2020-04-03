@@ -55,3 +55,33 @@ $theme: igx-carousel-theme( $slide-background: #333);
     width: 100%;
     height: 100%;
 }
+
+.grilla {
+    background: lightblue;
+    font-size: large;
+}
+
+.example-card {
+    max-width: 400px;
+}
+
+.example-header-image1 {
+    background-image: url('../../../assets/img/danilin.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.example-header-image2 {
+    background-image: url('../../../assets/img/emiro.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.example-header-image3 {
+    background-image: url('../../../assets/img/juank1.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}

@@ -30,6 +30,7 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/mat
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
 
 
 import { SidenavMenuComponent } from './views/sidenav-menu/sidenav-menu.component';
@@ -85,7 +86,8 @@ import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.compo
     MatFormFieldModule,
     FlexLayoutModule,
     MatInputModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatCardModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },
