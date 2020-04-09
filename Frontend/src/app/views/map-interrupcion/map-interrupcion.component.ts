@@ -165,7 +165,7 @@ export class MapInterrupcionComponent implements OnInit {
 
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
     bottomSheetRef.afterDismissed().subscribe((dataFromChild) => {
-      // console.log('valores enviados del hijo', dataFromChild);
+      console.log('valores enviados del hijo', dataFromChild);
     });
 
     // subscribe to observable que se ejecuta cuando se da click al backdrop del modal

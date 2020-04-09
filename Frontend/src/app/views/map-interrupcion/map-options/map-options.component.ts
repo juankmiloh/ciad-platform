@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -22,6 +22,13 @@ export const MY_FORMATS = {
   },
 };
 
+interface IOptionsMap {
+  anio: number;
+  fecha: Date;
+  empresa: number;
+  causa: number;
+}
+
 @Component({
   selector: 'app-map-options',
   templateUrl: './map-options.component.html',
@@ -39,36 +46,50 @@ export const MY_FORMATS = {
 })
 export class MapOptionsComponent {
 
-  constructor(private bottomSheetRef: MatBottomSheetRef<MapOptionsComponent>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {}
+  constructor(private bottomSheetRef: MatBottomSheetRef<MapOptionsComponent>,
+              @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+              private formBuilder: FormBuilder) {}
+  tipeMoment: Moment;
+  optionsMap = this.formBuilder.group({
+    anio: [null, Validators.required],
+    fecha: null,
+    empresa: [null, Validators.required],
+    causa: [null, Validators.required]
+  });
 
+  date =  new FormControl(moment());
+  startDate: Date;
+  mesActual = new Date().getMonth();
   suiAnios: any[] = this.data.suiAnios;
 
-  servicios: any[] = [
-    {value: 'energia', viewValue: 'Energía'},
-    {value: 'gas', viewValue: 'Gas'},
-    {value: 'glp', viewValue: 'GLP'}
-  ];
-
   errorMessage = '';
-
-  date = new FormControl(moment());
-
   selectAnio = 2018; // Valor que actualiza el select
 
+  ngOnInit(): void {
+    console.log(this.optionsMap.value);
+  }
+
+  captureData() {
+    // this.optionsMap.get('fecha').setValue(moment(this.optionsMap.get('date')).format('M'));
+    console.log('Opciones Modal', this.optionsMap.value);
+  }
+
   somethingChanged(select: any): void {
-    console.log(select);
+    console.log('anio', select);
+    this.startDate = new Date(select, this.mesActual, 1);
   }
 
   chosenYearHandler(normalizedYear: Moment) {
-    const ctrlValue = this.date.value;
-    ctrlValue.year(normalizedYear.year());
-    this.date.setValue(ctrlValue);
+    // const ctrlValue = this.optionsMap.get('fecha').value;
+    // ctrlValue.year(normalizedYear.year());
+    // this.optionsMap.get('fecha').setValue(ctrlValue);
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    console.log('event', normalizedMonth, 'dp', datepicker);
     const ctrlValue = this.date.value;
     ctrlValue.month(normalizedMonth.month());
-    this.date.setValue(ctrlValue);
+    this.optionsMap.get('fecha').setValue(ctrlValue);
     datepicker.close();
   }
 

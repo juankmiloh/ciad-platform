@@ -5,30 +5,29 @@
         </mat-toolbar-row>
     </mat-toolbar>
 </div>
-<button mat-fab color="accent" class="fix-bottom" (click)="updateMap()">
-    <mat-icon aria-label="Side nav toggle icon">check</mat-icon>
-</button>
 <div style="padding-top: 2.5em; padding-bottom: 1em; border: 0px solid red;">
-    <mat-nav-list>
-        <!-- <mat-divider></mat-divider> -->
+    <form [formGroup]="optionsMap" (ngSubmit)="captureData()">
         <mat-grid-list cols="2" rowHeight="80px">
             <mat-grid-tile>
                 <mat-form-field style="width: 70%;">
                     <mat-label>Año</mat-label>
-                    <mat-select [(value)]="selectAnio" (selectionChange)="somethingChanged(selectAnio)">
+                    <mat-select required [(value)]="selectAnio" formControlName="anio" (selectionChange)="somethingChanged(selectAnio)">
                         <mat-option *ngFor="let anio of suiAnios" [value]="anio.anio">
                             {{anio.anio}}
                         </mat-option>
                     </mat-select>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('anio').touched && optionsMap.get('anio').hasError('required')">* Campo Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field style="width: 70% !important;">
                     <mat-label>Mes</mat-label>
-                    <input matInput [matDatepicker]="dp" [formControl]="date" disabled>
+                    <input required matInput [matDatepicker]="dp" formControlName="fecha" readonly>
                     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                    <mat-datepicker touchUi #dp disabled="false" startView="year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
+                    <mat-datepicker touchUi #dp [disabled]="optionsMap.get('anio').hasError('required')" startView="year" [startAt]="startDate" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
                     </mat-datepicker>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('fecha').touched && optionsMap.get('fecha').hasError('required') && dp.disabled">* Seleccione un año</mat-hint>
+                    <mat-hint class="text-danger" *ngIf="(optionsMap.get('fecha').touched && optionsMap.get('fecha').hasError('required') && !dp.disabled)">* Campo Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
@@ -36,24 +35,28 @@
             <mat-grid-tile>
                 <mat-form-field style="width: 70% !important;">
                     <mat-label>Empresa</mat-label>
-                    <mat-select>
-                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.value">
-                            {{anio.viewValue}}
+                    <mat-select required formControlName="empresa">
+                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.anio">
+                            {{anio.anio}}
                         </mat-option>
                     </mat-select>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('empresa').touched && optionsMap.get('empresa').hasError('required')">* Campo Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field style="width: 70% !important;">
                     <mat-label>Causas</mat-label>
-                    <mat-select>
-                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.value">
-                            {{anio.viewValue}}
+                    <mat-select required formControlName="causa">
+                        <mat-option *ngFor="let anio of suiAnios" [value]="anio.anio">
+                            {{anio.anio}}
                         </mat-option>
                     </mat-select>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('causa').touched && optionsMap.get('causa').hasError('required')">* Campo Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
-        <!-- <mat-divider></mat-divider> -->
-    </mat-nav-list>
+        <button type="submit" mat-fab color="accent" class="fix-bottom" [disabled]="!optionsMap.valid">
+            <mat-icon aria-label="Side nav toggle icon">check</mat-icon>
+        </button>
+    </form>
 </div>
