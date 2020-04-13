@@ -1,0 +1,9 @@
+{
+    "oracle_credentials": {
+        "usuario": "SYS",
+        "contrasena": "SYS",
+        "host": "localhost",
+        "port": "1521",
+        "SID": "orcl"
+    }
+}

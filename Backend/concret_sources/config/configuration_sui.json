@@ -1,0 +1,9 @@
+{
+    "oracle_credentials": {
+        "usuario": "JHERRERAA",
+        "contrasena": "C0l0mb1a_2020",
+        "host": "172.16.1.185",
+        "port": "2230",
+        "SID": "DBSUI"
+    }
+}

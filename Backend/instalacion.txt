@@ -1,0 +1,8 @@
+pip install Flask
+pip install -U flask-cors
+pip install flask-restful
+pip install cx_oracle
+----------------------------------
+PARA LEVANTAR EL SERVIDOR:
+        1. python main.py
+        2. py main.py

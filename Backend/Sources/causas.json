@@ -1,0 +1,29 @@
+{
+        "name": "causas",
+        "query" : [
+                "SELECT IDENTIFICADOR_CAUSAL,",
+                "       DESCRIPCION_CAUSAL,",
+                "       'ENERGIA' SERVICIO ",
+                "FROM ",
+                "    PQR_CAUSAL_ENE ",
+                "WHERE",
+                "    ( 'ENERGIA' = :SERVICIO_ARG OR 'TODOS' = :SERVICIO_ARG ) ",
+                "UNION ",
+                "SELECT IDENTIFICADOR_CAUSAL,",
+                "       DESCRIPCION_CAUSAL,",
+                "       'GAS' SERVICIO ",
+                "FROM ",
+                "    PQR_CAUSAL_GAS ",
+                "WHERE",
+                "    ( 'GAS' = :SERVICIO_ARG OR 'TODOS' = :SERVICIO_ARG ) ",
+                "UNION ",
+                "SELECT IDENTIFICADOR_CAUSAL,",
+                "       DESCRIPCION_CAUSAL,",
+                "       'GLP' SERVICIO ",
+                "FROM ",
+                "    PQR_CAUSAL_GLP ",
+                "WHERE",
+                "    ( 'GLP' = :SERVICIO_ARG OR 'TODOS' = :SERVICIO_ARG ) ",
+                "ORDER BY SERVICIO, DESCRIPCION_CAUSAL ASC"
+        ]
+}
