@@ -177,7 +177,7 @@ export class MapInterrupcionComponent implements OnInit {
   // Se carga el mapa
   async initializeMap() {
     setDefaultOptions({ version: '4.12' }); // Se configura la version del API de ARCgis a utilizar
-    loadCss('4.14'); // Se cargan los estilos de la version a utilizar
+    loadCss('4.15'); // Se cargan los estilos de la version a utilizar
 
     sessionStorage.setItem('updateMapLayer', 'true');
 

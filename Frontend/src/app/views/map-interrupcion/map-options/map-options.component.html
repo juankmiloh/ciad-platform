@@ -16,7 +16,7 @@
                             {{anio.anio}}
                         </mat-option>
                     </mat-select>
-                    <mat-hint class="text-danger" *ngIf="optionsMap.get('anio').touched && optionsMap.get('anio').hasError('required')">* Campo Obligatorio</mat-hint>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('anio').touched && optionsMap.get('anio').hasError('required')">* Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -27,7 +27,7 @@
                     <mat-datepicker touchUi #dp [disabled]="optionsMap.get('anio').hasError('required')" startView="year" [startAt]="startDate" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
                     </mat-datepicker>
                     <mat-hint class="text-danger" *ngIf="optionsMap.get('fecha').touched && optionsMap.get('fecha').hasError('required') && dp.disabled">* Seleccione un año</mat-hint>
-                    <mat-hint class="text-danger" *ngIf="(optionsMap.get('fecha').touched && optionsMap.get('fecha').hasError('required') && !dp.disabled)">* Campo Obligatorio</mat-hint>
+                    <mat-hint class="text-danger" *ngIf="(optionsMap.get('fecha').touched && optionsMap.get('fecha').hasError('required') && !dp.disabled)">* Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
@@ -40,7 +40,7 @@
                             {{anio.anio}}
                         </mat-option>
                     </mat-select>
-                    <mat-hint class="text-danger" *ngIf="optionsMap.get('empresa').touched && optionsMap.get('empresa').hasError('required')">* Campo Obligatorio</mat-hint>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('empresa').touched && optionsMap.get('empresa').hasError('required')">* Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -51,7 +51,7 @@
                             {{anio.anio}}
                         </mat-option>
                     </mat-select>
-                    <mat-hint class="text-danger" *ngIf="optionsMap.get('causa').touched && optionsMap.get('causa').hasError('required')">* Campo Obligatorio</mat-hint>
+                    <mat-hint class="text-danger" *ngIf="optionsMap.get('causa').touched && optionsMap.get('causa').hasError('required')">* Obligatorio</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
