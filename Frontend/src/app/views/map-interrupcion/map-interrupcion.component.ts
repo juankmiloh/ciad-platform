@@ -6,6 +6,9 @@ import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { ThemePalette } from '@angular/material/core';
 import { MapOptionsComponent } from './map-options/map-options.component';
 import { SuiService } from 'src/app/services/sui.service';
+import { IOptionsMapa } from 'src/app/models/IOptionsMapa.model';
+import * as d3 from 'd3';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-map-interrupcion',
@@ -21,6 +24,8 @@ export class MapInterrupcionComponent implements OnInit {
   public view: any;
 
   public suiAnios: any[] = [];
+  public suiCausas: any[] = [];
+  public suiEmpresas: any[] = [];
   errorMessage = '';
 
   // opciones del progress de carga
@@ -60,10 +65,32 @@ export class MapInterrupcionComponent implements OnInit {
   // Permite controlar el backdrop cuando se cambia el CSV
   updateLayerCSV = true;
 
+  bottomSheetRef: any;
+
+  options: IOptionsMapa;
+
+  nombreEmpresa: string;
+
   async ngOnInit() {
     // Initialize MapView and return an instance of MapView
-    await this.initializeMap().then(mapView => {});
+    const fecha = new Date();
+    const anoActual = fecha.getFullYear();
+    const mesActual = fecha.getMonth() - 1;
+    this.options = {
+      ano: anoActual,
+      mes: mesActual,
+      empresa: 0,
+      nombEmpresa: 'Todas las empresas',
+      causa: 16,
+      nombCausa: 'programadas no excluibles',
+      zoom: 4,
+      latitud: 2.5,
+      longitud: -73.47106040285713
+    };
+    await this.initializeMap(this.options).then(mapView => {});
     this.loadSuiAnios();
+    this.loadSuiCausas();
+    this.loadSuiEmpresas();
     // this.bottomSheet.open(MapOptionsComponent, {
     //   // Se pasan valores al modal de filtros
     //   data: { view: this.view, fabOptions: this.fabOptions },
@@ -71,6 +98,10 @@ export class MapInterrupcionComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    try {
+      this.bottomSheetRef.dismiss(); // Se cierra el modal
+    } catch (error) {
+    }
     if (this.view) {
       this.view.container = null; // destroy the map view
     }
@@ -147,99 +178,57 @@ export class MapInterrupcionComponent implements OnInit {
 
   // Mostrar modal de filtros
   openBottomSheet(): void {
-    const bottomSheetRef = this.bottomSheet.open(MapOptionsComponent, {
+    this.bottomSheetRef = this.bottomSheet.open(MapOptionsComponent, {
       // Se pasan valores al modal de filtros
       data:
         {
           view: this.view,
           fabOptions: this.fabOptions,
+          optionsMap: this.options,
           suiAnios: this.suiAnios,
+          suiCausas: this.suiCausas,
+          suiEmpresas: this.suiEmpresas,
           updateLayerCSV: this.updateLayerCSV
         },
     });
 
     // subscribe to observable que se ejecuta una vez se abre el modal
-    bottomSheetRef.afterOpened().subscribe(() => {
+    this.bottomSheetRef.afterOpened().subscribe(() => {
       this.updateLayerCSV = true;
     });
 
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
-    bottomSheetRef.afterDismissed().subscribe((dataFromChild) => {
+    this.bottomSheetRef.afterDismissed().subscribe(async (dataFromChild) => {
       console.log('valores enviados del hijo', dataFromChild);
+      this.updateLayerCSV = true;
+      // tslint:disable-next-line: max-line-length
+      // this.addLayerMap(dataFromChild).then((data) => {});
+      if (dataFromChild !== undefined) {
+        this.view.map.layers = await this.addLayerMap(dataFromChild); // Se agrega un nuevo layer CSV al mapa
+      }
     });
 
     // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
-    bottomSheetRef.backdropClick().subscribe((evt) => {
+    this.bottomSheetRef.backdropClick().subscribe((evt) => {
       this.updateLayerCSV = false;
     });
   }
 
   // Se carga el mapa
-  async initializeMap() {
+  async initializeMap(options: IOptionsMapa) {
     setDefaultOptions({ version: '4.12' }); // Se configura la version del API de ARCgis a utilizar
     loadCss('4.15'); // Se cargan los estilos de la version a utilizar
 
-    sessionStorage.setItem('updateMapLayer', 'true');
+    sessionStorage.setItem('addLayerMapLayer', 'true');
 
     try {
       // Load the modules for the ArcGIS API for JavaScript
       // tslint:disable-next-line: max-line-length
-      const [Track, Map, MapView, CSVLayer, Search, Legend, BasemapToggle, watchUtils] = await loadModules(['esri/widgets/Track', 'esri/Map', 'esri/views/MapView', 'esri/layers/CSVLayer', 'esri/widgets/Search', 'esri/widgets/Legend', 'esri/widgets/BasemapToggle', 'esri/core/watchUtils']);
-
-      // const url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.csv';
-      // const url = '';
-      const url = 'assets/2.5_week.csv';
-
-      // Paste the url into a browser's address bar to download and view the attributes
-      // in the CSV file. These attributes include:
-      // * mag - magnitude
-      // * type - earthquake or other event such as nuclear test
-      // * place - location of the event
-      // * time - the time of the event
-
-      const template = {
-        title: '{place}',
-        content: 'Magnitude {mag} {type} hit {place} on {time}.'
-      };
-
-      // The heatmap renderer assigns each pixel in the view with
-      // an intensity value. The ratio of that intensity value
-      // to the maxPixel intensity is used to assign a color
-      // from the continuous color ramp in the colorStops property
-
-      const renderer = {
-        type: 'heatmap',
-        colorStops: [
-          { color: 'rgba(63, 40, 102, 0)', ratio: 0 },
-          { color: '#472b77', ratio: 0.083 },
-          { color: '#4e2d87', ratio: 0.166 },
-          { color: '#563098', ratio: 0.249 },
-          { color: '#5d32a8', ratio: 0.332 },
-          { color: '#6735be', ratio: 0.415 },
-          { color: '#7139d4', ratio: 0.498 },
-          { color: '#7b3ce9', ratio: 0.581 },
-          { color: '#853fff', ratio: 0.664 },
-          { color: '#a46fbf', ratio: 0.747 },
-          { color: '#c29f80', ratio: 0.83 },
-          { color: '#e0cf40', ratio: 0.913 },
-          { color: '#ffff00', ratio: 1 }
-        ],
-        maxPixelIntensity: 25,
-        minPixelIntensity: 0
-      };
-
-      const layer = new CSVLayer({
-        url,
-        title: 'Interrupciones',
-        copyright: 'DESARROLLADO POR JUAN CAMILO HERRERA - CIAD SUPERSERVICIOS',
-        popupTemplate: template,
-        renderer
-      });
+      const [Track, Map, MapView, Search, Legend, BasemapToggle, watchUtils, FeatureLayer] = await loadModules(['esri/widgets/Track', 'esri/Map', 'esri/views/MapView', 'esri/widgets/Search', 'esri/widgets/Legend', 'esri/widgets/BasemapToggle', 'esri/core/watchUtils', 'esri/layers/FeatureLayer']);
 
       // Configure the Map
       const mapProperties = {
-        basemap: 'streets-navigation-vector',
-        layers: [layer]
+        basemap: 'streets-navigation-vector'
       };
 
       const map = new Map(mapProperties);
@@ -247,8 +236,8 @@ export class MapInterrupcionComponent implements OnInit {
       // Initialize the MapView
       const mapViewProperties = {
         container: this.mapViewEl.nativeElement,
-        center: [-73.47106040285713, 2.5], // [horizontal (long), vertical (lat)]
-        zoom: 4,
+        center: [options.longitud, options.latitud], // [horizontal (long), vertical (lat)]
+        zoom: options.zoom,
         constraints: {
           minZoom: 3,
           maxZoom: 19,
@@ -268,10 +257,15 @@ export class MapInterrupcionComponent implements OnInit {
       // Display the loading indicator when the view is updating
       watchUtils.whenTrue(this.view, 'updating', (evt: any) => {
         // console.log('showLoad', evt);
-        if (this.updateLayerCSV) {
-          this.showBackdrop('fbback_map_show_load');
-          this.btnFlotante = 'hideBtnFlotante';
-        }
+        watchUtils.whenTrue(this.view, 'stationary', () => {
+          // Get the new extent of view/map whenever map is updated.
+          if (this.view.extent) {
+            if (this.updateLayerCSV) {
+              this.showBackdrop('fbback_map_show_load');
+              this.btnFlotante = 'hideBtnFlotante';
+            }
+          }
+        });
       });
 
       // Hide the loading indicator when the view stops updating
@@ -298,6 +292,8 @@ export class MapInterrupcionComponent implements OnInit {
       this.view.ui.remove([basemapToggle, 'zoom']);           // Elimina los botones de zoom
       this.view.ui.add(track, 'top-right');                   // Muestra el boton de MyLocation
 
+      this.view.map.layers = await this.addLayerMap(options); // Se agrega un nuevo layer CSV al mapa
+
       return this.view;
 
     } catch (error) {
@@ -305,10 +301,113 @@ export class MapInterrupcionComponent implements OnInit {
     }
   }
 
-  loadSuiAnios() {
-    this.suiService.getAnios().subscribe( anios => {
+  async addLayerMap(options: IOptionsMapa) {
+    this.updateLayerCSV = true;
+    try {
+      const [CSVLayer] = await loadModules(['esri/layers/CSVLayer']);
+      // const url = 'assets/file_interrupciones.csv';
+      // const url = 'http://192.168.1.60:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
+      const url = `http://192.168.1.60:5055/i_interrupcion/${options.ano}/${options.mes}/${options.empresa}/${options.causa}`;
+
+      const d3Data = d3.csv(url).then((data: any) => {
+        console.log('CSV', data);
+      }, (error) => {
+        console.log(error);
+      });
+
+      // Paste the url into a browser's address bar to download and view the attributes
+      // in the CSV file. These attributes include:
+      // * centro_poblado - nombre municipio
+      // * longitude - longitud municipio
+      // * latitude - latitud municipio
+      // * cod_dane - codigo dane municipio
+      // * cod_empresa - empresa del municipio
+      // * total - total de horas de interrupciones
+
+      console.log('EMPRESA', this.loadSuiEmpresa(options.empresa));
+
+      const template = {
+        // tslint:disable-next-line: max-line-length
+        title:  '<div style="border: 0px solid black; background: #e3f2fd; width: 15em; border-radius: 5px; height: 4em; padding-top: 0.3em;">' +
+                // '  <input type="number" value={total}>' +
+                '  <small style="color: #3f51b5;"><b>{centro_poblado}</b></small><br>' +
+                '  <small style="color: #212121; padding-left: 3%;">Horas de interrupción {total}</small>' +
+                '</div>',
+        content: '<div>' +
+                 ' <small>Código DANE municipio {cod_dane}</small><br>' +
+                 ` <small>${this.options.nombEmpresa} código EMPRESA {cod_empresa}</small><br>` +
+                 ` <small>Interrupciones ${options.nombCausa.toUpperCase()}</small>` +
+                 '</div>',
+      };
+
+      // The heatmap renderer assigns each pixel in the view with
+      // an intensity value. The ratio of that intensity value
+      // to the maxPixel intensity is used to assign a color
+      // from the continuous color ramp in the colorStops property
+
+      const renderer = {
+        type: 'heatmap',
+        field: 'total',
+        colorStops: [
+          { color: 'rgba(63, 40, 102, 0)', ratio: 0 }, // rango de 0 a 1
+          { color: '#6300df', ratio: 0.083 },          // Azul claro
+          { color: '#2196f3', ratio: 0.100 },          // Azul
+          { color: '#00ff2c', ratio: 0.166 },          // Verde Clarito
+          { color: '#a1ff00', ratio: 0.249 },          // Verde
+          { color: '#e5ff00', ratio: 0.332 },          // Amarillo claro
+          { color: '#ffeb3b', ratio: 0.415 },          // Amarillo
+          { color: '#ffc700', ratio: 0.498 },          // Amarillo oscuro
+          { color: '#fea701', ratio: 0.581 },          // Naranja claro
+          { color: '#ff9800', ratio: 0.664 },          // Naranja
+          { color: '#f44336', ratio: 1 }               // Rojo
+        ],
+        minPixelIntensity: 0,
+        maxPixelIntensity: 50000
+      };
+
+      const layer = new CSVLayer({
+        url,
+        title:  options.nombEmpresa,
+        copyright: 'DESARROLLADO POR JUAN CAMILO HERRERA - CIAD SUPERSERVICIOS',
+        popupTemplate: template,
+        renderer
+      });
+
+      // this.view.map.layers = layer; // Se agrega un nuevo layer CSV al mapa
+      this.options = options;
+      return layer;
+    } catch (error) {
+      console.log('EsriLoader: ', error);
+    }
+  }
+
+  async loadSuiAnios() {
+    await this.suiService.getAnios().subscribe( anios => {
       this.suiAnios = anios;
       console.log(this.suiAnios);
+      }, error => this.errorMessage = error
+    );
+  }
+
+  loadSuiCausas() {
+    this.suiService.getCausas().subscribe( causas => {
+      this.suiCausas = causas;
+      console.log(this.suiCausas);
+      }, error => this.errorMessage = error
+    );
+  }
+
+  loadSuiEmpresas() {
+    this.suiService.getEmpresas().subscribe( empresas => {
+      this.suiEmpresas = empresas;
+      console.log(this.suiEmpresas);
+      }, error => this.errorMessage = error
+    );
+  }
+
+  loadSuiEmpresa(idEmpresa: number) {
+    this.suiService.getEmpresasId(idEmpresa).subscribe( empresa => {
+      console.log('EMPRESA CONSULTADA: ', empresa);
       }, error => this.errorMessage = error
     );
   }

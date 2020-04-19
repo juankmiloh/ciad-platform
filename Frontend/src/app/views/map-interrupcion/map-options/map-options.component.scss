@@ -1,15 +1,26 @@
-    // CSS Boton flotante
-    .fix-bottom {
-        position: fixed;
-        bottom: 188px;
-        right: 15px;
-    }
-    
+    // CSS para cambiar el color del borde del campo 'form-field'
      ::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
         color: red!important;
         opacity: 0.8!important;
     }
     
-    // mat-grid-tile {
-    //     background: lightblue;
-    // }
+    // CSS Boton flotante
+    .fix-bottom {
+        position: fixed;
+        top: 4.5em;
+        right: 15px;
+    }
+    
+    // Pantallas superiores a 800px (PC)
+    @media screen and (min-width: 800px) {
+        mat-form-field {
+            width: 70%;
+        }
+    }
+    
+    // Pantallas inferiores a 800px (SMARTPHONE)
+    @media screen and (max-width: 800px) {
+        mat-form-field {
+            width: 100%;
+        }
+    }

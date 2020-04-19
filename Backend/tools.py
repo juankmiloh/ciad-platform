@@ -6,10 +6,12 @@ PATH = os.path.dirname(os.path.realpath(__file__))
 
 class Tools:
 	__instance = None
+	__search_dir_param = None
 	
 	@staticmethod
-	def get_instance():
+	def get_instance(param):
 		if Tools.__instance == None:
+			Tools.__search_dir_param = param
 			Tools()
 		return Tools.__instance 
 
@@ -17,7 +19,8 @@ class Tools:
 		if Tools.__instance == None:
 			Tools.__instance = self
 
-		self.__search_dir = "Sources/"
+		#self.__search_dir = "Sources/pqrs_source/"
+		self.__search_dir = Tools.__search_dir_param
 		self.__sources = {}
 		self.__source_load()
 

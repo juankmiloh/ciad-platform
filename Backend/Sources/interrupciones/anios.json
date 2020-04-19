@@ -1,0 +1,10 @@
+{
+    "name": "anios",
+    "query": [
+        "SELECT CAR_CARG_ANO, CAR_CARG_PERIODO ",
+        "FROM SUI_SIMPLIFICA_2015.CAR_T1554_RECLAMACIONES_GLP ",
+        "WHERE ( CAR_CARG_ANO = :ANIO_ARG OR 0 = :ANIO_ARG ) ",
+        "GROUP BY CAR_CARG_ANO, CAR_CARG_PERIODO ",
+        "ORDER BY CAR_CARG_ANO, CAR_CARG_PERIODO ASC"
+    ]
+}

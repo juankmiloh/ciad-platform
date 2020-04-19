@@ -31,7 +31,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { SidenavMenuComponent } from './views/sidenav-menu/sidenav-menu.component';
 import { HomeComponent } from './views/home/home.component';
@@ -87,7 +88,9 @@ import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.compo
     FlexLayoutModule,
     MatInputModule,
     MatProgressBarModule,
-    MatCardModule
+    MatCardModule,
+    MatAutocompleteModule,
+    MatSlideToggleModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },

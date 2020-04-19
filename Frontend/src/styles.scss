@@ -77,3 +77,41 @@ mat-datepicker-content {
 .mat-datepicker-content-touch {
     height: 16.5em !important;
 }
+
+// CSS para popup
+.juank-theme .esri-popup__header {
+    background: #e3f2fd;
+}
+
+.juank-theme .esri-popup__feature-menu-title {
+    background: #e3f2fd;
+}
+
+.juank-theme .esri-popup__header-container--button :hover {
+    background: #e3f2fd;
+}
+
+// CSS para ocultar el mensaje inicial de 'No hay leyenda'
+.juank-theme .esri-legend--card__message {
+    visibility: hidden;
+}
+
+// CSS para mostrar el mensaje 'Cargando...'
+.juank-theme .esri-legend--card__message::before {
+    visibility: visible;
+    content: "Cargando...";
+}
+
+// CSS para modificar valores del texto del legend
+.juank-theme .esri-legend--card__service-caption-text {
+    font-size: smaller;
+    border: 0px solid;
+    width: 180px;
+    text-align: center;
+    padding-top: 7px;
+}
+
+// CSS para cambiar propiedades de la caja del texto del legend 
+.juank-theme .esri-legend--card__service-caption-container {
+    height: 55px;
+}
