@@ -95,32 +95,33 @@ class dataInterrupcion(Resource):
 		for result in data:
 			interrupciones.append(
 				{
-					'centro_poblado' : result[0],
-					'longitude' : result[1],
-					'latitude' : result[2],
-					'cod_dane' : result[3],
-					'cod_empresa' : result[4],
-					'pnexc' : result[5],
-					'npnexc' : result[6],
-					'remer' : result[7],
-					'stnstr' : result[8],
-					'segciu' : result[9],
-					'fnivel1' : result[10],
-					'castnat' : result[11],
-					'terr' : result[12],
-					'calzesp' : result[13],
-					'tsubest' : result[14],
-					'infra' : result[15],
-					'sumi' : result[16],
-					'exp' : result[17],
-					'total' : result[18],
+					'nom_empresa' : result[0],
+					'centro_poblado' : result[1],
+					'longitude' : result[2],
+					'latitude' : result[3],
+					'cod_dane' : result[4],
+					'cod_empresa' : result[5],
+					'pnexc' : result[6],
+					'npnexc' : result[7],
+					'remer' : result[8],
+					'stnstr' : result[9],
+					'segciu' : result[10],
+					'fnivel1' : result[11],
+					'castnat' : result[12],
+					'terr' : result[13],
+					'calzesp' : result[14],
+					'tsubest' : result[15],
+					'infra' : result[16],
+					'sumi' : result[17],
+					'exp' : result[18],
+					'total' : result[19],
 				}
 			)
 		return self.__getCSV(interrupciones)
 	
 	def __getCSV(self, arrayInterrupciones):
 		with open('file_interrupciones.csv', 'w', newline='') as csvfile:
-			fieldnames = ['centro_poblado', 'longitude', 'latitude', 'cod_dane', 'cod_empresa', 'pnexc', 'npnexc','remer', 'stnstr', 'segciu', 'fnivel1',  'castnat', 'terr', 'calzesp', 'tsubest', 'infra', 'sumi', 'exp', 'total']
+			fieldnames = ['nom_empresa', 'centro_poblado', 'longitude', 'latitude', 'cod_dane', 'cod_empresa', 'pnexc', 'npnexc','remer', 'stnstr', 'segciu', 'fnivel1',  'castnat', 'terr', 'calzesp', 'tsubest', 'infra', 'sumi', 'exp', 'total']
 			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 			writer.writeheader()
 			writer.writerows(arrayInterrupciones)
