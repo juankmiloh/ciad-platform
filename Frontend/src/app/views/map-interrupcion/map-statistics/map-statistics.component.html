@@ -1,0 +1,59 @@
+<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+    <p>What's your favorite animal?</p>
+    <mat-form-field>
+        <mat-label>Favorite Animal</mat-label>
+        <input matInput [(ngModel)]="data.animal">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+    <button (click)="exportButtonHandler()">Export Data to Excel</button>
+</div> -->
+<mat-dialog-content class="mat-typography">
+    <mat-tab-group>
+        <mat-tab label="{{fecha}}">
+            <mat-form-field appearance="standard">
+                <mat-label>Filtrar</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Ingrese un valor">
+            </mat-form-field>
+            <div class="example-container mat-elevation-z2">
+                <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
+                    <ng-container matColumnDef="nom_empresa">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Empresa</th>
+                        <td mat-cell *matCellDef="let element" style="padding-right: 10%;"> {{element.nom_empresa}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="centro_poblado">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Municipio</th>
+                        <td mat-cell *matCellDef="let element"> {{element.centro_poblado}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="causa">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-right: 10%;">Causal</th>
+                        <td mat-cell *matCellDef="let element"> {{causa}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="total">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Horas&nbsp;Interrupción</th>
+                        <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="link">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                        <td mat-cell *matCellDef="let element" (click)="updateMap(element)">
+                            <mat-icon style="cursor: pointer;" aria-hidden="false" aria-label="Example home icon">open_in_new</mat-icon>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+                </table>
+            </div>
+        </mat-tab>
+        <!-- <mat-tab label="Causas">
+
+        </mat-tab> -->
+    </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="exportButtonHandler()">Exportar a EXCEL</button>
+    <button mat-stroked-button [mat-dialog-close]=undefined cdkFocusInitial>Cerrar</button>
+</mat-dialog-actions>

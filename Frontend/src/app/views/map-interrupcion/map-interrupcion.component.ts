@@ -8,7 +8,9 @@ import { MapOptionsComponent } from './map-options/map-options.component';
 import { SuiService } from 'src/app/services/sui.service';
 import { IOptionsMapa } from 'src/app/models/IOptionsMapa.model';
 import * as d3 from 'd3';
-import { async } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MapStatisticsComponent } from './map-statistics/map-statistics.component';
 
 @Component({
   selector: 'app-map-interrupcion',
@@ -17,7 +19,10 @@ import { async } from '@angular/core/testing';
 })
 export class MapInterrupcionComponent implements OnInit {
 
-  constructor(private bottomSheet: MatBottomSheet, private suiService: SuiService) {}
+  constructor(private bottomSheet: MatBottomSheet,
+              private suiService: SuiService,
+              private snackBar: MatSnackBar,
+              public dialog: MatDialog) {}
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
@@ -71,6 +76,11 @@ export class MapInterrupcionComponent implements OnInit {
 
   nombreEmpresa: string;
 
+  meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  dataCSV: any;
+  resultModal: any;
+
   async ngOnInit() {
     // Initialize MapView and return an instance of MapView
     const fecha = new Date();
@@ -81,7 +91,8 @@ export class MapInterrupcionComponent implements OnInit {
       mes: mesActual,
       empresa: 0,
       nombEmpresa: 'Todas las empresas',
-      causa: 16,
+      causa: 0,
+      colSui: 'TODAS',
       nombCausa: 'programadas no excluibles',
       zoom: 4,
       latitud: 2.5,
@@ -95,6 +106,35 @@ export class MapInterrupcionComponent implements OnInit {
     //   // Se pasan valores al modal de filtros
     //   data: { view: this.view, fabOptions: this.fabOptions },
     // });
+    // this.openDialog();
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(MapStatisticsComponent, {
+      height: '33em',
+      width: '100%',
+      data:
+        {
+          view: this.view,
+          fabOptions: this.fabOptions,
+          optionsMap: this.options,
+          suiAnios: this.suiAnios,
+          suiCausas: this.suiCausas,
+          suiEmpresas: this.suiEmpresas,
+          updateLayerCSV: this.updateLayerCSV,
+          dataCSV: this.dataCSV,
+          result: this.resultModal
+        },
+    });
+    dialogRef.afterClosed().subscribe((dataFromModal: any) => {
+      console.log('The dialog was closed', dataFromModal);
+      this.updateLayerCSV = true;
+      if (dataFromModal !== undefined) {
+        this.addLayerMap(dataFromModal).then((data) => {
+          this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -105,6 +145,12 @@ export class MapInterrupcionComponent implements OnInit {
     if (this.view) {
       this.view.container = null; // destroy the map view
     }
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   // click boton flotante
@@ -144,7 +190,7 @@ export class MapInterrupcionComponent implements OnInit {
     }
     // Click opcion estadisticas
     if (event === 2) {
-      console.log('Estadisticas!');
+      this.openDialog();
     }
     // Click opcion Basemap
     if (event === 3) {
@@ -201,10 +247,10 @@ export class MapInterrupcionComponent implements OnInit {
     this.bottomSheetRef.afterDismissed().subscribe(async (dataFromChild) => {
       console.log('valores enviados del hijo', dataFromChild);
       this.updateLayerCSV = true;
-      // tslint:disable-next-line: max-line-length
-      // this.addLayerMap(dataFromChild).then((data) => {});
       if (dataFromChild !== undefined) {
-        this.view.map.layers = await this.addLayerMap(dataFromChild); // Se agrega un nuevo layer CSV al mapa
+        this.addLayerMap(dataFromChild).then((data) => {
+          this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
+        });
       }
     });
 
@@ -271,7 +317,12 @@ export class MapInterrupcionComponent implements OnInit {
       // Hide the loading indicator when the view stops updating
       watchUtils.whenFalse(this.view, 'updating', (evt: any) => {
         // console.log('closeLoad', evt);
-        this.updateLayerCSV = false;
+        if (this.updateLayerCSV) {
+          this.openSnackBar('Datos actualizados correctamente.', null);
+          this.snackBar._openedSnackBarRef.afterOpened().subscribe(async (data) => {
+            this.updateLayerCSV = false;
+          });
+        }
         this.fbbackMap = 'fbback_map_hide';
         this.btnFlotante = 'showBtnFlotante';
         watchUtils.whenTrue(this.view.popup, 'visible', (evt1: any) => {
@@ -309,11 +360,7 @@ export class MapInterrupcionComponent implements OnInit {
       // const url = 'http://192.168.1.60:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
       const url = `http://192.168.1.60:5055/i_interrupcion/${options.ano}/${options.mes}/${options.empresa}/${options.causa}`;
 
-      const d3Data = d3.csv(url).then((data: any) => {
-        console.log('CSV', data);
-      }, (error) => {
-        console.log(error);
-      });
+      this.dataCSV = d3.csv(url);
 
       // Paste the url into a browser's address bar to download and view the attributes
       // in the CSV file. These attributes include:
@@ -324,19 +371,16 @@ export class MapInterrupcionComponent implements OnInit {
       // * cod_empresa - empresa del municipio
       // * total - total de horas de interrupciones
 
-      console.log('EMPRESA', this.loadSuiEmpresa(options.empresa));
-
       const template = {
         // tslint:disable-next-line: max-line-length
         title:  '<div style="border: 0px solid black; background: #e3f2fd; width: 15em; border-radius: 5px; height: 4em; padding-top: 0.3em;">' +
-                // '  <input type="number" value={total}>' +
                 '  <small style="color: #3f51b5;"><b>{centro_poblado}</b></small><br>' +
                 '  <small style="color: #212121; padding-left: 3%;">Horas de interrupción {total}</small>' +
                 '</div>',
         content: '<div>' +
                  ' <small>Código DANE municipio {cod_dane}</small><br>' +
-                 ` <small>${this.options.nombEmpresa} código EMPRESA {cod_empresa}</small><br>` +
-                 ` <small>Interrupciones ${options.nombCausa.toUpperCase()}</small>` +
+                 ` <small><u>{nom_empresa}</u> código {cod_empresa}</small><br>` +
+                 ` <small>Interrupciones <u>${options.nombCausa.toUpperCase()}</u> para <u>${this.meses[options.mes].toUpperCase()}</u> de <u>${options.ano}</u></small>` +
                  '</div>',
       };
 
@@ -344,7 +388,6 @@ export class MapInterrupcionComponent implements OnInit {
       // an intensity value. The ratio of that intensity value
       // to the maxPixel intensity is used to assign a color
       // from the continuous color ramp in the colorStops property
-
       const renderer = {
         type: 'heatmap',
         field: 'total',
@@ -367,7 +410,7 @@ export class MapInterrupcionComponent implements OnInit {
 
       const layer = new CSVLayer({
         url,
-        title:  options.nombEmpresa,
+        title: `Interrupciones ${options.colSui} ${this.meses[options.mes]} de ${options.ano}`,
         copyright: 'DESARROLLADO POR JUAN CAMILO HERRERA - CIAD SUPERSERVICIOS',
         popupTemplate: template,
         renderer
@@ -382,7 +425,7 @@ export class MapInterrupcionComponent implements OnInit {
   }
 
   async loadSuiAnios() {
-    await this.suiService.getAnios().subscribe( anios => {
+    this.suiService.getAnios().subscribe( anios => {
       this.suiAnios = anios;
       console.log(this.suiAnios);
       }, error => this.errorMessage = error
@@ -405,11 +448,10 @@ export class MapInterrupcionComponent implements OnInit {
     );
   }
 
-  loadSuiEmpresa(idEmpresa: number) {
-    this.suiService.getEmpresasId(idEmpresa).subscribe( empresa => {
-      console.log('EMPRESA CONSULTADA: ', empresa);
-      }, error => this.errorMessage = error
-    );
+  async loadSuiEmpresa(idEmpresa: number) {
+    const empresa = await this.suiService.getEmpresasId(idEmpresa);
+    console.log('EMPRESA CONSULTADA: ', empresa);
+    return empresa;
   }
 
 }

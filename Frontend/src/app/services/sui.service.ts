@@ -38,10 +38,14 @@ export class SuiService {
     );
   }
 
-  getEmpresasId(id: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.serverUrl}/i_empresas/${id}`).pipe(
-      tap(data => console.log('Carga empresa ID exitosa!')), catchError(this.handleError)
-    );
+  getEmpresasId(id: number) {
+    return new Promise((resolve, reject) => {
+      this.http.get<any[]>(`${this.serverUrl}/i_empresas/${id}`).toPromise().then(res => {
+        resolve(res);
+      }, (reject) => {
+        catchError(this.handleError);
+      });
+    });
   }
 
   private handleError(err: HttpErrorResponse) {

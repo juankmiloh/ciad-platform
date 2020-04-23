@@ -108,10 +108,16 @@ mat-datepicker-content {
     border: 0px solid;
     width: 180px;
     text-align: center;
-    padding-top: 7px;
+    // padding-top: 4px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 // CSS para cambiar propiedades de la caja del texto del legend 
 .juank-theme .esri-legend--card__service-caption-container {
     height: 55px;
+}
+
+.mat-dialog-container {
+    overflow: hidden !important;
 }

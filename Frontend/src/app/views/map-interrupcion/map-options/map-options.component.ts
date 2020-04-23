@@ -95,9 +95,9 @@ export class MapOptionsComponent {
       col_sui: 'Todas',
       descripcion: 'TODAS'
     });
-    console.log(this.data.optionsMap);
+    console.log('CARGANDO BOTTOMSHEET', this.data.optionsMap);
     this.selectAnio = this.data.optionsMap.ano;
-    this.selectMes = this.data.optionsMap.mes - 1;
+    this.selectMes = this.data.optionsMap.mes;
     const ctrlDate = this.date.value;
     ctrlDate.month(this.selectMes);
     this.optionsMap.get('mes').setValue(ctrlDate);
@@ -112,22 +112,28 @@ export class MapOptionsComponent {
   }
 
   private _filterStates(value: string): Empresa[] {
-    const filterValue = value.toLowerCase();
-    return this.suiEmpresas.filter(state => state.nombre.toLowerCase().indexOf(filterValue) === 0);
+    try {
+      const filterValue = value.toLowerCase();
+      return this.suiEmpresas.filter(state => state.nombre.toLowerCase().indexOf(filterValue) === 0);
+    } catch (error) {
+      // console.log('filterValue: ', error);
+    }
   }
 
   sendDataParent() {
     const empresaNombre = this.optionsMap.get('empresa').value;
     const codEmpresa = this.suiEmpresas.find(empresa => empresa.nombre === empresaNombre).cod_empresa;
     const causaNombre = this.suiCausas.find(causa => causa.cod_causa === this.optionsMap.get('causa').value).descripcion;
+    const colsuiCausa = this.suiCausas.find(causa => causa.cod_causa === this.optionsMap.get('causa').value).col_sui;
     this.optionsMap.get('empresa').setValue(codEmpresa);
     this.optionsMap.get('mes').setValue(moment(this.optionsMap.get('mes').value).format('M'));
     this.sendData = {
       ano: this.optionsMap.get('anio').value,
-      mes: this.optionsMap.get('mes').value,
+      mes: this.optionsMap.get('mes').value - 1,
       empresa: this.optionsMap.get('empresa').value,
       nombEmpresa: empresaNombre,
       causa: this.optionsMap.get('causa').value,
+      colSui: colsuiCausa,
       nombCausa: causaNombre,
       zoom: this.data.view.zoom,
       latitud: this.data.view.center.latitude,
