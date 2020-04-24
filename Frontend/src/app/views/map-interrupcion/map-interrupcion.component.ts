@@ -91,8 +91,8 @@ export class MapInterrupcionComponent implements OnInit {
       mes: mesActual,
       empresa: 0,
       nombEmpresa: 'Todas las empresas',
-      causa: 0,
-      colSui: 'TODAS',
+      causa: 16,
+      colSui: 'PNEXC',
       nombCausa: 'programadas no excluibles',
       zoom: 4,
       latitud: 2.5,
@@ -111,8 +111,9 @@ export class MapInterrupcionComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(MapStatisticsComponent, {
-      height: '33em',
-      width: '100%',
+      height: '35em',
+      width: '90%',
+      disableClose: true,
       data:
         {
           view: this.view,
@@ -128,12 +129,15 @@ export class MapInterrupcionComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((dataFromModal: any) => {
       console.log('The dialog was closed', dataFromModal);
-      this.updateLayerCSV = true;
       if (dataFromModal !== undefined) {
+        this.updateLayerCSV = true;
         this.addLayerMap(dataFromModal).then((data) => {
           this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
         });
       }
+    });
+    dialogRef.backdropClick().subscribe((data) => {
+      console.log('CLICK BACKDROP!', data);
     });
   }
 

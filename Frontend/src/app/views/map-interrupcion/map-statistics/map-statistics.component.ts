@@ -29,6 +29,11 @@ export class MapStatisticsComponent implements OnInit {
   causa: string;
   fecha: any;
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  resultsLength = 0;
+  isLoadingResults = true;
+  isRateLimitReached = false;
+  date = new Date();
+  hoy: any;
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -41,14 +46,28 @@ export class MapStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     console.log('valores modal', this.data);
     this.causa = this.data.optionsMap.colSui;
     this.fecha = `${this.meses[this.data.optionsMap.mes]}/${this.data.optionsMap.ano}`;
+    this.dialogRef.afterOpened().subscribe((data) => {
+      this.loadData();
+    });
+  }
+
+  loadData() {
     this.data.dataCSV.then((data: any) => {
       this.ELEMENT_DATA = data;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.columnsToDisplay = ['nom_empresa', 'centro_poblado', 'causa', 'total', 'link'];
+      if (this.data.optionsMap.empresa === 0) {
+        this.columnsToDisplay = ['nom_empresa', 'centro_poblado', 'causa', 'total', 'link'];
+      } else {
+        this.columnsToDisplay = ['nom_empresa', 'centro_poblado', 'causa', 'total'];
+      }
       this.dataSource.sort = this.sort;
+      this.isLoadingResults = false;
+    }, (error: any) => {
+      this.isRateLimitReached = true;
     });
   }
 
@@ -70,7 +89,8 @@ export class MapStatisticsComponent implements OnInit {
   }
 
   public exportButtonHandler() {
-    this.excelExportService.exportData(this.dataSource.filteredData, new IgxExcelExporterOptions('Interupciones'));
+    // tslint:disable-next-line: max-line-length
+    this.excelExportService.exportData(this.dataSource.filteredData, new IgxExcelExporterOptions(`Interupciones_${this.data.optionsMap.colSui}_${this.data.optionsMap.mes}${this.data.optionsMap.ano}_${this.hoy}`));
   }
 
   applyFilter(event: Event) {
@@ -79,12 +99,3 @@ export class MapStatisticsComponent implements OnInit {
   }
 
 }
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-  description?: string;
-}
-
