@@ -70,29 +70,30 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   // Permite controlar el backdrop cuando se cambia el CSV
   updateLayerCSV = true;
 
+  // modal de opciones del mapa
   bottomSheetRef: any;
 
+  // interface de opciones del mapa
   options: IOptionsMapa;
-
-  nombreEmpresa: string;
 
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
+  // guarda los valores del CSV consultado
   dataCSV: any;
-  resultModal: any;
 
   async ngOnInit() {
     // Initialize MapView and return an instance of MapView
     const fecha = new Date();
     const anoActual = fecha.getFullYear();
     const mesActual = fecha.getMonth() - 1;
+    // opciones iniciales del mapa a visualizar
     this.options = {
       ano: anoActual,
       mes: mesActual,
       empresa: 0,
       nombEmpresa: 'Todas las empresas',
-      causa: 0,
-      colSui: 'Todas',
+      causa: 16,
+      colSui: 'PNEXC',
       nombCausa: 'programadas no excluibles',
       zoom: 4,
       latitud: 2.5,
@@ -113,47 +114,14 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     try {
       this.bottomSheetRef.dismiss(); // Se cierra el modal
     } catch (error) {
+      // console.log(error);
     }
     if (this.view) {
       this.view.container = null; // destroy the map view
     }
   }
 
-  openDialog(): void {
-    // llamado abrir el modal
-    const dialogRef = this.dialog.open(MapStatisticsComponent, {
-      height: '35em',
-      width: '90%',
-      // disableClose: true,
-      data:
-        {
-          view: this.view,
-          fabOptions: this.fabOptions,
-          optionsMap: this.options,
-          suiAnios: this.suiAnios,
-          suiCausas: this.suiCausas,
-          suiEmpresas: this.suiEmpresas,
-          updateLayerCSV: this.updateLayerCSV,
-          dataCSV: this.dataCSV,
-          result: this.resultModal,
-        },
-    });
-    // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
-    dialogRef.afterClosed().subscribe((dataFromModal: any) => {
-      // console.log('The dialog was closed', dataFromModal);
-      if (dataFromModal !== undefined) {
-        this.updateLayerCSV = true;
-        this.addLayerMap(dataFromModal).then((data) => {
-          this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
-        });
-      }
-    });
-    // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
-    dialogRef.backdropClick().subscribe((data) => {
-      // console.log('CLICK BACKDROP!', data);
-    });
-  }
-
+  // Mostrar mensaje flotante en el footer de la pagina
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
@@ -229,6 +197,41 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     delete this.fabOptions[2].color; // Se elimina la propiedad 'color' del objeto con id 3 para dejarlo claro
   }
 
+  // mostrar modal de empresas - municipios
+  openDialog(): void {
+    // llamado abrir el modal de estadisiticas empresas - municipios
+    const dialogRef = this.dialog.open(MapStatisticsComponent, {
+      height: '35em',
+      width: '90%',
+      // disableClose: true,
+      data:
+        {
+          view: this.view,
+          fabOptions: this.fabOptions,
+          optionsMap: this.options,
+          suiAnios: this.suiAnios,
+          suiCausas: this.suiCausas,
+          suiEmpresas: this.suiEmpresas,
+          updateLayerCSV: this.updateLayerCSV,
+          dataCSV: this.dataCSV,
+        },
+    });
+    // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
+    dialogRef.afterClosed().subscribe((dataFromModal: any) => {
+      // console.log('The dialog was closed', dataFromModal);
+      if (dataFromModal !== undefined) {
+        this.updateLayerCSV = true;
+        this.addLayerMap(dataFromModal).then((data) => {
+          this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
+        });
+      }
+    });
+    // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
+    dialogRef.backdropClick().subscribe((data) => {
+      // console.log('CLICK BACKDROP!', data);
+    });
+  }
+
   // Mostrar modal de filtros
   openBottomSheet(): void {
     this.bottomSheetRef = this.bottomSheet.open(MapOptionsComponent, {
@@ -271,8 +274,6 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   async initializeMap(options: IOptionsMapa) {
     setDefaultOptions({ version: '4.12' }); // Se configura la version del API de ARCgis a utilizar
     loadCss('4.15'); // Se cargan los estilos de la version a utilizar
-
-    sessionStorage.setItem('addLayerMapLayer', 'true');
 
     try {
       // Load the modules for the ArcGIS API for JavaScript
@@ -439,6 +440,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Se hace llamado al servicio para cargar causas
   loadSuiCausas() {
     this.suiService.getCausas().subscribe( causas => {
       this.suiCausas = causas;
@@ -447,6 +449,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Se hace llamado al servicio para cargar empresas
   loadSuiEmpresas() {
     this.suiService.getEmpresas().subscribe( empresas => {
       this.suiEmpresas = empresas;
@@ -455,6 +458,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Se hace llamado al servicio para obtener informacion de una sola empresa
   async loadSuiEmpresa(idEmpresa: number) {
     const empresa = await this.suiService.getEmpresasId(idEmpresa);
     // console.log('EMPRESA CONSULTADA: ', empresa);

@@ -10,23 +10,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { IOptionsMapa } from 'src/app/models/IOptionsMapa.model';
-
-export const MY_FORMATS = {
-  parse: {
-    dateInput: 'MMMM',
-  },
-  display: {
-    dateInput: 'MMMM',
-    monthYearLabel: 'MMM',
-  },
-};
-
-export interface Empresa {
-  cod_empresa: number;
-  nombre: string;
-  servicio: string;
-}
+import { IOptionsMapa, MY_FORMATS, Empresa } from 'src/app/models/IOptionsMapa.model';
 
 @Component({
   selector: 'app-map-options',
@@ -39,21 +23,10 @@ export interface Empresa {
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
-
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
 export class MapOptionsComponent implements OnInit {
-
-  stateCtrl = new FormControl();
-  optionsMap = this.formBuilder.group({
-    anio: [null, Validators.required],
-    mes: null,
-    empresa: [null, Validators.required],
-    causa: [null, Validators.required],
-  });
-
-  filteredEmpresas: Observable<Empresa[]>;
 
   constructor(private bottomSheetRef: MatBottomSheetRef<MapOptionsComponent>,
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -65,6 +38,14 @@ export class MapOptionsComponent implements OnInit {
                   );
               }
 
+  stateCtrl = new FormControl();
+  optionsMap = this.formBuilder.group({
+    anio: [null, Validators.required],
+    mes: null,
+    empresa: [null, Validators.required],
+    causa: [null, Validators.required],
+  });
+  filteredEmpresas: Observable<Empresa[]>;
   tipeMoment: Moment;
   date = new FormControl(moment());
   sendDate: Date;
@@ -72,13 +53,11 @@ export class MapOptionsComponent implements OnInit {
   suiAnios: any[] = this.data.suiAnios;
   suiCausas: any[] = this.data.suiCausas;
   suiEmpresas: Empresa[] = this.data.suiEmpresas;
-
   errorMessage = '';
   selectAnio: number;
   selectMes: number;
   selectEmpresa: string;
   selectCausa: number;
-
   sendData: IOptionsMapa;
 
   ngOnInit(): void {
@@ -108,6 +87,7 @@ export class MapOptionsComponent implements OnInit {
     });
   }
 
+  // permitir filtrar y buscar empresas
   private _filterStates(value: string): Empresa[] {
     try {
       const filterValue = value.toLowerCase();
@@ -117,6 +97,7 @@ export class MapOptionsComponent implements OnInit {
     }
   }
 
+  // enviar valores al padre
   sendDataParent() {
     const empresaNombre = this.optionsMap.get('empresa').value;
     const codEmpresa = this.suiEmpresas.find(empresa => empresa.nombre === empresaNombre).cod_empresa;
@@ -144,6 +125,7 @@ export class MapOptionsComponent implements OnInit {
     });
   }
 
+  // se ejecuta cuando se cambien valores del año
   somethingChanged(select: any): void {
     const mesActual = this.optionsMap.get('mes').value.format('M') - 1;
     this.startDate = new Date(select, mesActual, 1); // Actualizar año y mes seleccionado en el modal de meses
@@ -155,6 +137,7 @@ export class MapOptionsComponent implements OnInit {
     // this.optionsMap.get('mes').setValue(ctrlValue);
   }
 
+  // permite actualizar el modal de fechas
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
     const ctrlValue = this.date.value;
     ctrlValue.month(normalizedMonth.month());

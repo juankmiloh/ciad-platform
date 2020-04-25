@@ -12,7 +12,6 @@ export interface IOptionsMapa {
   total?: string;
 }
 
-
 export interface DialogData {
   view: any;
   fabOptions: any;
@@ -22,5 +21,20 @@ export interface DialogData {
   suiEmpresas: any;
   updateLayerCSV: boolean;
   dataCSV: any;
-  result?: any;
+}
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MMMM',
+  },
+  display: {
+    dateInput: 'MMMM',
+    monthYearLabel: 'MMM',
+  },
+};
+
+export interface Empresa {
+  cod_empresa: number;
+  nombre: string;
+  servicio: string;
 }
