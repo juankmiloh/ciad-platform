@@ -140,7 +140,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     });
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
     dialogRef.afterClosed().subscribe((dataFromModal: any) => {
-      console.log('The dialog was closed', dataFromModal);
+      // console.log('The dialog was closed', dataFromModal);
       if (dataFromModal !== undefined) {
         this.updateLayerCSV = true;
         this.addLayerMap(dataFromModal).then((data) => {
@@ -150,7 +150,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     });
     // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
     dialogRef.backdropClick().subscribe((data) => {
-      console.log('CLICK BACKDROP!', data);
+      // console.log('CLICK BACKDROP!', data);
     });
   }
 
@@ -252,7 +252,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
 
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
     this.bottomSheetRef.afterDismissed().subscribe(async (dataFromChild) => {
-      console.log('valores enviados del hijo', dataFromChild);
+      // console.log('valores enviados del hijo', dataFromChild);
       this.updateLayerCSV = true;
       if (dataFromChild !== undefined) {
         this.addLayerMap(dataFromChild).then((data) => {
@@ -355,7 +355,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       return this.view;
 
     } catch (error) {
-      console.log('EsriLoader: ', error);
+      // console.log('EsriLoader: ', error);
     }
   }
 
@@ -427,14 +427,14 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       this.options = options;
       return layer;
     } catch (error) {
-      console.log('EsriLoader: ', error);
+      // console.log('EsriLoader: ', error);
     }
   }
 
   async loadSuiAnios() {
     this.suiService.getAnios().subscribe( anios => {
       this.suiAnios = anios;
-      console.log(this.suiAnios);
+      // console.log(this.suiAnios);
       }, error => this.errorMessage = error,
     );
   }
@@ -442,7 +442,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   loadSuiCausas() {
     this.suiService.getCausas().subscribe( causas => {
       this.suiCausas = causas;
-      console.log(this.suiCausas);
+      // console.log(this.suiCausas);
       }, error => this.errorMessage = error,
     );
   }
@@ -450,14 +450,14 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   loadSuiEmpresas() {
     this.suiService.getEmpresas().subscribe( empresas => {
       this.suiEmpresas = empresas;
-      console.log(this.suiEmpresas);
+      // console.log(this.suiEmpresas);
       }, error => this.errorMessage = error,
     );
   }
 
   async loadSuiEmpresa(idEmpresa: number) {
     const empresa = await this.suiService.getEmpresasId(idEmpresa);
-    console.log('EMPRESA CONSULTADA: ', empresa);
+    // console.log('EMPRESA CONSULTADA: ', empresa);
     return empresa;
   }
 

@@ -46,7 +46,7 @@ export class MapStatisticsComponent implements OnInit {
 
   ngOnInit() {
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
-    console.log('valores modal', this.data);
+    // console.log('valores modal', this.data);
     this.causa = this.data.optionsMap.colSui.toUpperCase();
     this.fecha = `${this.meses[this.data.optionsMap.mes]}/${this.data.optionsMap.ano}`;
     this.dialogRef.afterOpened().subscribe((data) => {

@@ -92,7 +92,7 @@ export class MapOptionsComponent implements OnInit {
       col_sui: 'Todas',
       descripcion: 'TODAS',
     });
-    console.log('CARGANDO BOTTOMSHEET', this.data.optionsMap);
+    // console.log('CARGANDO BOTTOMSHEET', this.data.optionsMap);
     this.selectAnio = this.data.optionsMap.ano;
     this.selectMes = this.data.optionsMap.mes;
     const ctrlDate = this.date.value;
@@ -156,10 +156,8 @@ export class MapOptionsComponent implements OnInit {
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
-    console.log('event', normalizedMonth, 'dp', datepicker);
     const ctrlValue = this.date.value;
     ctrlValue.month(normalizedMonth.month());
-    console.log('ctrlValue', ctrlValue);
     this.optionsMap.get('mes').setValue(ctrlValue);
     this.startDate = new Date(this.selectAnio, ctrlValue.format('M') - 1, 1); // Actualizar año y mes seleccionado en el modal de meses
     datepicker.close();
