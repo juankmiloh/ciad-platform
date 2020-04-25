@@ -1,8 +1,7 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
-import { loadModules } from 'esri-loader';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -20,8 +19,6 @@ export const MY_FORMATS = {
   display: {
     dateInput: 'MMMM',
     monthYearLabel: 'MMM',
-    // dateA11yLabel: 'LL',
-    // monthYearA11yLabel: 'MMMM',
   },
 };
 
@@ -40,20 +37,20 @@ export interface Empresa {
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
 
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class MapOptionsComponent {
+export class MapOptionsComponent implements OnInit {
 
   stateCtrl = new FormControl();
   optionsMap = this.formBuilder.group({
     anio: [null, Validators.required],
     mes: null,
     empresa: [null, Validators.required],
-    causa: [null, Validators.required]
+    causa: [null, Validators.required],
   });
 
   filteredEmpresas: Observable<Empresa[]>;
@@ -64,7 +61,7 @@ export class MapOptionsComponent {
                 this.filteredEmpresas = this.optionsMap.get('empresa').valueChanges
                   .pipe(
                     startWith(''),
-                    map(state => state ? this._filterStates(state) : this.suiEmpresas.slice())
+                    map(state => state ? this._filterStates(state) : this.suiEmpresas.slice()),
                   );
               }
 
@@ -88,12 +85,12 @@ export class MapOptionsComponent {
     this.suiEmpresas.unshift({
       cod_empresa: 0,
       nombre: 'TODAS',
-      servicio: 'ENERGIA'
+      servicio: 'ENERGIA',
     });
     this.suiCausas.unshift({
       cod_causa: 0,
       col_sui: 'Todas',
-      descripcion: 'TODAS'
+      descripcion: 'TODAS',
     });
     console.log('CARGANDO BOTTOMSHEET', this.data.optionsMap);
     this.selectAnio = this.data.optionsMap.ano;
@@ -137,7 +134,7 @@ export class MapOptionsComponent {
       nombCausa: causaNombre,
       zoom: this.data.view.zoom,
       latitud: this.data.view.center.latitude,
-      longitud: this.data.view.center.longitude
+      longitud: this.data.view.center.longitude,
     };
     this.bottomSheetRef.dismiss(this.sendData); // cerrar modal y pasar datos a la vista padre
     // subscribe to observable que se ejecuta despues de cerrar el modal

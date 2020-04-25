@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from 'src/app/models/IOptionsMapa.model';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
-import { IgxGridComponent } from 'igniteui-angular';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -48,7 +47,7 @@ export class MapStatisticsComponent implements OnInit {
   ngOnInit() {
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     console.log('valores modal', this.data);
-    this.causa = this.data.optionsMap.colSui;
+    this.causa = this.data.optionsMap.colSui.toUpperCase();
     this.fecha = `${this.meses[this.data.optionsMap.mes]}/${this.data.optionsMap.ano}`;
     this.dialogRef.afterOpened().subscribe((data) => {
       this.loadData();
@@ -75,7 +74,6 @@ export class MapStatisticsComponent implements OnInit {
     const sendData = {
       ano: this.data.optionsMap.ano,
       mes: this.data.optionsMap.mes,
-      // tslint:disable-next-line: radix
       empresa: parseInt(options.cod_empresa),
       nombEmpresa: options.nom_empresa,
       causa: this.data.optionsMap.causa,
@@ -83,7 +81,7 @@ export class MapStatisticsComponent implements OnInit {
       nombCausa: this.data.optionsMap.nombCausa,
       zoom: this.data.view.zoom,
       latitud: this.data.view.center.latitude,
-      longitud: this.data.view.center.longitude
+      longitud: this.data.view.center.longitude,
     };
     this.dialogRef.close(sendData);
   }

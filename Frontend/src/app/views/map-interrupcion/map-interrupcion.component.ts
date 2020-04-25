@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { setDefaultOptions, loadModules, loadCss } from 'esri-loader';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatFabMenu } from '@angular-material-extensions/fab-menu';
@@ -15,9 +15,9 @@ import { MapStatisticsComponent } from './map-statistics/map-statistics.componen
 @Component({
   selector: 'app-map-interrupcion',
   templateUrl: './map-interrupcion.component.html',
-  styleUrls: ['./map-interrupcion.component.scss']
+  styleUrls: ['./map-interrupcion.component.scss'],
 })
-export class MapInterrupcionComponent implements OnInit {
+export class MapInterrupcionComponent implements OnInit, OnDestroy {
 
   constructor(private bottomSheet: MatBottomSheet,
               private suiService: SuiService,
@@ -50,20 +50,20 @@ export class MapInterrupcionComponent implements OnInit {
       id: 1,
       icon: 'settings',
       tooltip: 'Configuración',
-      tooltipPosition: 'before'
+      tooltipPosition: 'before',
     },
     {
       id: 2,
       icon: 'assessment',
       tooltip: 'Estadísticas',
-      tooltipPosition: 'before'
+      tooltipPosition: 'before',
     },
     {
       id: 3,
       imgUrl: 'assets/img/brightness_3-white-18dp.svg',
       tooltip: 'Modo Oscuro',
       tooltipPosition: 'before',
-      color: 'warn'
+      color: 'warn',
     },
   ];
 
@@ -91,12 +91,12 @@ export class MapInterrupcionComponent implements OnInit {
       mes: mesActual,
       empresa: 0,
       nombEmpresa: 'Todas las empresas',
-      causa: 16,
-      colSui: 'PNEXC',
+      causa: 0,
+      colSui: 'Todas',
       nombCausa: 'programadas no excluibles',
       zoom: 4,
       latitud: 2.5,
-      longitud: -73.47106040285713
+      longitud: -73.47106040285713,
     };
     await this.initializeMap(this.options).then(mapView => {});
     this.loadSuiAnios();
@@ -109,11 +109,22 @@ export class MapInterrupcionComponent implements OnInit {
     // this.openDialog();
   }
 
+  ngOnDestroy() {
+    try {
+      this.bottomSheetRef.dismiss(); // Se cierra el modal
+    } catch (error) {
+    }
+    if (this.view) {
+      this.view.container = null; // destroy the map view
+    }
+  }
+
   openDialog(): void {
+    // llamado abrir el modal
     const dialogRef = this.dialog.open(MapStatisticsComponent, {
       height: '35em',
       width: '90%',
-      disableClose: true,
+      // disableClose: true,
       data:
         {
           view: this.view,
@@ -124,9 +135,10 @@ export class MapInterrupcionComponent implements OnInit {
           suiEmpresas: this.suiEmpresas,
           updateLayerCSV: this.updateLayerCSV,
           dataCSV: this.dataCSV,
-          result: this.resultModal
+          result: this.resultModal,
         },
     });
+    // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
     dialogRef.afterClosed().subscribe((dataFromModal: any) => {
       console.log('The dialog was closed', dataFromModal);
       if (dataFromModal !== undefined) {
@@ -136,19 +148,10 @@ export class MapInterrupcionComponent implements OnInit {
         });
       }
     });
+    // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
     dialogRef.backdropClick().subscribe((data) => {
       console.log('CLICK BACKDROP!', data);
     });
-  }
-
-  ngOnDestroy() {
-    try {
-      this.bottomSheetRef.dismiss(); // Se cierra el modal
-    } catch (error) {
-    }
-    if (this.view) {
-      this.view.container = null; // destroy the map view
-    }
   }
 
   openSnackBar(message: string, action: string) {
@@ -238,7 +241,7 @@ export class MapInterrupcionComponent implements OnInit {
           suiAnios: this.suiAnios,
           suiCausas: this.suiCausas,
           suiEmpresas: this.suiEmpresas,
-          updateLayerCSV: this.updateLayerCSV
+          updateLayerCSV: this.updateLayerCSV,
         },
     });
 
@@ -274,11 +277,11 @@ export class MapInterrupcionComponent implements OnInit {
     try {
       // Load the modules for the ArcGIS API for JavaScript
       // tslint:disable-next-line: max-line-length
-      const [Track, Map, MapView, Search, Legend, BasemapToggle, watchUtils, FeatureLayer] = await loadModules(['esri/widgets/Track', 'esri/Map', 'esri/views/MapView', 'esri/widgets/Search', 'esri/widgets/Legend', 'esri/widgets/BasemapToggle', 'esri/core/watchUtils', 'esri/layers/FeatureLayer']);
+      const [Track, Map, MapView, Search, Legend, BasemapToggle, watchUtils] = await loadModules(['esri/widgets/Track', 'esri/Map', 'esri/views/MapView', 'esri/widgets/Search', 'esri/widgets/Legend', 'esri/widgets/BasemapToggle', 'esri/core/watchUtils']);
 
       // Configure the Map
       const mapProperties = {
-        basemap: 'streets-navigation-vector'
+        basemap: 'streets-navigation-vector',
       };
 
       const map = new Map(mapProperties);
@@ -291,9 +294,9 @@ export class MapInterrupcionComponent implements OnInit {
         constraints: {
           minZoom: 3,
           maxZoom: 19,
-          snapToZoom: true
+          snapToZoom: true,
          },
-        map
+        map,
       };
 
       this.view = new MapView(mapViewProperties);
@@ -406,10 +409,10 @@ export class MapInterrupcionComponent implements OnInit {
           { color: '#ffc700', ratio: 0.498 },          // Amarillo oscuro
           { color: '#fea701', ratio: 0.581 },          // Naranja claro
           { color: '#ff9800', ratio: 0.664 },          // Naranja
-          { color: '#f44336', ratio: 1 }               // Rojo
+          { color: '#f44336', ratio: 1 },               // Rojo
         ],
         minPixelIntensity: 0,
-        maxPixelIntensity: 50000
+        maxPixelIntensity: 50000,
       };
 
       const layer = new CSVLayer({
@@ -417,7 +420,7 @@ export class MapInterrupcionComponent implements OnInit {
         title: `Interrupciones ${options.colSui} ${this.meses[options.mes]} de ${options.ano}`,
         copyright: 'DESARROLLADO POR JUAN CAMILO HERRERA - CIAD SUPERSERVICIOS',
         popupTemplate: template,
-        renderer
+        renderer,
       });
 
       // this.view.map.layers = layer; // Se agrega un nuevo layer CSV al mapa
@@ -432,7 +435,7 @@ export class MapInterrupcionComponent implements OnInit {
     this.suiService.getAnios().subscribe( anios => {
       this.suiAnios = anios;
       console.log(this.suiAnios);
-      }, error => this.errorMessage = error
+      }, error => this.errorMessage = error,
     );
   }
 
@@ -440,7 +443,7 @@ export class MapInterrupcionComponent implements OnInit {
     this.suiService.getCausas().subscribe( causas => {
       this.suiCausas = causas;
       console.log(this.suiCausas);
-      }, error => this.errorMessage = error
+      }, error => this.errorMessage = error,
     );
   }
 
@@ -448,7 +451,7 @@ export class MapInterrupcionComponent implements OnInit {
     this.suiService.getEmpresas().subscribe( empresas => {
       this.suiEmpresas = empresas;
       console.log(this.suiEmpresas);
-      }, error => this.errorMessage = error
+      }, error => this.errorMessage = error,
     );
   }
 

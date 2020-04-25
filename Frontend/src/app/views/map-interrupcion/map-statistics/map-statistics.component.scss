@@ -40,3 +40,9 @@ table {
     justify-content: center;
     height: 250px;
 }
+
+::ng-deep .multiline-tooltip {
+    white-space: pre-line;
+    border: 1px solid #ff9800;
+    font-size: small;
+}

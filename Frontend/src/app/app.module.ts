@@ -16,7 +16,7 @@ import { HammerModule } from '@angular/platform-browser';
 import {
   IgxButtonModule, IgxCardModule, IgxCarouselModule,
   IgxIconModule, IgxInputGroupModule, IgxLayoutModule,
-  IgxNavbarModule, IgxNavigationDrawerModule, IgxRippleModule, IgxSelectModule
+  IgxNavbarModule, IgxNavigationDrawerModule, IgxRippleModule, IgxSelectModule,
 } from 'igniteui-angular';
 import { MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS } from '@angular/material/bottom-sheet';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -61,7 +61,7 @@ import { MapStatisticsComponent } from './views/map-interrupcion/map-statistics/
     MapPqrsComponent,
     TarifaritoComponent,
     ProcesosDiegComponent,
-    MapStatisticsComponent
+    MapStatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -106,16 +106,16 @@ import { MapStatisticsComponent } from './views/map-interrupcion/map-statistics/
     MatTabsModule,
     MatTableModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },
     { provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: true} },
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true} },
-    IgxExcelExporterService
+    IgxExcelExporterService,
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

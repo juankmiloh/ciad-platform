@@ -13,11 +13,11 @@ const routes: Routes = [
   { path: 'map-page', component: MapInterrupcionComponent },
   { path: 'tarifarito', component: TarifaritoComponent },
   { path: 'procesos-dieg', component: ProcesosDiegComponent },
-  { path: '',   redirectTo: '/home', pathMatch: 'full' }
+  { path: '',   redirectTo: '/home', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }
