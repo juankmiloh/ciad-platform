@@ -31,15 +31,19 @@ export class AppPromiseService {
   }
 
   // funcion para transformar arreglo de causas en objeto de causas
-  public async transformDataToGraphic(data: ICausa): Promise<ICausa[]> {
+  public async transformDataToGraphic(data: ICausas): Promise<ICausa[]> {
     let contador = 0;
     this.arrayDataGraphic = [];
+    const totalInt = data.total;
     Object.entries(data).forEach(value => {
       if (contador > 5 && contador < 19) {
         if (value[1] !== '0') {
           const obj = {
             name: value[0],
             value: parseFloat(String(value[1])), // Se pasa de unknown a float
+            extra: {
+              percentage: ((totalInt - (totalInt - parseFloat(String(value[1])))) / totalInt) * 100,
+            },
           };
           this.arrayDataGraphic.push(obj);
         }

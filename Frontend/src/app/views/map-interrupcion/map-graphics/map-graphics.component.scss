@@ -73,6 +73,11 @@ tr.mat-footer-row {
     }
 }
 
+::ng-deep .legend-title {
+    margin-left: -40px !important;
+    width: 150px;
+}
+
 ::ng-deep .legend-title-text {
     color: white !important;
     font-size: smaller;
@@ -83,4 +88,5 @@ tr.mat-footer-row {
     // max-height: 24em !important;
     width: 10em !important;
     margin-top: 1.5em !important;
+    margin-left: -20px !important;
 }

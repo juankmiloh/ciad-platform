@@ -36,7 +36,7 @@ export class MapGraphicsComponent implements OnInit {
   showLegend: boolean = true;
   showLabels: boolean = true;
   isDoughnut: boolean = true;
-  legendTitle: string = 'Causas | Horas';
+  legendTitle: any;
   legendPosition: string = 'right';
   hoy: any;
   date = new Date();
@@ -49,7 +49,7 @@ export class MapGraphicsComponent implements OnInit {
               }
 
   ngOnInit(): void {
-    // console.log(this.data);
+    console.log(this.data);
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     this.fecha = `${this.meses[this.data.dataOptionsMap.optionsMap.mes]}/${this.data.dataOptionsMap.optionsMap.ano}`;
     this.dialogRef.afterOpened().subscribe(async (data) => {
@@ -103,19 +103,28 @@ export class MapGraphicsComponent implements OnInit {
     this.excelExportService.exportData(this.dataSource.filteredData, new IgxExcelExporterOptions(`Interupciones_${this.data.dataOptions.centro_poblado}_${this.data.dataOptionsMap.optionsMap.colSui}_${this.data.dataOptionsMap.optionsMap.mes}${this.data.dataOptionsMap.optionsMap.ano}_${this.hoy}`));
   }
 
+  // se ejecuta cuando se cambia entre tabs
   async clickTab(evt: any) {
     // console.log('TAB SELECTED ', evt);
+    if (evt.index === 0) {
+      this.dialogAction = true;
+    }
+
     if (evt.index === 1) { // Grafica
       this.dialogAction = false;
+      this.legendTitle = parseFloat(this.data.dataOptions.total).toFixed(2);
       await this.appPromiseService.transformDataToGraphic(this.data.dataOptions).then((data: ICausa[]) => {
         // console.log('RETORNO DE PROMESA: ', data);
         this.single = data;
         Object.assign(this, { ...this.single });
       });
-    } else {
-      this.dialogAction = true;
     }
   }
+
+  tooltipText(val: any) {
+    // console.log('TEXTO LABEL: ', val);
+    return 0;
+}
 
   onSelect(data): void {
     // console.log('Item clicked', JSON.parse(JSON.stringify(data)));

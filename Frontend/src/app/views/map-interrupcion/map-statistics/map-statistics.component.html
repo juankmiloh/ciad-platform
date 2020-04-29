@@ -1,6 +1,6 @@
 <mat-dialog-content class="mat-typography">
     <mat-tab-group>
-        <mat-tab style="font-weight: bold;" label="{{fecha}}"><br>
+        <mat-tab style="font-weight: bold;" label="{{fecha | uppercase}}"><br>
             <mat-form-field appearance="outline">
                 <mat-label>Filtrar</mat-label>
                 <input matInput (keyup)="applyFilter($event)" placeholder="Ingrese un valor" autocomplete="off">
