@@ -20,7 +20,7 @@ table {
 }
 
 .mat-dialog-content {
-    overflow: hidden;
+    overflow: auto;
 }
 
 .example-loading-shade {
@@ -43,12 +43,44 @@ table {
     font-size: small;
 }
 
+tr.mat-footer-row {
+    font-weight: bold;
+}
+
 .btn-dialog {
     background-color: white;
 }
 
 .table-class {
-    border-top: 1px solid #f5f5f5;
+    // border-top: 1px solid #f5f5f5;
     border-left: 1px solid #f5f5f5;
     border-right: 1px solid #f5f5f5;
+}
+
+.div-chart {
+    text-align: center;
+    background-color: #1b1e27;
+    height: 327.5px;
+    width: 100%;
+    overflow: hidden;
+    border: 0px solid red;
+}
+
+::ng-deep .ngx-charts {
+    width: 55%;
+    text {
+        fill: #fff!important;
+    }
+}
+
+::ng-deep .legend-title-text {
+    color: white !important;
+    font-size: smaller;
+}
+
+::ng-deep .legend-labels {
+    background: #272932 !important;
+    // max-height: 24em !important;
+    width: 10em !important;
+    margin-top: 1.5em !important;
 }

@@ -10,7 +10,8 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { IOptionsMapa, MY_FORMATS, Empresa } from 'src/app/models/IOptionsMapa.model';
+import { IOptionsMapa, IEmpresa } from 'src/app/models/IOptionsMapa.model';
+import { MY_FORMATS } from 'src/app/constants/constants';
 
 @Component({
   selector: 'app-map-options',
@@ -45,14 +46,14 @@ export class MapOptionsComponent implements OnInit {
     empresa: [null, Validators.required],
     causa: [null, Validators.required],
   });
-  filteredEmpresas: Observable<Empresa[]>;
+  filteredEmpresas: Observable<IEmpresa[]>;
   tipeMoment: Moment;
   date = new FormControl(moment());
   sendDate: Date;
   startDate: Date;
   suiAnios: any[] = this.data.suiAnios;
   suiCausas: any[] = this.data.suiCausas;
-  suiEmpresas: Empresa[] = this.data.suiEmpresas;
+  suiEmpresas: IEmpresa[] = this.data.suiEmpresas;
   errorMessage = '';
   selectAnio: number;
   selectMes: number;
@@ -88,7 +89,7 @@ export class MapOptionsComponent implements OnInit {
   }
 
   // permitir filtrar y buscar empresas
-  private _filterStates(value: string): Empresa[] {
+  private _filterStates(value: string): IEmpresa[] {
     try {
       const filterValue = value.toLowerCase();
       return this.suiEmpresas.filter(state => state.nombre.toLowerCase().indexOf(filterValue) === 0);

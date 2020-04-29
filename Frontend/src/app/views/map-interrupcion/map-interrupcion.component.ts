@@ -11,6 +11,9 @@ import * as d3 from 'd3';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MapStatisticsComponent } from './map-statistics/map-statistics.component';
+import { AppObservableService } from '../../services/app-observable.service';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { ISUIError, ICausas } from '../../models/IOptionsMapa.model';
 
 @Component({
   selector: 'app-map-interrupcion',
@@ -22,10 +25,12 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   constructor(private bottomSheet: MatBottomSheet,
               private suiService: SuiService,
               private snackBar: MatSnackBar,
-              public dialog: MatDialog) {}
+              public dialog: MatDialog,
+              public observer: AppObservableService) {}
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
+  @ViewChild('alertSwal', { static: true }) private alertSwal: SwalComponent;
   public view: any;
 
   public suiAnios: any[] = [];
@@ -81,33 +86,94 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   // guarda los valores del CSV consultado
   dataCSV: any;
 
+  optionsSwal: any;
+
+  AlertErrorSUI: number;
+
   async ngOnInit() {
+    // VAlidar conexion SUI
+    this.validateConnectionSUI();
+    await this.verifyConnectionSUI().then((data: any) => {
+      // console.log('estado servidor: ', data);
+      if (data.status !== undefined) {
+        this.observer.setShowAlertErrorSUI(data.status);
+      }
+    });
+
     // Initialize MapView and return an instance of MapView
     const fecha = new Date();
     const anoActual = fecha.getFullYear();
-    const mesActual = fecha.getMonth() - 1;
+    const mesActual = fecha.getMonth();
     // opciones iniciales del mapa a visualizar
     this.options = {
       ano: anoActual,
       mes: mesActual,
       empresa: 0,
       nombEmpresa: 'Todas las empresas',
-      causa: 16,
-      colSui: 'PNEXC',
-      nombCausa: 'programadas no excluibles',
+      causa: 0,
+      colSui: 'Todas',
+      nombCausa: 'Todas',
       zoom: 4,
       latitud: 2.5,
       longitud: -73.47106040285713,
     };
-    await this.initializeMap(this.options).then(mapView => {});
     this.loadSuiAnios();
     this.loadSuiCausas();
     this.loadSuiEmpresas();
+
+    await this.initializeMap(this.options).then(mapView => {});
+
     // this.bottomSheet.open(MapOptionsComponent, {
     //   // Se pasan valores al modal de filtros
     //   data: { view: this.view, fabOptions: this.fabOptions },
     // });
     // this.openDialog();
+  }
+
+  // observable para validar si hay error en la conexion con la BD SUI
+  validateConnectionSUI() {
+    this.observer.getShowAlertErrorSUI().subscribe((status) => {
+      console.log('status servidor: ', status);
+      // Si no hay conexion con el servidor
+      if (status === 0) {
+        this.alertSwal.swalOptions = {
+          title: 'Error',
+          text: 'No hay conexión con el servidor',
+          icon: 'error',
+          // showCancelButton: true,
+          // cancelButtonColor: '#e91e63',
+          confirmButtonText: 'Contactar al administrador',
+          confirmButtonColor: '#3f51b5',
+          allowOutsideClick: false,
+        };
+
+        this.alertSwal.fire().then((data) => {
+          if (data.value) {
+            window.location.href = 'https://wa.link/2zk6io';
+          }
+        });
+      }
+
+      // Error interno del servidor
+      if (status === 500) {
+        this.alertSwal.swalOptions = {
+          title: 'Info',
+          text: 'Se ha perdido la conexión con el servidor',
+          icon: 'info',
+          confirmButtonText: 'Recargar Página',
+          confirmButtonColor: '#ffa726',
+          allowOutsideClick: false,
+        };
+
+        if (!this.alertSwal.swalVisible) { // si el modal no esta abierto
+          this.alertSwal.fire().then((data) => {
+            if (data.value) {
+              window.location.reload();
+            }
+          });
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -119,6 +185,10 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     if (this.view) {
       this.view.container = null; // destroy the map view
     }
+  }
+
+  confirmAlert() {
+    console.log('se cerro el alert');
   }
 
   // Mostrar mensaje flotante en el footer de la pagina
@@ -217,7 +287,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
         },
     });
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
-    dialogRef.afterClosed().subscribe((dataFromModal: any) => {
+    dialogRef.afterClosed().subscribe((dataFromModal: IOptionsMapa) => {
       // console.log('The dialog was closed', dataFromModal);
       if (dataFromModal !== undefined) {
         this.updateLayerCSV = true;
@@ -254,7 +324,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     });
 
     // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
-    this.bottomSheetRef.afterDismissed().subscribe(async (dataFromChild) => {
+    this.bottomSheetRef.afterDismissed().subscribe(async (dataFromChild: IOptionsMapa) => {
       // console.log('valores enviados del hijo', dataFromChild);
       this.updateLayerCSV = true;
       if (dataFromChild !== undefined) {
@@ -370,6 +440,20 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
 
       this.dataCSV = d3.csv(url);
 
+      // Validación para saber si existen datos de vuelta de la URL
+      this.dataCSV.then((data: ICausas) => {
+        if (data.length === 0) {
+          this.alertSwal.swalOptions = {
+            text: 'No hay interupciones para este período.',
+            icon: 'info',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#ffa726',
+            allowOutsideClick: true,
+          };
+          this.alertSwal.fire();
+        }
+      });
+
       // Paste the url into a browser's address bar to download and view the attributes
       // in the CSV file. These attributes include:
       // * centro_poblado - nombre municipio
@@ -428,34 +512,41 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       this.options = options;
       return layer;
     } catch (error) {
-      // console.log('EsriLoader: ', error);
+      console.log('EsriLoader: ', error);
     }
   }
 
-  async loadSuiAnios() {
+  // Se hace llamado al servicio para cargar años
+  loadSuiAnios() {
     this.suiService.getAnios().subscribe( anios => {
       this.suiAnios = anios;
-      // console.log(this.suiAnios);
-      }, error => this.errorMessage = error,
-    );
+    }, (error: ISUIError) => {
+      // console.log(error);
+      this.observer.setShowAlertErrorSUI(error.status);
+    });
   }
 
   // Se hace llamado al servicio para cargar causas
   loadSuiCausas() {
     this.suiService.getCausas().subscribe( causas => {
       this.suiCausas = causas;
-      // console.log(this.suiCausas);
-      }, error => this.errorMessage = error,
-    );
+    }, (error: ISUIError) => {
+      this.observer.setShowAlertErrorSUI(error.status);
+    });
   }
 
   // Se hace llamado al servicio para cargar empresas
   loadSuiEmpresas() {
     this.suiService.getEmpresas().subscribe( empresas => {
       this.suiEmpresas = empresas;
-      // console.log(this.suiEmpresas);
-      }, error => this.errorMessage = error,
-    );
+    }, (error: ISUIError) => {
+      this.observer.setShowAlertErrorSUI(error.status);
+    });
+  }
+
+  async verifyConnectionSUI() {
+    const result = this.suiService.verifyConnectionSUI();
+    return result;
   }
 
   // Se hace llamado al servicio para obtener informacion de una sola empresa

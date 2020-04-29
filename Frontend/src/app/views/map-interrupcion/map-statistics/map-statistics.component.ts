@@ -1,11 +1,12 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogData } from 'src/app/models/IOptionsMapa.model';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { IDialogData } from 'src/app/models/IOptionsMapa.model';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { IOptionsMapa } from '../../../models/IOptionsMapa.model';
+import { IOptionsMapa, ICausas } from '../../../models/IOptionsMapa.model';
+import { MapGraphicsComponent } from '../map-graphics/map-graphics.component';
 
 @Component({
   selector: 'app-map-statistics',
@@ -37,14 +38,16 @@ export class MapStatisticsComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(public dialogRef: MatDialogRef<MapStatisticsComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              private excelExportService: IgxExcelExporterService) {}
+              @Inject(MAT_DIALOG_DATA) public data: IDialogData,
+              private excelExportService: IgxExcelExporterService,
+              public dialog: MatDialog) {}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   ngOnInit() {
+    // this.deleteSwal.fire();
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     // console.log('valores modal', this.data);
     this.causa = this.data.optionsMap.colSui.toUpperCase();
@@ -70,8 +73,18 @@ export class MapStatisticsComponent implements OnInit {
     });
   }
 
-  updateMap(options: any) {
-    const sendData = {
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  public exportButtonHandler() {
+    // tslint:disable-next-line: max-line-length
+    this.excelExportService.exportData(this.dataSource.filteredData, new IgxExcelExporterOptions(`Interupciones_${this.data.optionsMap.colSui}_${this.data.optionsMap.mes}${this.data.optionsMap.ano}_${this.hoy}`));
+  }
+
+  setDataOptions(options: ICausas, action: string) {
+    const dataOptions: IOptionsMapa = {
       ano: this.data.optionsMap.ano,
       mes: this.data.optionsMap.mes,
       empresa: parseInt(options.cod_empresa),
@@ -83,17 +96,36 @@ export class MapStatisticsComponent implements OnInit {
       latitud: this.data.view.center.latitude,
       longitud: this.data.view.center.longitude,
     };
-    this.dialogRef.close(sendData);
+    if (action === 'update-map') {
+      this.dialogRef.close(dataOptions);
+    }
+    if (action === 'show-modal-municipio') {
+      this.openDialog(options, this.data);
+    }
   }
 
-  public exportButtonHandler() {
-    // tslint:disable-next-line: max-line-length
-    this.excelExportService.exportData(this.dataSource.filteredData, new IgxExcelExporterOptions(`Interupciones_${this.data.optionsMap.colSui}_${this.data.optionsMap.mes}${this.data.optionsMap.ano}_${this.hoy}`));
-  }
+  // mostrar modal de empresas - municipios
+  openDialog(dataOptions: ICausas, dataOptionsMap: IDialogData): void {
+    // llamado abrir el modal de estadisiticas empresas - municipios
+    const dialogRef = this.dialog.open(MapGraphicsComponent, {
+      height: '36em',
+      width: '90%',
+      // disableClose: true,
+      data: {
+        dataOptions,
+        dataOptionsMap,
+      },
+    });
+    // subscribe to observable que se ejecuta despues de cerrar el modal, obtiene los valores del hijo
+    dialogRef.afterClosed().subscribe((dataFromModalGraphics: any) => {
+      // console.log('The dialog was closed', dataFromModal);
+      if (dataFromModalGraphics !== undefined) {}
+    });
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    // subscribe to observable que se ejecuta cuando se da click al backdrop del modal
+    dialogRef.backdropClick().subscribe((data) => {
+      // console.log('CLICK BACKDROP!', data);
+    });
   }
 
 }

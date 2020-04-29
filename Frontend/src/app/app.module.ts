@@ -40,7 +40,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { SidenavMenuComponent } from './views/sidenav-menu/sidenav-menu.component';
 import { HomeComponent } from './views/home/home.component';
@@ -50,6 +51,7 @@ import { MapPqrsComponent } from './views/map-pqrs/map-pqrs.component';
 import { TarifaritoComponent } from './views/tarifarito/tarifarito.component';
 import { ProcesosDiegComponent } from './views/procesos-dieg/procesos-dieg.component';
 import { MapStatisticsComponent } from './views/map-interrupcion/map-statistics/map-statistics.component';
+import { MapGraphicsComponent } from './views/map-interrupcion/map-graphics/map-graphics.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,7 @@ import { MapStatisticsComponent } from './views/map-interrupcion/map-statistics/
     TarifaritoComponent,
     ProcesosDiegComponent,
     MapStatisticsComponent,
+    MapGraphicsComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,6 +110,8 @@ import { MapStatisticsComponent } from './views/map-interrupcion/map-statistics/
     MatTableModule,
     MatSortModule,
     MatTooltipModule,
+    SweetAlert2Module.forRoot(),
+    NgxChartsModule,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} },
