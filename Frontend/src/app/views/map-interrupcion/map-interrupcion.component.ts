@@ -54,7 +54,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     {
       id: 1,
       icon: 'settings',
-      tooltip: 'Configuración',
+      tooltip: 'Opciones',
       tooltipPosition: 'before',
     },
     {
@@ -436,7 +436,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       const [CSVLayer] = await loadModules(['esri/layers/CSVLayer']);
       // const url = 'assets/file_interrupciones.csv';
       // const url = 'http://192.168.1.60:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
-      const url = `http://192.168.1.60:5055/i_interrupcion/${options.ano}/${options.mes}/${options.empresa}/${options.causa}`;
+      const url = `http://192.168.2.15:5055/i_interrupcion/${options.ano}/${options.mes}/${options.empresa}/${options.causa}`;
 
       this.dataCSV = d3.csv(url);
 
