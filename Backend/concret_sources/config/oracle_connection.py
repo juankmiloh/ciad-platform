@@ -16,3 +16,10 @@ class OracleConnection():
 
     def get_connection(self):
         return self.connection
+
+oracleConnection = OracleConnection()
+connection = oracleConnection.get_connection()
+cursor = connection.cursor()
+cursor.execute('select * from dual')
+for result in cursor:
+    print(result)
