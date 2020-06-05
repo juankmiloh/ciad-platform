@@ -5,6 +5,9 @@ from source_controller import SourceController
 
 app = Flask(__name__)
 api = Api(app)
+
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 CORS(app, resources={r"/pqr/*": {"origins": "*"}})
 CORS(app, resources={r"/empresa/*": {"origins": "*"}})
 CORS(app, resources={r"/causas/*": {"origins": "*"}})
@@ -15,6 +18,10 @@ CORS(app, resources={r"/i_anios/*": {"origins": "*"}})
 CORS(app, resources={r"/i_causas/*": {"origins": "*"}})
 CORS(app, resources={r"/i_empresas/*": {"origins": "*"}})
 CORS(app, resources={r"/i_interrupcion/*": {"origins": "*"}})
+
+CORS(app, resources={r"/tarifarito/api/*": {"origins": "*"}})
+
+CORS(app, supports_credentials=True)
 
 SourceController (api)
 
