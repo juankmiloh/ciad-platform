@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import cx_Oracle
 
 PATH = os.path.dirname(os.path.realpath(__file__))

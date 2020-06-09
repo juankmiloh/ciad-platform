@@ -1,3 +1,4 @@
+from ...config.oracle_connection import OracleConnection
 import datetime
 import csv
 
@@ -7,7 +8,6 @@ from flask import send_file #descargar archivos
 from tools import Tools
 from flask import request
 from flask_restful import Resource
-from ...config.oracle_connection import OracleConnection
 
 class AniosRsource(Resource):
 	def get(self, anio = 0):

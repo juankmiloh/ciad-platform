@@ -1,0 +1,13 @@
+{
+    "name": "mercados",
+    "query": [
+        "SELECT ",
+        "    DISTINCT ID_MERCADO ",
+        "FROM ",
+        "    JHERRERAA.MERCADOS ",
+        "WHERE ",
+        "    ID_COMERC = :COMERC_ARG OR 0 = :COMERC_ARG ",
+        "ORDER BY ",
+        "    ID_MERCADO ASC"
+    ]
+}

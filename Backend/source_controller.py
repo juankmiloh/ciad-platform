@@ -15,10 +15,13 @@ from concret_sources.resources.tarifarito.api_resources import apiTarifarito
 from concret_sources.resources.tarifarito.users_resources import usersTarifarito
 from concret_sources.resources.tarifarito.anios_resources import aniosTarifarito
 from concret_sources.resources.tarifarito.empresas_resource import empresasTarifarito
+from concret_sources.resources.tarifarito.mercados_resource import mercadosTarifarito
 from concret_sources.resources.tarifarito.gestor.n_tolerancia_resources import gNToleranciaTarifarito
 from concret_sources.resources.tarifarito.gestor.indices_dane import gIDaneTarifarito
 from concret_sources.resources.tarifarito.gestor.info_comercial import gIComercial
 from concret_sources.resources.tarifarito.gestor.resolucion import gD097Resolucion
+from concret_sources.resources.tarifarito.gestor.error import gD097Error
+from concret_sources.resources.tarifarito.gestor.perdidas_stn import gPerdidasSTN
 
 class SourceController():
 
@@ -130,27 +133,44 @@ class SourceController():
 			path + "/empresas",
 			path +  "/empresas/<int:empresa>",
 		)
+		
+		self.__api.add_resource(mercadosTarifarito,
+			path + "/mercados",
+			path +  "/mercados/<int:comercializador>",
+		)
 
 		self.__api.add_resource(gNToleranciaTarifarito,
-			path + "/n_tolerancia",
-			path + "/n_tolerancia/<int:anio>",
+			path + "/g_ntolerancia",
+			path + "/g_ntolerancia/<int:anio>",
 			methods=['GET', 'POST', 'PUT', 'DELETE']
 		)
 		
 		self.__api.add_resource(gIDaneTarifarito,
-			path + "/i_dane",
-			path + "/i_dane/<int:anio>",
+			path + "/g_idane",
+			path + "/g_idane/<int:anio>",
 			methods=['GET', 'POST', 'PUT', 'DELETE']
 		)
 
 		self.__api.add_resource(gIComercial,
-			path + "/i_comercial",
-			path + "/i_comercial/<int:anio>",
+			path + "/g_icomercial",
+			path + "/g_icomercial/<int:anio>",
 			methods=['GET', 'POST', 'PUT', 'DELETE']
 		)
 
 		self.__api.add_resource(gD097Resolucion,
-			path + "/resolucion",
-			path + "/resolucion/<int:anio>",
+			path + "/g_resolucion",
+			path + "/g_resolucion/<int:anio>",
+			methods=['GET', 'POST', 'PUT', 'DELETE']
+		)
+
+		self.__api.add_resource(gD097Error,
+			path + "/g_error",
+			path + "/g_error/<int:anio>",
+			methods=['GET', 'POST', 'PUT', 'DELETE']
+		)
+		
+		self.__api.add_resource(gPerdidasSTN,
+			path + "/g_perdidasSTN",
+			path + "/g_perdidasSTN/<int:anio>",
 			methods=['GET', 'POST', 'PUT', 'DELETE']
 		)
