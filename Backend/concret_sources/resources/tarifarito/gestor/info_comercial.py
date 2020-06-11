@@ -38,7 +38,7 @@ class gIComercial(Resource):
 
     def post(self):
         req = request.args.get('params')
-        print("_________ POST ANIO _____________")
+        print("_________ POST MODEL _____________")
         print(req)
         print("_________________________________")
         # Insertar datos
@@ -51,7 +51,7 @@ class gIComercial(Resource):
         self.__ANIO_ARG = anio if anio != 0 else 0
         req_model = request.args['params']
         req_empresa = request.args.get('empresa')
-        print("_________ PUT ANIO _____________")
+        print("_________ PUT MODEL _____________")
         print(req_model)
         print("_________________________________")
         # Modificar datos

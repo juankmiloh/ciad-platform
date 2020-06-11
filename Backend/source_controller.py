@@ -136,7 +136,7 @@ class SourceController():
 		
 		self.__api.add_resource(mercadosTarifarito,
 			path + "/mercados",
-			path +  "/mercados/<int:comercializador>",
+			path +  "/mercados/<int:mercado>",
 		)
 
 		self.__api.add_resource(gNToleranciaTarifarito,
@@ -165,7 +165,8 @@ class SourceController():
 
 		self.__api.add_resource(gD097Error,
 			path + "/g_error",
-			path + "/g_error/<int:anio>",
+			path + "/g_error/<string:f_inicial>",
+			path + "/g_error/<string:f_inicial>/<string:f_final>",
 			methods=['GET', 'POST', 'PUT', 'DELETE']
 		)
 		

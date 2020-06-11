@@ -9,8 +9,9 @@ class gD097Error(Resource):
         mongodb_connection = MongoConnection()
         self.connection = mongodb_connection.get_connection()
 
-    def get(self, anio=0):
-        self.__ANIO_ARG = anio if anio != 0 else 0
+    def get(self, f_inicial='', f_final=''):
+        self.__FINICIAL_ARG = f_inicial if f_inicial != '' else ''
+        self.__FFINAL_ARG = f_final if f_final != '' else ''
         return self.__getData()
 
     def __getData(self):
@@ -23,22 +24,27 @@ class gD097Error(Resource):
         return anios
 
     def __execute_query(self):
-        print("___________ GET ANIO_____________")
-        print(self.__ANIO_ARG)
+        print("___________ GET FINICIAL_____________")
+        print(self.__FINICIAL_ARG)
         print("_________________________________")
-        if self.__ANIO_ARG == 0:
+        if self.__FINICIAL_ARG == '':
             # Consultar todos los registros
             mydoc = self.connection.infoD097Error.find()
-        else:
-            # Consultar un registro especifico
+        elif self.__FINICIAL_ARG != '' and self.__FFINAL_ARG == '':
+            # Consultar un registro especifico por fecha inicial
             mydoc = self.connection.infoD097Error.find(
-                {"anio": self.__ANIO_ARG}
+                {"f_inicial": self.__FINICIAL_ARG},
+            )
+        else:
+            # Consultar un registro especifico por ambas fechas
+            mydoc = self.connection.infoD097Error.find(
+                {"f_inicial": self.__FINICIAL_ARG, "f_final": self.__FFINAL_ARG},
             )
         return mydoc
 
     def post(self):
         req = request.args.get('params')
-        print("_________ POST ANIO _____________")
+        print("_________ POST MODEL _____________")
         print(req)
         print("_________________________________")
         # Insertar datos
@@ -47,27 +53,28 @@ class gD097Error(Resource):
         )
         return req
 
-    def put(self, anio=0):
-        self.__ANIO_ARG = anio if anio != 0 else 0
+    def put(self, f_inicial='', f_final=''):
+        self.__FINICIAL_ARG = f_inicial if f_inicial != '' else ''
+        self.__FFINAL_ARG = f_final if f_final != '' else ''
         req_model = request.args['params']
         req_empresa = request.args.get('empresa')
-        print("_________ PUT ANIO _____________")
+        print("_________ PUT MODEL _____________")
         print(req_model)
         print("_________________________________")
         # Modificar datos
         self.connection.infoD097Error.update_one(
-            {"anio": self.__ANIO_ARG},
+            {"f_inicial": self.__FINICIAL_ARG, "f_final": self.__FFINAL_ARG},
             {"$push": {"empresas."+req_empresa: {"$each": [json.loads(req_model)]}}}
         )
         return req_model
 
-    def delete(self, anio=0):
-        self.__ANIO_ARG = anio if anio != 0 else 0
-        print("_________ DELETE ANIO ___________")
-        print(self.__ANIO_ARG)
+    def delete(self, f_inicial=''):
+        self.__FINICIAL_ARG = f_inicial if f_inicial != '' else ''
+        print("_________ DELETE FINICIAL ___________")
+        print(self.__FINICIAL_ARG)
         print("_________________________________")
         # Borrar documento
         self.connection.infoD097Error.delete_one(
-            {"anio": self.__ANIO_ARG}
+            {"f_inicial": self.__FINICIAL_ARG}
         )
-        return self.__ANIO_ARG
+        return self.__FINICIAL_ARG

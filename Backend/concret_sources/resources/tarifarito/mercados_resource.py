@@ -5,8 +5,8 @@ from flask_restful import Resource
 
 
 class mercadosTarifarito(Resource):
-    def get(self, comercializador=0):
-        self.__COMERC_ARG = comercializador if comercializador != 0 else 0
+    def get(self, mercado=0):
+        self.__MERCADO_ARG = mercado if mercado != 0 else 0
         self.__upload_source()
         return self.__getData()
 
@@ -27,6 +27,8 @@ class mercadosTarifarito(Resource):
             mercados.append(
                 {
                     'id_mercado': result[0],
+                    'nom_mercado': result[1],
+                    'estado': result[2],
                 }
             )
         return mercados
@@ -35,11 +37,11 @@ class mercadosTarifarito(Resource):
         oracleConnection = OracleConnection()
         connection = oracleConnection.get_connection()
         cursor = connection.cursor()
-        print("________EMPRESA____________")
-        print(self.__COMERC_ARG)
+        print("________MERCADO____________")
+        print(self.__MERCADO_ARG)
         print("____________________________")
         print("_________QUERY______________")
         print("SQL:", self.__query)
         print("____________________________")
-        cursor.execute(self.__query, COMERC_ARG=self.__COMERC_ARG)
+        cursor.execute(self.__query, MERCADO_ARG=self.__MERCADO_ARG)
         return cursor
