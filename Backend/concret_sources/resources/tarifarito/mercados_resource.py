@@ -2,7 +2,8 @@ from ...config.oracle_connection import OracleConnection
 from tools import Tools
 from flask import request
 from flask_restful import Resource
-
+import os
+import json
 
 class mercadosTarifarito(Resource):
     def get(self, mercado=0):
@@ -11,8 +12,9 @@ class mercadosTarifarito(Resource):
         return self.__getData()
 
     def __upload_source(self):
-        tools = Tools.get_instance("Sources/tarifarito/")
-        source = tools.get_source_by_name("mercados")
+        path = os.path.dirname("Sources/tarifarito/")
+        file = "/mercados.json"
+        source = json.load(open(path + file))
         self.__set_source(source)
 
     def __set_source(self, source):

@@ -1,12 +1,18 @@
+-------------------------------------------------------------------------------------------------------------
 -- CONSULTA PARA ENCONTRAR LA TABLA CORRESPONDIENTE AL FORMATO DE TARIFAS | SE BUSCA POR NOMBRE DE CAMPO(T's)
+-------------------------------------------------------------------------------------------------------------
 SELECT * FROM all_tab_columns
 WHERE COLUMN_NAME LIKE '%1673%';
 
+-------------------------------------------------------------------------------------------------------------
 -- CONSULTA PARA BUSCAR UNA TABLA EN UN ESQUEMA DE BASE DE DATOS
+-------------------------------------------------------------------------------------------------------------
 SELECT * FROM all_tab_columns
 WHERE TABLE_NAME LIKE '%FORMATO7%';
 
+-------------------------------------------------------------------------------------------------------------
 -- CONSULTA PARRILLA COSTO UNITARIO
+-------------------------------------------------------------------------------------------------------------
 SELECT FT7.* FROM -- TRAEMOS LOS DATOS QUE NO TUVIERON CORRECCIÓN
 ( -- TRAEMOS LOS DATOS DE FT7 (DATOS QUE NO TUVIERON CORRECCIÓN Y LOS QUE TIENEN CORRECCIÓN DE FT8)
     SELECT * FROM ENERGIA_CREG_015.CAR_COSTO_UNITARIO_119_UR
@@ -14,7 +20,7 @@ SELECT FT7.* FROM -- TRAEMOS LOS DATOS QUE NO TUVIERON CORRECCIÓN
         (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG)
         AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG)
         AND CAR_CARG_ANO = :ANIO_ARG
-        AND CAR_CARG_PERIODO = :MES_ARG
+        AND CAR_CARG_PERIODO = :PERIODO_ARG
         AND CAR_T1676_ANIO_CORREG IS NULL
 )FT7
 LEFT JOIN -- LE QUITAMOS LOS DATOS DE FT8 (DATOS CORREGIDOS)
@@ -24,7 +30,7 @@ LEFT JOIN -- LE QUITAMOS LOS DATOS DE FT8 (DATOS CORREGIDOS)
         (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG)
         AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG)
         AND CAR_CARG_ANO = :ANIO_ARG
-        AND CAR_CARG_PERIODO = :MES_ARG
+        AND CAR_CARG_PERIODO = :PERIODO_ARG
         AND CAR_T1676_ANIO_CORREG IS NOT NULL
 )F8
 ON FT7.CAR_T1669_ID_MERCADO = F8.CAR_T1669_ID_MERCADO
@@ -40,12 +46,13 @@ UNION -- LE AGREGAMOS LOS DATOS DE FT8
         (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG)
         AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG)
         AND CAR_CARG_ANO = :ANIO_ARG
-        AND CAR_CARG_PERIODO = :MES_ARG
+        AND CAR_CARG_PERIODO = :PERIODO_ARG
         AND CAR_T1676_ANIO_CORREG IS NOT NULL
 ); --FT8
 
-
--- CONSULTA PARA TRAER CANTIDAD DE DATOS CORREGIDOS Y NO CORREGIDOS
+-------------------------------------------------------------------------------------------------------------
+-- CONSULTA PARA TRAER CANTIDAD DE DATOS CORREGIDOS Y NO CORREGIDOS FT7 - FT8
+-------------------------------------------------------------------------------------------------------------
 SELECT ID_EMPRESA, CAR_T1669_ID_MERCADO, CAR_T1669_NT_PROP, COUNT(*) FROM ENERGIA_CREG_015.CAR_COSTO_UNITARIO_119_UR
 WHERE 
     --ID_EMPRESA = 2322
@@ -55,8 +62,9 @@ WHERE
 GROUP BY ID_EMPRESA, CAR_T1669_ID_MERCADO, CAR_T1669_NT_PROP
 ORDER BY CAR_T1669_NT_PROP;
 
-
+-------------------------------------------------------------------------------------------------------------
 -- CONSULTA PARA HHALLAR VALOR DEL COMPONENTE G
+-------------------------------------------------------------------------------------------------------------
 SELECT
     (T10.C12_C4 + T9.C13_C15 + T10.C14_C6 + T9.C15_C16) AS C16_DCR,
     (LEAST(1,((T9.C1_C7 + T10.C2_C2) / (T10.C12_C4 + T9.C13_C15 + T10.C14_C6 + T9.C15_C16)))) AS C17_QC,
