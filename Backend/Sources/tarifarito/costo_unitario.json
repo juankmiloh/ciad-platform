@@ -41,7 +41,20 @@
         "            AND CAR_CARG_PERIODO = :PERIODO_ARG ",
         "            AND CAR_T1676_ANIO_CORREG IS NOT NULL",
         "    )",
-        ")",
+        ") FT7_FT8,",
+        "(",
+        "    SELECT ",
+        "        DISTINCT ID_MERCADO,",
+        "        NOM_MERCADO,",
+        "        ESTADO ",
+        "    FROM ",
+        "        CARG_COMERCIAL_E.MERCADO_EMPRESA ",
+        "    WHERE ",
+        "        ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG ",
+        "        AND NOM_MERCADO NOT LIKE '%Mercado Prueba%' ",
+        "        AND NOM_MERCADO NOT LIKE '%Mercado de Prueba%'",
+        ") MERCADO ",
+        "WHERE FT7_FT8.CAR_T1669_ID_MERCADO = MERCADO.ID_MERCADO ",
         "ORDER BY CAR_T1669_ID_MERCADO ASC"
     ]
 }

@@ -39,7 +39,7 @@ class rCostoUnitario(Resource):
                 {
                     'id_empresa': result[12],
                     'id_mercado': result[1],
-                    'mercado': result[1],
+                    'mercado': result[18],
                     'ano': result[13],
                     'mes': result[14],
                     'nt_prop': result[4],
@@ -94,9 +94,9 @@ class rCostoUnitario(Resource):
             cpteG.append(
                 {
                     'value': "g",
-                    'cpte_publicado': cpte_publicado,
-                    'cpte_calculado': result[31],
-                    'cpte_diferencia': cpte_publicado - result[31]
+                    'cpte_publicado': round(cpte_publicado, 3),
+                    'cpte_calculado': round(result[31], 3),
+                    'cpte_diferencia': round((cpte_publicado - result[31]), 3)
                 }
             )
         return cpteG
