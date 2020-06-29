@@ -27,6 +27,7 @@ class rCostoUnitario(Resource):
 
     def __getData(self):
         cu = []
+        componentes = []
         cpteG = []
         data = self.__execute_query()
         id_mercado_inicial = 0
@@ -35,6 +36,9 @@ class rCostoUnitario(Resource):
             id_mercado_inicial = result[1]
             if id_mercado_inicial != id_mercado_temp:
                 cpteG = self.__getData_cpteG(result[13], result[14], result[12], result[1], result[5])
+                componentes.append({
+                    'component_g': cpteG
+                })
             cu.append(
                 {
                     'id_empresa': result[12],
@@ -43,7 +47,7 @@ class rCostoUnitario(Resource):
                     'ano': result[13],
                     'mes': result[14],
                     'nt_prop': result[4],
-                    'component_g': cpteG
+                    'componentes': componentes
                     # 'GM': result[5],
                     # 'TM': result[6],
                     # 'PRNM': result[7],
@@ -85,7 +89,6 @@ class rCostoUnitario(Resource):
         path = os.path.dirname("Sources/tarifarito/")
         file = "/cpteG.json"
         source = json.load(open(path + file))
-        # query que se quiere hacer y se concatena porque es un string
         query = ''.join(source["query"])
 
         cpteG = []
@@ -94,14 +97,14 @@ class rCostoUnitario(Resource):
             cpteG.append(
                 {
                     'value': "g",
-                    'cpte_publicado': round(cpte_publicado, 3),
-                    'cpte_calculado': round(result[31], 3),
-                    'cpte_diferencia': round((cpte_publicado - result[31]), 3)
+                    'cpte_publicado': cpte_publicado,
+                    'cpte_calculado': result[31],
+                    'cpte_diferencia': (cpte_publicado - result[31])
                 }
             )
         return cpteG
 
-    def __execute_query_cpteG(self, query, ano, mes, empresa, mercado,):
+    def __execute_query_cpteG(self, query, ano, mes, empresa, mercado):
         oracleConnection = OracleConnection()
         connection = oracleConnection.get_connection()
         cursor = connection.cursor()

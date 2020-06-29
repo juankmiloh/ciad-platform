@@ -33,40 +33,66 @@ class rComponentG(Resource):
                 {
                     'ANO': result[19],
                     'MES': result[20],
-                    # FT10
-                    'C12_C4': result[0],
-                    'C14_C6': result[1],
-                    'C2_C2': result[2],
-                    'C5_C3': result[3],
-                    # FT9
-                    'C1_C7': result[4],
-                    'C3_C2': result[5],
-                    'C4_C8': result[6],
-                    'C7_C5': result[7],
-                    'C8_C6': result[8],
-                    'C13_C15': result[9],
-                    'C15_C16': result[10],
-                    'C6_C3': result[11],
-                    'C19_C9': result[12],
-                    'C20_C10': result[13],
-                    'C24_C13': result[14],
-                    'C25_C14': result[15],
-                    'C26_C11': result[16],
-                    'C27_C12': result[17],
-                    'C10_C4': result[18],
-                    # FT13
-                    'C9_C1': result[21],
-                    # CALCULOS FINALES
-                    'C16_DCR': result[22],
-                    'C17_QC': result[23],
-                    'C22_PC': result[24],
-                    'C18_QB': result[25],
-                    'C23_PB': result[26],
-                    'C21_QAGD': result[27],
-                    'C11_MCAPLICADO': result[28],
-                    'C29_GCONTRATOS': result[29],
-                    'C30_GBOLSA': result[30],
-                    'C28_CG': result[31]
+                    'values': {
+                        'DCR': [
+                            result[22], # C16
+                            result[0],  # C12
+                            result[9],  # C13
+                            result[1],  # C14
+                            result[10], # C15
+                        ],
+                        'Qc': [
+                            result[23], #C17
+                        ],
+                        'Pc': [
+                            result[24], #C22
+                            result[4],  #C1
+                            result[2],  #C2
+                            result[5],  #C3
+                            result[6],  #C4
+                            result[3],  #C5
+                            result[11], #C6
+                        ],
+                        'Qb': [
+                            result[25], #C18
+                        ],
+                        'Pb': [
+                            result[26], #C23
+                            result[7],  #C7
+                            result[8],  #C8
+                        ],
+                        'Qagd': [
+                            result[27], #C21
+                            result[12], #C19
+                            result[13], #20
+                        ],
+                        'McAplicado': [
+                            result[28], #C11
+                            result[21], #C9
+                            result[18], #10
+                        ],
+                        'FAJ': [
+                            result[14], #C24
+                        ],
+                        'ALFA': [
+                            result[15], #C25
+                        ],
+                        'GTransitorio': [
+                            result[16], #C26
+                        ],
+                        'GContratos': [
+                            result[29], #C29
+                        ],
+                        'GBolsa': [
+                            result[30], #C30
+                        ],
+                        'CFNC': [
+                            result[17], #C27
+                        ],
+                        'CGeneracion': [
+                            result[31]  #C28
+                        ],
+                    },
                 }
             )
         return cpteG
