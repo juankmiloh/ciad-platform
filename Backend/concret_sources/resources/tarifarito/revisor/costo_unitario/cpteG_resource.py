@@ -35,64 +35,64 @@ class rComponentG(Resource):
                     'MES': result[20],
                     'values': {
                         'DCR': [
-                            result[22], # C16
-                            result[0],  # C12
-                            result[9],  # C13
-                            result[1],  # C14
-                            result[10], # C15
+                            round(result[22], 3), # C16
+                            round(result[0], 3), # C12
+                            round(result[9], 3), # C13
+                            round(result[1], 3), # C14
+                            round(result[10], 3) # C15
                         ],
                         'Qc': [
-                            result[23], #C17
+                            round(result[23], 3) #C17
                         ],
                         'Pc': [
-                            result[24], #C22
-                            result[4],  #C1
-                            result[2],  #C2
-                            result[5],  #C3
-                            result[6],  #C4
-                            result[3],  #C5
-                            result[11], #C6
+                            round(result[24], 3), #C22
+                            round(result[4], 3), #C1
+                            round(result[2], 3), #C2
+                            round(result[5], 3), #C3
+                            round(result[6], 3), #C4
+                            round(result[3], 3), #C5
+                            round(result[11], 3) #C6
                         ],
                         'Qb': [
-                            result[25], #C18
+                            round(result[25], 3) #C18
                         ],
                         'Pb': [
-                            result[26], #C23
-                            result[7],  #C7
-                            result[8],  #C8
+                            round(result[26], 3), #C23
+                            round(result[7], 3), #C7
+                            round(result[8], 3) #C8
                         ],
                         'Qagd': [
-                            result[27], #C21
-                            result[12], #C19
-                            result[13], #20
+                            round(result[27], 3), #C21
+                            round(result[12], 3), #C19
+                            round(result[13], 3) #20
                         ],
                         'McAplicado': [
-                            result[28], #C11
-                            result[21], #C9
-                            result[18], #10
+                            round(result[28], 3), #C11
+                            round(result[21], 3), #C9
+                            round(result[18], 3) #10
                         ],
                         'FAJ': [
-                            result[14], #C24
+                            round(result[14], 3) #C24
                         ],
                         'ALFA': [
-                            result[15], #C25
+                            round(result[15], 3) #C25
                         ],
                         'GTransitorio': [
-                            result[16], #C26
+                            round(result[16], 3) #C26
                         ],
                         'GContratos': [
-                            result[29], #C29
+                            round(result[29], 3) #C29
                         ],
                         'GBolsa': [
-                            result[30], #C30
+                            round(result[30], 3) #C30
                         ],
                         'CFNC': [
-                            result[17], #C27
+                            round(result[17], 3) #C27
                         ],
                         'CGeneracion': [
-                            result[31]  #C28
-                        ],
-                    },
+                            round(result[31], 3)  #C28
+                        ]
+                    }
                 }
             )
         return cpteG

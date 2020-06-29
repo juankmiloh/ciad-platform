@@ -97,9 +97,9 @@ class rCostoUnitario(Resource):
             cpteG.append(
                 {
                     'value': "g",
-                    'cpte_publicado': cpte_publicado,
-                    'cpte_calculado': result[31],
-                    'cpte_diferencia': (cpte_publicado - result[31])
+                    'cpte_publicado': round(cpte_publicado, 3),
+                    'cpte_calculado': round(result[31], 3),
+                    'cpte_diferencia': round((cpte_publicado - result[31]), 3)
                 }
             )
         return cpteG
