@@ -105,28 +105,31 @@ class dataInterrupcion(Resource):
                     'latitude': result[3],
                     'cod_dane': result[4],
                     'cod_empresa': result[5],
-                    'pnexc': result[6],
-                    'npnexc': result[7],
-                    'remer': result[8],
-                    'stnstr': result[9],
-                    'segciu': result[10],
-                    'fnivel1': result[11],
-                    'castnat': result[12],
-                    'terr': result[13],
-                    'calzesp': result[14],
-                    'tsubest': result[15],
-                    'infra': result[16],
-                    'sumi': result[17],
-                    'exp': result[18],
-                    'total': result[19],
+                    'ano': result[6],
+                    'mes': result[7],
+                    'pnexc': result[8],
+                    'npnexc': result[9],
+                    'remer': result[10],
+                    'stnstr': result[11],
+                    'segciu': result[12],
+                    'fnivel1': result[13],
+                    'castnat': result[14],
+                    'terr': result[15],
+                    'calzesp': result[16],
+                    'tsubest': result[17],
+                    'infra': result[18],
+                    'sumi': result[19],
+                    'exp': result[20],
+                    'total': result[21],
+                    'chrome': 1 # Esto se coloca para que renderice el mapa en chrome
                 }
             )
         return self.__getCSV(interrupciones)
 
     def __getCSV(self, arrayInterrupciones):
         with open('file_interrupciones.csv', 'w', newline='') as csvfile:
-            fieldnames = ['nom_empresa', 'centro_poblado', 'longitude', 'latitude', 'cod_dane', 'cod_empresa', 'pnexc', 'npnexc',
-                          'remer', 'stnstr', 'segciu', 'fnivel1',  'castnat', 'terr', 'calzesp', 'tsubest', 'infra', 'sumi', 'exp', 'total']
+            fieldnames = ['nom_empresa', 'centro_poblado', 'longitude', 'latitude', 'cod_dane', 'cod_empresa', 'ano', 'mes', 'pnexc', 'npnexc',
+                          'remer', 'stnstr', 'segciu', 'fnivel1',  'castnat', 'terr', 'calzesp', 'tsubest', 'infra', 'sumi', 'exp', 'total', 'chrome']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(arrayInterrupciones)

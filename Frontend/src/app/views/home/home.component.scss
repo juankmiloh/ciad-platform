@@ -17,8 +17,8 @@ $theme: igx-carousel-theme( $slide-background: #333);
         position: absolute;
         color: white;
         text-align: center;
-        padding-top: 37.5%;
-        background-color: rgba(0, 0, 0, 0.356);
+        padding-top: 67%;
+        background-color: rgba(0, 0, 0, 0.356); // Cambiar posición del texto
     }
     .text1 {
         font-size: larger;
@@ -63,6 +63,34 @@ $theme: igx-carousel-theme( $slide-background: #333);
 
 .example-card {
     max-width: 400px;
+}
+
+.example-header-diego {
+    background-image: url('../../../assets/img/diego_ossa.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.example-header-angela {
+    background-image: url('../../../assets/img/angela.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.example-header-madia {
+    background-image: url('../../../assets/img/madia.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.example-header-luzmery {
+    background-image: url('../../../assets/img/luzmery.jpg');
+    background-size: cover;
+    width: 7em;
+    height: 7em;
 }
 
 .example-header-image1 {

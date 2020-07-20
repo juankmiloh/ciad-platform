@@ -47,6 +47,7 @@ export class MapStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
+    // console.log('MES ESTADISTICAS: ', this.data.optionsMap.mes);
     // this.deleteSwal.fire();
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     // console.log('valores modal', this.data);

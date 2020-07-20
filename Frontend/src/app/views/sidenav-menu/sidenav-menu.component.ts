@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidenav-menu',
@@ -7,17 +8,24 @@ import { MatSidenav } from '@angular/material/sidenav';
   styleUrls: ['./sidenav-menu.component.scss'],
 })
 export class SidenavMenuComponent {
+  myWindow: Window;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   @ViewChild('sidenav') sidenav: MatSidenav;
 
-  opcion = 'CIAD | Superservicios';
+  opcion = 'SDEGC - CIAD | Superservicios';
 
   close(reason: string) {
     if (reason !== 'na') {
-      this.opcion = reason;
-      this.sidenav.close();
+      if (reason === 'Mapa de PQR´s' || reason === 'Tarifarito | Grupo Tarifario') {
+        this.sidenav.close();
+        this.router.navigateByUrl('/');
+        this.opcion = 'SDEGC - CIAD | Superservicios';
+      } else {
+        this.opcion = reason;
+        this.sidenav.close();
+      }
     } else {
       this.sidenav.close();
     }

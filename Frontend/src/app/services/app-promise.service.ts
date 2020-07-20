@@ -14,10 +14,13 @@ export class AppPromiseService {
 
   // funcion para transformar arreglo de causas en objeto de causas
   public async transformData(data: ICausa, suiCausas: any): Promise<ICausa[]> {
+    // console.log('DATA -> ', data);
+    // console.log('SUICAUSAS -> ', suiCausas);
     let contador = 0;
     this.arrayDataCausas = [];
     Object.entries(data).forEach(value => {
-      if (contador > 5 && contador < 19) {
+      if (contador > 7 && contador < 21) {
+        // console.log('VALUE: ', parseFloat(String(value[1])));
         const obj = {
           causa: value[0],
           descripcion: suiCausas.find(causa => causa.col_sui === value[0].toUpperCase()).descripcion,
@@ -36,7 +39,7 @@ export class AppPromiseService {
     this.arrayDataGraphic = [];
     const totalInt = data.total;
     Object.entries(data).forEach(value => {
-      if (contador > 5 && contador < 19) {
+      if (contador > 7 && contador < 21) {
         if (value[1] !== '0') {
           const obj = {
             name: value[0],

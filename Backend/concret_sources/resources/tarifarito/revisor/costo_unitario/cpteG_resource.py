@@ -1,4 +1,5 @@
 from .....config.oracle_connection import OracleConnection
+from .....config.mongodb_connection import MongoConnection
 from flask import request
 from flask_restful import Resource
 import os
@@ -6,6 +7,10 @@ import json
 
 
 class rComponentG(Resource):
+    def __init__(self):
+        mongodb_connection = MongoConnection()
+        self.connection = mongodb_connection.get_connection()
+
     def get(self, anio=0, mes=0, empresa=0, mercado=0):
         self.__ANIO_ARG = anio if anio != 0 else 0
         self.__PERIODO_ARG = 0 if mes <= 0 else mes
@@ -64,12 +69,12 @@ class rComponentG(Resource):
                         'Qagd': [
                             result[27], #C21
                             result[12], #C19
-                            result[13], #20
+                            result[13], #C20
                         ],
                         'McAplicado': [
                             result[28], #C11
                             result[21], #C9
-                            result[18], #10
+                            result[18], #C10
                         ],
                         'FAJ': [
                             result[14], #C24
@@ -118,3 +123,14 @@ class rComponentG(Resource):
         print("____________________________")
         cursor.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
         return cursor
+
+    def post(self):
+        req = request.args.get('params')
+        print("_________ POST MODEL _____________")
+        print(req)
+        print("_________________________________")
+        # Insertar datos
+        self.connection.componentg.insert_one(
+            json.loads(req)
+        )
+        return req

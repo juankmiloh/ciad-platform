@@ -75,6 +75,7 @@ export class MapOptionsComponent implements OnInit {
     // console.log('CARGANDO BOTTOMSHEET', this.data.optionsMap);
     this.selectAnio = this.data.optionsMap.ano;
     this.selectMes = this.data.optionsMap.mes;
+    // console.log('MES OPTIONS: ', this.selectMes);
     const ctrlDate = this.date.value;
     ctrlDate.month(this.selectMes);
     this.optionsMap.get('mes').setValue(ctrlDate);

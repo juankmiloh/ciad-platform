@@ -14,22 +14,38 @@
         </mat-toolbar>
         <mat-divider></mat-divider>
         <mat-nav-list #opened>
-            <mat-list-item routerLink="/home" (click)="close('CIAD | Superservicios')" [routerLinkActive]="['is-active']">
+            <mat-list-item routerLink="/home" (click)="close('SDEGC - CIAD | Superservicios')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">home</mat-icon>
                 <span style="padding-left: 3%;">Principal</span>
-            </mat-list-item>
-            <mat-list-item routerLink="/map-pqrs" (click)="close('Mapa de PQR´s')" [routerLinkActive]="['is-active']">
-                <mat-icon aria-label="Side nav toggle icon">perm_phone_msg</mat-icon>
-                <span style="padding-left: 3%;">Mapa de PQR's</span>
             </mat-list-item>
             <mat-list-item routerLink="/map-page" (click)="close('Interrupciones de Energía')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">report_problem</mat-icon>
                 <span style="padding-left: 3%;">Interrupciones Energía</span>
             </mat-list-item>
-            <mat-list-item routerLink="/tarifarito" (click)="close('Tarifarito | Grupo Tarifario')" [routerLinkActive]="['is-active']">
+            <!-- <mat-list-item routerLink="/map-pqrs" (click)="close('Mapa de PQR´s')" [routerLinkActive]="['is-active']">
+                <mat-icon aria-label="Side nav toggle icon">perm_phone_msg</mat-icon>
+                <span style="padding-left: 3%;">Mapa de PQR's</span>
+            </mat-list-item> -->
+            <a mat-list-item href="http://localhost/heatmap_pqrs/frontend/src/" target="_blank" (click)="close('Mapa de PQR´s')">
+                <mat-icon aria-label="Side nav toggle icon">perm_phone_msg</mat-icon>
+                <span style="padding-left: 3%;">Mapa de PQR's</span>
+            </a>
+            <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
+                <mat-icon aria-label="Side nav toggle icon">phonelink_ring</mat-icon>
+                <span style="padding-left: 3%;">Twitter - GeoIncidencias</span>
+            </mat-list-item>
+            <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
+                <mat-icon aria-label="Side nav toggle icon">psychology</mat-icon>
+                <span style="padding-left: 3%;">Roxanne</span>
+            </mat-list-item>
+            <a mat-list-item href="http://localhost:9527/#/login?redirect=%2Fdashboard" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
                 <mat-icon aria-label="Side nav toggle icon">insert_chart</mat-icon>
                 <span style="padding-left: 3%;">Tarifarito | Grupo Tarifario</span>
-            </mat-list-item>
+            </a>
+            <!-- <mat-list-item routerLink="/tarifarito" (click)="close('Tarifarito | Grupo Tarifario')" [routerLinkActive]="['is-active']">
+                <mat-icon aria-label="Side nav toggle icon">insert_chart</mat-icon>
+                <span style="padding-left: 3%;">Tarifarito | Grupo Tarifario</span>
+            </mat-list-item> -->
             <mat-list-item routerLink="/procesos-dieg" (click)="close('Procesos DIEG')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">donut_small</mat-icon>
                 <span style="padding-left: 3%;">Procesos DIEG</span>
@@ -37,7 +53,7 @@
         </mat-nav-list>
         <mat-divider></mat-divider>
         <div style="padding-top: 5%;">
-            <label style="cursor:pointer; padding-left: 5%; font-weight: 400; text-align: center;">Acerca de Superservicios CIAD</label>
+            <label style="cursor:pointer; padding-left: 5%; font-weight: 400; text-align: center;">Acerca de Superservicios CIAD - SDEGC</label>
         </div>
     </mat-sidenav>
 

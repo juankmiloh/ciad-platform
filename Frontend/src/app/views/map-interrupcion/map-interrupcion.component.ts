@@ -103,7 +103,9 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     // Initialize MapView and return an instance of MapView
     const fecha = new Date();
     const anoActual = fecha.getFullYear();
-    const mesActual = fecha.getMonth();
+    // const mesActual = fecha.getMonth(); // Trae el mes anterior al actual
+    const mesActual = 3; // prueba
+    // console.log('MES ACTUAL: ', mesActual);
     // opciones iniciales del mapa a visualizar
     this.options = {
       ano: anoActual,
@@ -291,7 +293,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       // console.log('The dialog was closed', dataFromModal);
       if (dataFromModal !== undefined) {
         this.updateLayerCSV = true;
-        this.addLayerMap(dataFromModal).then((data) => {
+        this.addLayer(dataFromModal).then((data) => {
           this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
         });
       }
@@ -328,7 +330,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       // console.log('valores enviados del hijo', dataFromChild);
       this.updateLayerCSV = true;
       if (dataFromChild !== undefined) {
-        this.addLayerMap(dataFromChild).then((data) => {
+        this.addLayer(dataFromChild).then((data) => {
           this.view.map.layers = data; // Se agrega un nuevo layer CSV al mapa
         });
       }
@@ -343,7 +345,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
   // Se carga el mapa
   async initializeMap(options: IOptionsMapa) {
     setDefaultOptions({ version: '4.12' }); // Se configura la version del API de ARCgis a utilizar
-    loadCss('4.15'); // Se cargan los estilos de la version a utilizar
+    loadCss('4.12'); // Se cargan los estilos de la version a utilizar
 
     try {
       // Load the modules for the ArcGIS API for JavaScript
@@ -421,7 +423,8 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       this.view.ui.remove([basemapToggle, 'zoom']);           // Elimina los botones de zoom
       this.view.ui.add(track, 'top-right');                   // Muestra el boton de MyLocation
 
-      this.view.map.layers = await this.addLayerMap(options); // Se agrega un nuevo layer CSV al mapa
+      this.view.map.layers = await this.addLayer(options);
+      // this.view.map.layers = await this.addLayerMap(options); // Se agrega un nuevo layer CSV al mapa
 
       return this.view;
 
@@ -430,30 +433,32 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     }
   }
 
-  async addLayerMap(options: IOptionsMapa) {
+  async addLayer(options) {
+    // console.log('OPTIONS: ', options);
     this.updateLayerCSV = true;
+    const [CSVLayer] = await loadModules(['esri/layers/CSVLayer']);
+    // const urlOptions = 'http://localhost:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
+    const urlOptions = `http://192.168.2.15:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
+    // const urlOptions = 'assets/file_interrupciones1.csv';
+    console.log(urlOptions);
+    this.dataCSV = d3.csv(urlOptions);
+
+    // Validación para saber si existen datos de vuelta de la URL
+    this.dataCSV.then((data: ICausas) => {
+      console.log('DATA CSV -> ', data);
+      if (data.length === 0) {
+        this.alertSwal.swalOptions = {
+          text: 'No hay interupciones para este período.',
+          icon: 'info',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#ffa726',
+          allowOutsideClick: true,
+        };
+        this.alertSwal.fire();
+      }
+    });
+
     try {
-      const [CSVLayer] = await loadModules(['esri/layers/CSVLayer']);
-      // const url = 'assets/file_interrupciones.csv';
-      // const url = 'http://192.168.1.60:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
-      const url = `http://192.168.2.13:5055/i_interrupcion/${options.ano}/${options.mes}/${options.empresa}/${options.causa}`;
-
-      this.dataCSV = d3.csv(url);
-
-      // Validación para saber si existen datos de vuelta de la URL
-      this.dataCSV.then((data: ICausas) => {
-        if (data.length === 0) {
-          this.alertSwal.swalOptions = {
-            text: 'No hay interupciones para este período.',
-            icon: 'info',
-            confirmButtonText: 'Aceptar',
-            confirmButtonColor: '#ffa726',
-            allowOutsideClick: true,
-          };
-          this.alertSwal.fire();
-        }
-      });
-
       // Paste the url into a browser's address bar to download and view the attributes
       // in the CSV file. These attributes include:
       // * centro_poblado - nombre municipio
@@ -482,7 +487,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       // from the continuous color ramp in the colorStops property
       const renderer = {
         type: 'heatmap',
-        field: 'total',
+        field: `total`,
         colorStops: [
           { color: 'rgba(63, 40, 102, 0)', ratio: 0 }, // rango de 0 a 1
           { color: '#6300df', ratio: 0.083 },          // Azul claro
@@ -501,18 +506,18 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
       };
 
       const layer = new CSVLayer({
-        url,
+        url: urlOptions,
         title: `Interrupciones ${options.colSui} ${this.meses[options.mes]} de ${options.ano}`,
         copyright: 'DESARROLLADO POR JUAN CAMILO HERRERA - CIAD SUPERSERVICIOS',
         popupTemplate: template,
         renderer,
       });
 
-      // this.view.map.layers = layer; // Se agrega un nuevo layer CSV al mapa
-      this.options = options;
+      this.options = options; // Actualiza los valores seleccionados en modal OPTIONS
+
       return layer;
     } catch (error) {
-      console.log('EsriLoader: ', error);
+      // console.log('EsriLoader: ', error);
     }
   }
 

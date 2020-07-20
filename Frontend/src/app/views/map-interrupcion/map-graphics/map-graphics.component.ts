@@ -49,7 +49,7 @@ export class MapGraphicsComponent implements OnInit {
               }
 
   ngOnInit(): void {
-    console.log(this.data);
+    // console.log(this.data);
     this.hoy = `${this.date.getDate()}${this.date.getMonth() + 1}${this.date.getFullYear()}${this.date.getHours()}${this.date.getMinutes()}${this.date.getSeconds()}`;
     this.fecha = `${this.meses[this.data.dataOptionsMap.optionsMap.mes]}/${this.data.dataOptionsMap.optionsMap.ano}`;
     this.dialogRef.afterOpened().subscribe(async (data) => {
@@ -65,7 +65,7 @@ export class MapGraphicsComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.isLoadingResults = false;
     }, (error) => {
-      // console.log('error');
+      // console.log('error -> ', error);
       this.alertSwal.swalOptions = {
         title: 'Info',
         text: 'Se ha perdido la conexión con el servidor',
