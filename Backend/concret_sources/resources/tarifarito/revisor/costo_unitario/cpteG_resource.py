@@ -119,7 +119,7 @@ class rComponentG(Resource):
         print(self.__MERCADO_ARG)
         print("____________________________")
         print("_________QUERY______________")
-        print("SQL:", self.__query)
+        # print("SQL:", self.__query)
         print("____________________________")
         cursor.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
         return cursor
@@ -127,7 +127,7 @@ class rComponentG(Resource):
     def post(self):
         req = request.args.get('params')
         print("_________ POST MODEL _____________")
-        print(req)
+        # print(req)
         print("_________________________________")
         # Insertar datos
         self.connection.componentg.insert_one(

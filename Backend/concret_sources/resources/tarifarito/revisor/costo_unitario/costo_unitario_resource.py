@@ -3,14 +3,16 @@ from flask import request
 from flask_restful import Resource
 import os
 import json
+import pandas as pd
 
 
 class rCostoUnitario(Resource):
-    def get(self, anio=0, mes=0, empresa=0, mercado=0):
+    def get(self, anio=0, mes=0, empresa=0, mercado=0, ntprop=""):
         self.__ANIO_ARG = anio if anio != 0 else 0
         self.__PERIODO_ARG = 0 if mes <= 0 else mes
         self.__EMPRESA_ARG = empresa if empresa != 0 else 0
         self.__MERCADO_ARG = mercado if mercado != 0 else 0
+        self.__NTPROP_ARG = ntprop if ntprop != "" else "TODOS"
         self.__upload_source()
         return self.__getData()
 
@@ -29,16 +31,23 @@ class rCostoUnitario(Resource):
         cu = []
         componentes = []
         cpteG = []
+        cpteT = []
         data = self.__execute_query()
-        id_mercado_inicial = 0
-        id_mercado_temp = 0
+
+        cpteG = self.__getData_cpteG(self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG)
+        cpteG = pd.DataFrame(cpteG)
+        
+        cpteT = self.__getData_cpteT(self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG)
+        cpteT = pd.DataFrame(cpteT)
+
         for result in data:
-            id_mercado_inicial = result[1]
-            if id_mercado_inicial != id_mercado_temp:
-                cpteG = self.__getData_cpteG(result[13], result[14], result[12], result[1], result[5])
-                componentes.append({
-                    'component_g': cpteG
-                })
+            find = (cpteG[21] == result[12]) & (cpteG[22] == result[1]) & (cpteG[19] == result[13]) & (cpteG[20] == result[14])
+            calculado_g = cpteG.loc[find][33].tolist()[0]
+            find = (cpteT[0] == result[12]) & (cpteT[1] == result[1]) & (cpteT[3] == result[13]) & (cpteT[4] == result[14]) & (cpteT[2] == result[4])
+            calculado_t = cpteT.loc[find][6].tolist()[0]
+            modelG = [{ 'value': "g", 'cpte_publicado': result[5], 'cpte_calculado': calculado_g, 'label_publicado': 'Componente G publicado:', 'label_calculado': 'Componente G calculado:' }]
+            modelT = [{ 'value': "t", 'cpte_publicado': result[6], 'cpte_calculado': calculado_t, 'label_publicado': 'Componente T empresa:', 'label_calculado': 'Componente T LAC:' }]
+            componentes = [{'component_g': modelG, 'component_t': modelT}]
             cu.append(
                 {
                     'id_empresa': result[12],
@@ -47,7 +56,7 @@ class rCostoUnitario(Resource):
                     'ano': result[13],
                     'mes': result[14],
                     'nt_prop': result[4],
-                    'componentes': componentes
+                    'componentes': componentes,
                     # 'GM': result[5],
                     # 'TM': result[6],
                     # 'PRNM': result[7],
@@ -57,7 +66,7 @@ class rCostoUnitario(Resource):
                     # 'CUVM': result[11]
                 }
             )
-            id_mercado_temp = id_mercado_inicial
+            componentes = []
         return cu
 
     def __execute_query(self):
@@ -85,7 +94,7 @@ class rCostoUnitario(Resource):
     # --------------------------------------
     # Calculo componente G
     # --------------------------------------
-    def __getData_cpteG(self, ano, mes, empresa, mercado, cpte_publicado):
+    def __getData_cpteG(self, ano, mes, empresa, mercado):
         path = os.path.dirname("Sources/tarifarito/")
         file = "/cpteG.json"
         source = json.load(open(path + file))
@@ -93,16 +102,7 @@ class rCostoUnitario(Resource):
 
         cpteG = []
         data = self.__execute_query_cpteG(query, ano, mes, empresa, mercado)
-        for result in data:
-            cpteG.append(
-                {
-                    'value': "g",
-                    'cpte_publicado': cpte_publicado,
-                    'cpte_calculado': result[31],
-                    'cpte_diferencia': (cpte_publicado - result[31])
-                }
-            )
-        return cpteG
+        return data
 
     def __execute_query_cpteG(self, query, ano, mes, empresa, mercado):
         oracleConnection = OracleConnection()
@@ -124,4 +124,38 @@ class rCostoUnitario(Resource):
         # print("SQL:", query)
         print("____________________________")
         cursor.execute(query, ANIO_ARG=ano, PERIODO_ARG=mes, EMPRESA_ARG=empresa, MERCADO_ARG=mercado)
+        return cursor
+
+    # --------------------------------------
+    # Calculo componente T
+    # --------------------------------------
+    def __getData_cpteT(self, ano, mes, empresa, mercado):
+        path = os.path.dirname("Sources/tarifarito/")
+        file = "/cpteT.json"
+        source = json.load(open(path + file))
+        query = ''.join(source["query"])
+
+        data = self.__execute_query_cpteT(query, ano, mes, empresa, mercado)
+        return data
+
+    def __execute_query_cpteT(self, query, ano, mes, empresa, mercado):
+        oracleConnection = OracleConnection()
+        connection = oracleConnection.get_connection()
+        cursor = connection.cursor()
+        print("________ ANIO ____________")
+        print(ano)
+        print("____________________________")
+        print("________ MES ____________")
+        print(mes)
+        print("____________________________")
+        print("________ EMPRESA ____________")
+        print(empresa)
+        print("____________________________")
+        print("________ MERCADO ____________")
+        print(mercado)
+        print("____________________________")
+        print("_________ QUERY COMPONENTE T ______________")
+        print("SQL:", query)
+        print("____________________________")
+        cursor.execute(query, ANIO_ARG=ano, PERIODO_ARG=mes, EMPRESA_ARG=empresa, MERCADO_ARG=mercado, NTPROP_ARG=self.__NTPROP_ARG)
         return cursor

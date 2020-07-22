@@ -197,6 +197,7 @@ class SourceController():
             path + "/r_cunitario/<int:anio>/<int:mes>",
             path + "/r_cunitario/<int:anio>/<int:mes>/<int:empresa>",
             path + "/r_cunitario/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            path + "/r_cunitario/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>/<string:ntprop>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
 
