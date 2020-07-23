@@ -9,18 +9,14 @@ class gPerdidasSTN(Resource):
         mongodb_connection = MongoConnection()
         self.connection = mongodb_connection.get_connection()
 
-    def get(self, anio=0):
+    def get(self, anio=0, mercado=0):
         self.__ANIO_ARG = anio if anio != 0 else 0
+        self.__MERCADO_ARG = mercado if mercado != 0 else 0
         return self.__getData()
 
     def __getData(self):
-        anios = []
         data = self.__execute_query()
-        for result in data:
-            # print(result)
-            result['_id'] = str(result['_id'])
-            anios.append(result)
-        return anios
+        return data
 
     def __execute_query(self):
         print("___________ GET ANIO_____________")
@@ -28,13 +24,28 @@ class gPerdidasSTN(Resource):
         print("_________________________________")
         if self.__ANIO_ARG == 0:
             # Consultar todos los registros
-            mydoc = self.connection.perdidasSTN.find()
+            result = []
+            query = self.connection.perdidasSTN.find()
+            for item in query:
+                # print(result)
+                item['_id'] = str(item['_id'])
+                result.append(item)
+            return result
         else:
+            print("___________ MERCADO _____________")
+            print(self.__MERCADO_ARG)
             # Consultar un registro especifico
-            mydoc = self.connection.perdidasSTN.find(
-                {"anio": self.__ANIO_ARG}
-            )
-        return mydoc
+            result = []
+            objeto = {}
+            lista = list(self.connection.perdidasSTN.find({'anio':0}, {'mercados.m_'+self.__MERCADO_ARG:1}))
+            sizeArray = len(lista[0]['mercados']['m_'+self.__MERCADO_ARG])
+            print("___________ SIZEARRAY _____________")
+            print(sizeArray)
+            objeto['mercado'] = self.__MERCADO_ARG
+            for key, value in lista[0]['mercados']['m_'+self.__MERCADO_ARG][sizeArray-1].items():
+                objeto[key] = value
+            result.append(objeto)
+            return result
 
     def post(self):
         req = request.args.get('params')

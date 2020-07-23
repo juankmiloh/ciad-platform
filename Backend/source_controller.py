@@ -186,6 +186,7 @@ class SourceController():
         self.__api.add_resource(gPerdidasSTN,
             path + "/g_perdidasSTN",
             path + "/g_perdidasSTN/<int:anio>",
+            path + "/g_perdidasSTN/<int:anio>/<string:mercado>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
     
