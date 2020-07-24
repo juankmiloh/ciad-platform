@@ -4,7 +4,7 @@ import cx_Oracle
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
-class OracleConnection(): 
+class OracleConnection():
     def __init__(self):
         credentials = json.load(open(PATH + "/configuration_sui.json"))
         self.connection = cx_Oracle.connect(credentials["oracle_credentials"]["usuario"] + "/" +
