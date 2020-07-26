@@ -1,33 +1,13 @@
-from ...util.ServiceConnection import serviceConnection
+from ....util.ServiceConnection import serviceConnection
 import os
 import json
 
-class ComponenteG():
+class CpteServiceG():
 
-    def __init__(self, anio, mes, empresa, mercado):
-        self.__ANIO_ARG = anio if anio != 0 else 0
-        self.__PERIODO_ARG = 0 if mes <= 0 else mes
-        self.__EMPRESA_ARG = empresa if empresa != 0 else 0
-        self.__MERCADO_ARG = mercado if mercado != 0 else 0
-        connection = serviceConnection()
-        self.cursorSUI = connection.get_connectionSUI()
-        self.connMDB = connection.get_connectionMDB()
-
-    def get_SUI_cpte(self):
-        self.__upload_source()
-        return self.__getData()
-
-    def __upload_source(self):
-        path = os.path.dirname("Sources/tarifarito/")
-        file = "/cpteG.json"
-        source = json.load(open(path + file))
-        self.__query = ''.join(source["query"])
-
-    def __getData(self):
-        cpteG = []
-        data = self.__execute_query()
+    def getData(self, data):
+        cpte = []
         for result in data:
-            cpteG.append(
+            cpte.append(
                 {
                     'ANO': result[19],
                     'MES': result[20],
@@ -93,8 +73,4 @@ class ComponenteG():
                     },
                 }
             )
-        return cpteG
-
-    def __execute_query(self):
-        self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
-        return self.cursorSUI
+        return cpte

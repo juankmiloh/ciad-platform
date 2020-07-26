@@ -4,9 +4,10 @@ from flask import request
 from flask_restful import Resource
 import os
 import json
+import pandas as pd
 
 
-class rComponentG(Resource):
+class rComponentP015(Resource):
     def __init__(self):
         connection = serviceConnection()
         self.connMDB = connection.get_connectionMDB()
@@ -16,14 +17,14 @@ class rComponentG(Resource):
         self.__PERIODO_ARG = 0 if mes <= 0 else mes
         self.__EMPRESA_ARG = empresa if empresa != 0 else 0
         self.__MERCADO_ARG = mercado if mercado != 0 else 0
-        componentService = ComponentService("G", self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG, "No")
+        componentService = ComponentService("P015", self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG, "No")
         dataCpte = componentService.get_values_component_SUI()
         jsonValues = componentService.get_model_component(dataCpte)
         return jsonValues
 
     def post(self):
         req = request.args.get('params')
-        self.connMDB.componentG.insert_one(
+        self.connMDB.componentP015.insert_one(
             json.loads(req)
         )
         return req
