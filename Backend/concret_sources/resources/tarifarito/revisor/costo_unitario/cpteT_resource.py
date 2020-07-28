@@ -24,7 +24,14 @@ class rComponentT(Resource):
 
     def post(self):
         req = request.args.get('params')
-        self.connMDB.componentT.insert_one(
+        self.connMDB.componentes.insert_one(
             json.loads(req)
         )
         return req
+    
+    # def post(self):
+    #     req = request.args.get('params')
+    #     self.connMDB.componentT.insert_one(
+    #         json.loads(req)
+    #     )
+    #     return req

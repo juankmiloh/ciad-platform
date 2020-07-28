@@ -23,7 +23,14 @@ class rComponentG(Resource):
 
     def post(self):
         req = request.args.get('params')
-        self.connMDB.componentG.insert_one(
+        self.connMDB.componentes.insert_one(
             json.loads(req)
         )
         return req
+
+    # def post(self):
+    #     req = request.args.get('params')
+    #     self.connMDB.componentG.insert_one(
+    #         json.loads(req)
+    #     )
+    #     return req
