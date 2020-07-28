@@ -7,7 +7,7 @@ class FormulaCpteP097(object):
         self.connMDB = connection.get_connectionMDB()
 
     def merge_perdidas_P097(self, dataFrame):
-        cpteP097 = dataFrame        
+        cpteP097 = dataFrame
 
         gestorP097 = self.__getVariablesPerdidas()
 

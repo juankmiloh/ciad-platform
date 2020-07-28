@@ -12,19 +12,19 @@ class ComponentService(Componente):
 
     def get_model_component(self, data):
         if self._Componente__COMPONENTE == 'G':
-            print('--------------------------COMPONENTE SELECT "G"--------------------')
+            print('-------------------------- COMPONENTE SELECT "G" --------------------')
             cpteService = CpteServiceG()
 
         if self._Componente__COMPONENTE == 'T':
-            print('--------------------------COMPONENTE SELECT "T"--------------------')
+            print('-------------------------- COMPONENTE SELECT "T" --------------------')
             cpteService = CpteServiceT()
         
         if self._Componente__COMPONENTE == 'P097':
-            print('--------------------------COMPONENTE SELECT "P097"--------------------')
+            print('-------------------------- COMPONENTE SELECT "P097" --------------------')
             cpteService = CpteServiceP097()
 
         if self._Componente__COMPONENTE == 'P015':
-            print('--------------------------COMPONENTE SELECT "P015"--------------------')
+            print('-------------------------- COMPONENTE SELECT "P015" --------------------')
             cpteService = CpteServiceP015()
         
         jsonValues = cpteService.getData(data)

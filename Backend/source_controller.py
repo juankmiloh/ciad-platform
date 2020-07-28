@@ -157,6 +157,7 @@ class SourceController():
         self.__api.add_resource(gNToleranciaTarifarito,
             path + "/g_ntolerancia",
             path + "/g_ntolerancia/<int:anio>",
+            path + "/g_ntolerancia/<int:anio>/<string:mes>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
         

@@ -8,32 +8,47 @@ class gNToleranciaTarifarito(Resource):
     def __init__(self):
         mongodb_connection = MongoConnection()
         self.connection = mongodb_connection.get_connection()
+        self.meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
-    def get(self, anio=0):
+    def get(self, anio=0, mes=""):
         self.__ANIO_ARG = anio if anio != 0 else 0
+        self.__MES_ARG = mes if mes != "" else "TODOS"
         return self.__getData()
 
     def __getData(self):
-        anios = []
         data = self.__execute_query()
-        for result in data:
-            # print(result)
-            result['_id'] = str(result['_id'])
-            anios.append(result)
-        return anios
+        return data
 
     def __execute_query(self):
-        print("___________ GET ANIO_____________")
-        print(self.__ANIO_ARG)
-        print("_________________________________")
-        if self.__ANIO_ARG == 0:
+        # print("GET ANIO -> ", self.__ANIO_ARG)
+        # print("GET MES -> ", self.__MES_ARG)
+        mydoc = []
+        if self.__ANIO_ARG == 0 and self.__MES_ARG == "TODOS":
             # Consultar todos los registros
-            mydoc = self.connection.nivelTolerancia.find()
-        else:
-            # Consultar un registro especifico
-            mydoc = self.connection.nivelTolerancia.find(
+            query = self.connection.nivelTolerancia.find()
+            for result in query:
+                # print(result)
+                result['_id'] = str(result['_id'])
+                mydoc.append(result)
+        elif self.__ANIO_ARG != 0 and self.__MES_ARG == "TODOS":
+            # Consultar un registro especifico por anio
+            query = self.connection.nivelTolerancia.find(
                 {"anio": self.__ANIO_ARG}
             )
+            for result in query:
+                # print(result)
+                result['_id'] = str(result['_id'])
+                mydoc.append(result)
+        elif self.__ANIO_ARG != 0 and self.__MES_ARG != "TODOS":
+            mes = self.meses[int(self.__MES_ARG) - 1]
+            # Consultar un registro especifico por anio y mes
+            objeto = {}
+            lista = list(self.connection.nivelTolerancia.find({'anio': self.__ANIO_ARG}, {'meses.'+ mes +'': 1}))
+            sizeArray = len(lista[0]['meses'][mes])
+            # print("*SIZEARRAY -> ",  sizeArray)
+            for key, value in lista[0]['meses'][mes][sizeArray-1].items():
+                objeto[key] = value
+            mydoc.append(objeto)
         return mydoc
 
     def post(self):
