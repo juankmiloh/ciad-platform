@@ -29,11 +29,11 @@ class CostoUnitarioService(CostoUnitario):
             # EMPRESA - MERCADO - ANIO - PERIODO
             find = (cpteG[21] == result[12]) & (cpteG[22] == result[1]) & (cpteG[19] == result[13]) & (cpteG[20] == result[14])
             calculado_g = cpteG.loc[find][33].tolist()[0]
-            modelG = [{ 'value': "g", 'cpte_publicado': result[5], 'cpte_calculado': calculado_g, 'label_publicado': 'Componente G publicado:', 'label_calculado': 'Componente G calculado:' }]
+            modelG = [{ 'value': "G", 'cpte_publicado': result[5], 'cpte_calculado': calculado_g, 'label_publicado': 'Componente G publicado:', 'label_calculado': 'Componente G calculado:' }]
             # --------------------- VALORES CPTE T --------------------- #
             find = (cpteT[0] == result[12]) & (cpteT[1] == result[1]) & (cpteT[3] == result[13]) & (cpteT[4] == result[14]) & (cpteT[2] == result[4])
             calculado_t = cpteT.loc[find][6].tolist()[0]
-            modelT = [{ 'value': "t", 'cpte_publicado': result[6], 'cpte_calculado': calculado_t, 'label_publicado': 'Componente T empresa:', 'label_calculado': 'Componente T LAC:' }]
+            modelT = [{ 'value': "T", 'cpte_publicado': result[6], 'cpte_calculado': calculado_t, 'label_publicado': 'Componente T empresa:', 'label_calculado': 'Componente T LAC:' }]
             # --------------------- VALORES CPTE P --------------------- #
             if numrowsCpteP015 > 0:
                 # --------------------- VALORES CPTE P015 --------------------- #
@@ -84,7 +84,7 @@ class CostoUnitarioService(CostoUnitario):
             if result[4].find('4') != -1:
                 publicado_p = result[7]
                 calculado_p = data.loc[find][31].tolist()[0]
-            modelP = [{ 'value': "p015", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P015 publicado:', 'label_calculado': 'Componente P015 calculado:' }]
+            modelP = [{ 'value': "P015", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P015 publicado:', 'label_calculado': 'Componente P015 calculado:' }]
         else:
             # --------------------- VALORES CPTE P097 --------------------- #
             find = (data['empresa'] == result[12]) & (data['mercado'] == result[1]) & (data['ano'] == result[13]) & (data['mes'] == result[14])
@@ -100,5 +100,5 @@ class CostoUnitarioService(CostoUnitario):
             if result[4].find('4') != -1:
                 publicado_p = result[7]
                 calculado_p = data['nt4'].tolist()[0]
-            modelP = [{ 'value': "p097", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P097 publicado:', 'label_calculado': 'Componente P097 calculado:' }]
+            modelP = [{ 'value': "P097", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P097 publicado:', 'label_calculado': 'Componente P097 calculado:' }]
         return modelP

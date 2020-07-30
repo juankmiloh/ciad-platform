@@ -38,7 +38,9 @@ class rComponentesMDB(Resource):
                     "ano": { "$last": "$ano" },
                     "mes": { "$last": "$mes" },
                     "cod_empresa": { "$last": "$cod_empresa" },
+                    "nom_empresa": { "$last": "$nom_empresa" },
                     "cod_mercado": { "$last": "$cod_mercado" },
+                    "nom_mercado": { "$last": "$nom_mercado" },
                     "componente": { "$last": "$componente" },
                     "nt_prop": { "$last": "$nt_prop" },
                     "novedad": { "$last": "$novedad" },
@@ -57,41 +59,18 @@ class rComponentesMDB(Resource):
                         "ano": item['ano'],
                         "mes": item['mes'],
                         "cod_empresa": item['cod_empresa'],
+                        "nom_empresa": item['nom_empresa'],
                         "cod_mercado": item['cod_mercado'],
+                        "nom_mercado": item['nom_mercado'],
                         "componente": item['componente'],
                         "nt_prop": item['nt_prop'],
                         "novedad": item['novedad'],
                         "fecha_modif": item['fecha_modif'],
                         "estado": item['estado'],
+                        "componentes": item['componentes'],
                         "values": item['values']
                     }
                 )
-        # if self.__ANIO_ARG == 0 and self.__MES_ARG == "TODOS":
-        #     # Consultar todos los registros
-        #     query = self.connection.nivelTolerancia.find()
-        #     for result in query:
-        #         # print(result)
-        #         result['_id'] = str(result['_id'])
-        #         mydoc.append(result)
-        # elif self.__ANIO_ARG != 0 and self.__MES_ARG == "TODOS":
-        #     # Consultar un registro especifico por anio
-        #     query = self.connection.nivelTolerancia.find(
-        #         {"anio": self.__ANIO_ARG}
-        #     )
-        #     for result in query:
-        #         # print(result)
-        #         result['_id'] = str(result['_id'])
-        #         mydoc.append(result)
-        # elif self.__ANIO_ARG != 0 and self.__MES_ARG != "TODOS":
-        #     mes = self.meses[int(self.__MES_ARG) - 1]
-        #     # Consultar un registro especifico por anio y mes
-        #     objeto = {}
-        #     lista = list(self.connection.nivelTolerancia.find({'anio': self.__ANIO_ARG}, {'meses.'+ mes +'': 1}))
-        #     sizeArray = len(lista[0]['meses'][mes])
-        #     # print("*SIZEARRAY -> ",  sizeArray)
-        #     for key, value in lista[0]['meses'][mes][sizeArray-1].items():
-        #         objeto[key] = value
-        #     mydoc.append(objeto)
         return mydoc
 
     def post(self):

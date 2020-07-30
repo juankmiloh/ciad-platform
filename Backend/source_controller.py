@@ -16,6 +16,7 @@ from concret_sources.resources.tarifarito.users_resource import usersTarifarito
 from concret_sources.resources.tarifarito.anios_resource import aniosTarifarito
 from concret_sources.resources.tarifarito.empresas_resource import empresasTarifarito
 from concret_sources.resources.tarifarito.mercados_resource import mercadosTarifarito
+from concret_sources.resources.tarifarito.empresa_mercado import empresaMercadoTarifarito
 from concret_sources.resources.tarifarito.gestor.n_tolerancia_resource import gNToleranciaTarifarito
 from concret_sources.resources.tarifarito.gestor.indices_dane_resource import gIDaneTarifarito
 from concret_sources.resources.tarifarito.gestor.info_comercial_resource import gIComercial
@@ -147,6 +148,11 @@ class SourceController():
         self.__api.add_resource(mercadosTarifarito,
             path + "/mercados",
             path +  "/mercados/<int:mercado>",
+        )
+        self.__api.add_resource(empresaMercadoTarifarito,
+            path + "/empresa_mercado",
+            path +  "/empresa_mercado/<int:empresa>",
+            path +  "/empresa_mercado/<int:empresa>/<int:mercado>",
         )
         self.__add_services_gestor(path)
         self.__add_services_revisor(path)
