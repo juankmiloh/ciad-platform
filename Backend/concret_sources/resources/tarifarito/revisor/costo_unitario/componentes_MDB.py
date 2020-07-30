@@ -45,7 +45,9 @@ class rComponentesMDB(Resource):
                     "nt_prop": { "$last": "$nt_prop" },
                     "novedad": { "$last": "$novedad" },
                     "fecha_modif": { "$last": "$fecha_modif" },
-                    "estado": { "$last": "$estado" } } }
+                    "estado": { "$last": "$estado" },
+                    "componentes": { "$last": "$componentes" },
+                    "values": { "$last": "$values" } } }
                 ] );
             mydoc = list(mydoc)
         else:
@@ -75,36 +77,7 @@ class rComponentesMDB(Resource):
 
     def post(self):
         req = request.args.get('params')
-        print("_________ POST MODEL _____________")
-        print(req)
-        print("_________________________________")
-        # Insertar datos
-        self.connection.nivelTolerancia.insert_one(
+        self.connection.componentes.insert_one(
             json.loads(req)
         )
         return req
-
-    def put(self, anio=0):
-        self.__ANIO_ARG = anio if anio != 0 else 0
-        req_model = request.args['params']
-        req_mes = request.args.get('mes')
-        print("_________ PUT MODEL _____________")
-        print(req_model)
-        print("_________________________________")
-        # Modificar datos
-        self.connection.nivelTolerancia.update_one(
-            {"anio": self.__ANIO_ARG},
-            {"$push": {"meses."+req_mes: {"$each": [json.loads(req_model)]}}}
-        )
-        return req_model
-
-    def delete(self, anio=0):
-        self.__ANIO_ARG = anio if anio != 0 else 0
-        print("_________ DELETE ANIO ___________")
-        print(self.__ANIO_ARG)
-        print("_________________________________")
-        # Borrar documento
-        self.connection.nivelTolerancia.delete_one(
-            {"anio": self.__ANIO_ARG}
-        )
-        return self.__ANIO_ARG
