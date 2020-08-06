@@ -1,0 +1,18 @@
+{
+    "name": "empresas",
+    "query": [
+        "SELECT ",
+        "    :ANIO_ARG AS ANO,",
+        "    :PERIODO_ARG AS PERIODO,",
+        "    :EMPRESA_ARG AS EMPRESA,",
+        "    :MERCADO_ARG AS MERCADO,",
+        "    CASE ",
+        "        WHEN :EMPRESA_ARG = 2249 THEN CAR_T1673_CD4_NORTE",
+        "        ELSE CAR_T1673_CD4_CENTRO_SUR",
+        "    END AS C5 ",
+        "FROM ENERGIA_CREG_015.CAR_INFORMACION_GENERAL ",
+        "WHERE ",
+        "    CAR_CARG_ANO = :ANIO_ARG ",
+        "    AND CAR_CARG_PERIODO = :PERIODO_ARG"
+    ]
+}

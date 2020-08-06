@@ -13,7 +13,6 @@ class Componente():
         self.__EMPRESA_ARG = empresa
         self.__MERCADO_ARG = mercado
         self.__NTPROP_ARG = ntprop
-        self.sizeData = 0
         connection = serviceConnection()
         self.cursorSUI = connection.get_connectionSUI()
         self.connMDB = connection.get_connectionMDB()

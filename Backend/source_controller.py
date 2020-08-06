@@ -23,12 +23,14 @@ from concret_sources.resources.tarifarito.gestor.info_comercial_resource import 
 from concret_sources.resources.tarifarito.gestor.resolucion_resource import gD097Resolucion
 from concret_sources.resources.tarifarito.gestor.error_resource import gD097Error
 from concret_sources.resources.tarifarito.gestor.perdidas_stn_resource import gPerdidasSTN
+from concret_sources.resources.tarifarito.revisor.costo_unitario.componentes_MDB import rComponentesMDB
 from concret_sources.resources.tarifarito.revisor.costo_unitario.costo_unitario_resource import rCostoUnitario
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteG_resource import rComponentG
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteT_resource import rComponentT
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP097_resource import rComponentP097
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP015_resource import rComponentP015
-from concret_sources.resources.tarifarito.revisor.costo_unitario.componentes_MDB import rComponentesMDB
+from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD097_resource import rComponentD097
+from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD015_resource import rComponentD015
 
 class SourceController():
 
@@ -246,5 +248,19 @@ class SourceController():
             path + "/r_componentP015",
             path + "/r_componentP015/<int:anio>/<int:mes>/<int:empresa>",
             path + "/r_componentP015/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            methods=['GET', 'POST', 'PUT', 'DELETE']
+        )
+
+        self.__api.add_resource(rComponentD097,
+            path + "/r_componentD097",
+            path + "/r_componentD097/<int:anio>/<int:mes>/<int:empresa>",
+            path + "/r_componentD097/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            methods=['GET', 'POST', 'PUT', 'DELETE']
+        )
+        
+        self.__api.add_resource(rComponentD015,
+            path + "/r_componentD015",
+            path + "/r_componentD015/<int:anio>/<int:mes>/<int:empresa>",
+            path + "/r_componentD015/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )

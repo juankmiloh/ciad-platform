@@ -85,7 +85,7 @@
         "        SELECT CAR_T1673_STN_MO AS C5_CT ",
         "        FROM ENERGIA_CREG_015.CAR_INFORMACION_GENERAL",
         "        WHERE CAR_CARG_ANO = 2020",
-        "        AND CAR_CARG_PERIODO = 1",
+        "        AND CAR_CARG_PERIODO = :PERIODO_ARG",
         "    )CPTE_T,",
         "    (",
         "        SELECT ",
