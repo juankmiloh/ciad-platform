@@ -11,21 +11,21 @@ class FormulaCpteD097(object):
         #Consulta SQL
         cpteD097 = dataFrame #C5
 
-        # print("DATAFRAME D097 -> ", cpteD097)
+        print("DATAFRAME D097 -> ", cpteD097)
 
         #Consutla MongoDB perdidas
         gestorPerdidas = self.__getVariablesPerdidas()
 
         cpteD097 = pd.merge(cpteD097, gestorPerdidas, on='mercado')
 
-        # print("DATAFRAME D097 - perdidas -> ", cpteD097)
+        print("DATAFRAME D097 - perdidas -> ", cpteD097)
 
         #Consutla MongoDB distribucion
         gestorD = self.__getVariablesDistribucion(ano, empresa)
 
         cpteD097 = pd.merge(cpteD097, gestorD, on='empresa')
 
-        # print("DATAFRAME D097 - distribucion -> ", cpteD097)
+        print("DATAFRAME D097 - distribucion -> ", cpteD097)
         
         #Consutla MongoDB IDANE (trae solo IPP)
         gestorDane = self.__getVariablesDane(ano, mes)
@@ -60,6 +60,8 @@ class FormulaCpteD097(object):
         cpteD097['c27'] = cpteD097['c22'] + cpteD097['c15']
         cpteD097['c28'] = cpteD097['c16']
 
+        print("DATAFRAME D097 - COMPLETO -> ", cpteD097)
+
         return cpteD097
 
     def __getVariablesPerdidas(self):
@@ -82,6 +84,7 @@ class FormulaCpteD097(object):
             obj.append([no_mercado,pr12,pr1,pr2,pr3,pr4])
 
         df = pd.DataFrame(obj,columns=['mercado','c12','c8','c9','c10','c11'])
+        print('DF -> ', df)
         return df
 
     def __getVariablesDistribucion(self, ano, empresa):

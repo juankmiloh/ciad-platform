@@ -11,6 +11,8 @@ class CpteServiceG():
                 {
                     'ANO': result[19],
                     'MES': result[20],
+                    'EMPRESA': result[21],
+                    'MERCADO': result[22],
                     'values': {
                         'DCR': [
                             result[24], # C16

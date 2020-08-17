@@ -9,14 +9,10 @@ class FormulaCpteP097(object):
     def merge_perdidas_P097(self, dataFrame):
         cpteP097 = dataFrame
 
-        print('DATAFRAME -> ', cpteP097)
-
         #Consutla MongoDB
         gestorP097 = self.__getVariablesPerdidas()
 
         cpteP097 = pd.merge(cpteP097, gestorP097, on='mercado')
-
-        print('GESTOR -> ', gestorP097)
 
         cpteP097['c15'] = 0
 
@@ -47,8 +43,6 @@ class FormulaCpteP097(object):
         cpteP097['nt3'] =  cpteP097['c18'] +  cpteP097['c22']
 
         cpteP097['nt4'] =  cpteP097['c19'] +  cpteP097['c23']
-
-        print('RETURN CPTEP097 -> ', cpteP097)
 
         return cpteP097
 
