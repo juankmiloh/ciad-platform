@@ -40,5 +40,8 @@ class Componente():
         if self.__NTPROP_ARG == "No":
             self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
         else:
-            self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG, NTPROP_ARG=self.__NTPROP_ARG)
+            if self.__COMPONENTE == 'T':
+                self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG, NTPROP_ARG=self.__NTPROP_ARG)
+            if self.__COMPONENTE == 'C':
+                self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, PERIODO_ARG_MENOS1=self.__PERIODO_ARG - 1, PERIODO_ARG_MENOS2=self.__PERIODO_ARG - 2, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG, NTPROP_ARG=self.__NTPROP_ARG)
         return self.cursorSUI

@@ -51,6 +51,7 @@ class CostoUnitario():
 
     # Función para obtener valor del cpte 'T'
     def get_values_cpteT(self, cpteT, result):
+        #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO -               NTPROP
         find = (cpteT[0] == result[12]) & (cpteT[1] == result[1]) & (cpteT[3] == result[13]) & (cpteT[4] == result[14]) & (cpteT[2] == result[4])
         calculado_t = cpteT.loc[find][6].tolist()[0]
         modelT = [{ 'value': "T", 'cpte_publicado': result[6], 'cpte_calculado': calculado_t, 'label_publicado': 'Componente T empresa:', 'label_calculado': 'Componente T LAC:' }]

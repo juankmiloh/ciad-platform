@@ -6,6 +6,7 @@ from .CpteServiceP097 import CpteServiceP097
 from .CpteServiceP015 import CpteServiceP015
 from .CpteServiceD097 import CpteServiceD097
 from .CpteServiceD015 import CpteServiceD015
+from .CpteServiceC import CpteServiceC
 
 
 class ComponentService(Componente):
@@ -37,7 +38,10 @@ class ComponentService(Componente):
             print('-------------------------- COMPONENTE SELECT "D097" --------------------')
             cpteService = CpteServiceD097()
         
+        if self._Componente__COMPONENTE == 'C':
+            print('-------------------------- COMPONENTE SELECT "C" --------------------')
+            cpteService = CpteServiceC()
+        
         jsonValues = cpteService.getData(data)
 
         return jsonValues
-

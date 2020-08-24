@@ -31,6 +31,7 @@ from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP097_resour
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP015_resource import rComponentP015
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD097_resource import rComponentD097
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD015_resource import rComponentD015
+from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteC_resource import rComponentC
 
 class SourceController():
 
@@ -262,5 +263,13 @@ class SourceController():
             path + "/r_componentD015",
             path + "/r_componentD015/<int:anio>/<int:mes>/<int:empresa>",
             path + "/r_componentD015/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            methods=['GET', 'POST', 'PUT', 'DELETE']
+        )
+        
+        self.__api.add_resource(rComponentC,
+            path + "/r_componentC",
+            path + "/r_componentC/<int:anio>/<int:mes>/<int:empresa>",
+            path + "/r_componentC/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            path + "/r_componentC/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>/<string:ntprop>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
