@@ -10,8 +10,6 @@ class FormulaCpteC(object):
     def merge_comercializacion(self, dataFrame, ano, mes, empresa):
         cpteC = dataFrame
 
-        print('DATAFRAME > ', dataFrame)
-
         #Consutla MongoDB IDANE (Trae solo IPC de 12-2013)
         gestorDane2013 = self.__getVariablesDane2013(ano)
         cpteC = pd.merge(cpteC, gestorDane2013, on='ano')
@@ -22,40 +20,55 @@ class FormulaCpteC(object):
         cpteC = pd.merge(cpteC, gestorDane, on='ano')
         # print("IDANE IPC M-1 -> ", gestorDane)
 
-        #Consutla MongoDB
-        # gestorP097 = self.__getVariablesComercializacion()
+        #Consutla MongoDB comercializacion
+        gestorC = self.__getVariablesComercializacion(ano, empresa)
+        cpteC = pd.merge(cpteC, gestorC, on='empresa')
 
-        # cpteC = pd.merge(cpteC, gestorP097, on='mercado')
+        cpteC['c5'] = cpteC['c1'] * (1 - cpteC['c2']) * cpteC['c4'] / cpteC['c3']
 
-        # cpteC['c15'] = 0
+        cpteC['c17'] = cpteC['c15'] + cpteC['c16'] + (0.5 * (1 - cpteC['c15'] - cpteC['c16'])) + 0.05
 
-        # cpteC['c8'] = cpteC['c2'] + cpteC['c3'] + cpteC['c4'] + cpteC['c5'] + cpteC['c6'] + cpteC['c7']
+        cpteC['c26'] = cpteC['c20'] + cpteC['c21'] + cpteC['c22'] + cpteC['c23'] + cpteC['c24'] + cpteC['c25']
 
-        # cpteC['c9'] = (cpteC['c3'] + cpteC['c5'] + cpteC['c7']) / cpteC['c8']
+        cpteC['c18'] = (1 - cpteC['c17']) / cpteC['c17']
 
-        # cpteC['c16'] = (cpteC['c1'] * (cpteC['c10'] / 100 + cpteC['c9'])) / (1 - (cpteC['c10'] / 100 + cpteC['c9']))
+        cpteC['c27'] = (cpteC['c13'] * (cpteC['c20'] + cpteC['c22'] + cpteC['c24']) + (cpteC['c14'] * cpteC['c21']) + (cpteC['c18'] * cpteC['c23']) + (cpteC['c19'] * cpteC['c25'])) / cpteC['c26']
 
-        # cpteC['c20'] = (cpteC['c14'] * cpteC['c10'] / 100) / (1 - cpteC['c10'] / 100) + cpteC['c15']
+        cpteC['c39'] = (cpteC['c32'] * ((1 + cpteC['c36'] / 100) ** (cpteC['c34'] + 0.63)) - cpteC['c1'])
 
-        # cpteC['c17'] = (cpteC['c1'] * (cpteC['c11'] / 100 + cpteC['c9'])) / (1 - (cpteC['c11'] / 100 + cpteC['c9']))
+        cpteC['c40'] = (cpteC['c33'] * ((1 + cpteC['c37'] / 100) ** (cpteC['c35'])) - cpteC['c1'])
 
-        # cpteC['c21'] = (cpteC['c14'] * cpteC['c11'] / 100) / (1 - cpteC['c11'] / 100) + cpteC['c15']
+        cpteC['c41'] = (cpteC['c39'] - cpteC['c40']) / cpteC['c38']
 
-        # cpteC['c18'] = (cpteC['c1'] * (cpteC['c12'] / 100 + cpteC['c9'])) / (1 - (cpteC['c12'] / 100 + cpteC['c9']))
+        cpteC['c42'] = 0.00042 + cpteC['c41']
 
-        # cpteC['c22'] = (cpteC['c14'] * cpteC['c12'] / 100) / (1 - cpteC['c12'] / 100) + cpteC['c15']
+        cpteC['c12'] = 2.73 # cambiar por el valor del gestor de datos (MO) crear
 
-        # cpteC['c19'] = (cpteC['c1'] * (cpteC['c13'] / 100 + cpteC['c9'])) / (1 - (cpteC['c13'] / 100 + cpteC['c9']))
+        cpteC['c43'] = (cpteC['c7'] + cpteC['c8'] + cpteC['c9'] + cpteC['c10'] + cpteC['c11']) * (cpteC['c12'] + cpteC['c27'] + cpteC['c42'])
 
-        # cpteC['c23'] = (cpteC['c14'] * cpteC['c13'] / 100) / (1 - cpteC['c13'] / 100) + cpteC['c15']
+        cpteC['c49'] = cpteC['c45'] * cpteC['c47'] / 100
+        
+        cpteC['c50'] = cpteC['c46'] * cpteC['c48'] / 100
+        
+        cpteC['c51'] = cpteC['c49'] + cpteC['c50']
+        
+        cpteC['c54'] = cpteC['c51'] + cpteC['c52']
 
-        # cpteC['nt1'] =  cpteC['c16'] +  cpteC['c20']
+        cpteC['c61'] = 2 # cambiar por el valor del gestor de datos (Beta) crear
 
-        # cpteC['nt2'] =  cpteC['c17'] +  cpteC['c21']
+        cpteC['c62'] = (((1 - cpteC['c61']) * cpteC['c5'] * cpteC['c59']) + cpteC['c57'] + cpteC['c58']) / cpteC['c60']
 
-        # cpteC['nt3'] =  cpteC['c18'] +  cpteC['c22']
+        cpteC['c63'] = (cpteC['c51'] + cpteC['c54'] + cpteC['c56']) / cpteC['c55']
 
-        # cpteC['nt4'] =  cpteC['c19'] +  cpteC['c23']
+        cpteC['c64'] = cpteC['c43'] + cpteC['c63'] + cpteC['c62']
+        
+        cpteC['c65'] = (cpteC['c43'] / cpteC['c64']) * 100
+
+        cpteC['c66'] = (cpteC['c62'] / cpteC['c64']) * 100
+        
+        cpteC['c67'] = (cpteC['c63'] / cpteC['c64']) * 100
+
+        # print('DATAFRAME cpte C > ', cpteC)
 
         return cpteC
     
@@ -96,23 +109,26 @@ class FormulaCpteC(object):
         df = pd.DataFrame(obj,columns=['ano','c4'])
         return df
 
-    def __getVariablesComercializacion(self):
-        result = list(self.connMDB.perdidasSTN.find({"anio": 0}))
-        key_mercados = []
+    def __getVariablesComercializacion(self, ano, empresa):
+        result = list(self.connMDB.infoComercial.find({"anio": ano}, {'empresas.e_'+ str(empresa): 1 }))
+        key_empresa = []
         for x in result:
-            for key, value in x['mercados'].items():
-                key_mercados.append(key)
+            for key, value in x['empresas'].items():
+                key_empresa.append(key)
 
         obj = []
 
-        for m in key_mercados:
-            mercado = result[0]['mercados'][m]
-            no_mercado = int(m.split('_')[1])
-            pr1 = mercado[len(mercado)-1]['pr1']
-            pr2 = mercado[len(mercado)-1]['pr2']
-            pr3 = mercado[len(mercado)-1]['pr3']
-            pr4 = mercado[len(mercado)-1]['pr4']
-            obj.append([no_mercado,pr1,pr2,pr3,pr4])
+        for e in key_empresa:
+            empresa = result[0]['empresas'][e]
+            no_empresa = int(e.split('_')[1])
+            factorP = empresa[len(empresa)-1]['factorP']
+            rcnu = empresa[len(empresa)-1]['rcnu']
+            ccreg = empresa[len(empresa)-1]['ccreg']
+            csspd = empresa[len(empresa)-1]['csspd']
+            # rcreg = empresa[len(empresa)-1]['rcreg']
+            # rsspd = empresa[len(empresa)-1]['rsspd']
+            # obj.append([no_empresa,factorP,rcnu,ccreg,csspd,rcreg,rsspd])
+            obj.append([no_empresa,factorP,rcnu,ccreg,csspd])
 
-        df = pd.DataFrame(obj,columns=['mercado','c10','c11','c12','c13'])
+        df = pd.DataFrame(obj,columns=['empresa','c2','c19','c45','c46'])
         return df

@@ -146,3 +146,19 @@ class CostoUnitario():
                 calculado_d = cpteD097['c28'].tolist()[0]
             modelD = [{ 'value': "D097", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D097 publicado:', 'label_calculado': 'Componente D097 calculado:' }]
         return modelD
+
+    # Función para obtener valor del cpte 'C'
+    def get_values_cpteC(self, cpteC, result):
+        #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               NTPROP
+        find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14]) & (cpteC['nt_prop'] == result[4])
+        calculado_c = cpteC['c64'].tolist()[0]
+        modelC = [{ 'value': "C", 'cpte_publicado': result[9], 'cpte_calculado': calculado_c, 'label_publicado': 'Componente C publicado:', 'label_calculado': 'Componente C calculado:' }]
+        return modelC
+
+    # Función para obtener valor del cpte 'R'
+    def get_values_cpteR(self, cpteR, result):
+        #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO
+        find = (cpteR[0] == result[12]) & (cpteR[1] == result[1]) & (cpteR[2] == result[13]) & (cpteR[3] == result[14])
+        calculado_r = cpteR.loc[find][10].tolist()[0]
+        modelR = [{ 'value': "R", 'cpte_publicado': result[10], 'cpte_calculado': calculado_r, 'label_publicado': 'Componente R publicado:', 'label_calculado': 'Componente R calculado:' }]
+        return modelR
