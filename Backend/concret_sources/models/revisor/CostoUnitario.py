@@ -162,3 +162,9 @@ class CostoUnitario():
         calculado_r = cpteR.loc[find][10].tolist()[0]
         modelR = [{ 'value': "R", 'cpte_publicado': result[10], 'cpte_calculado': calculado_r, 'label_publicado': 'Componente R publicado:', 'label_calculado': 'Componente R calculado:' }]
         return modelR
+    
+    # Función para obtener valor del 'CU'
+    def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelC, modelR, result):
+        calculado_cu = modelG[0]['cpte_calculado'] + modelT[0]['cpte_calculado'] + modelP[0]['cpte_calculado'] + modelD[0]['cpte_calculado'] + modelC[0]['cpte_calculado'] + modelR[0]['cpte_calculado']
+        modelCU = [{ 'value': "CU", 'cpte_publicado': result[11], 'cpte_calculado': calculado_cu, 'label_publicado': 'CU publicado:', 'label_calculado': 'CU calculado:' }]
+        return modelCU

@@ -47,8 +47,10 @@ class CostoUnitarioService(CostoUnitario):
             modelC = self.get_values_cpteC(cpteC, result)
             # --------------------- VALORES CPTE R --------------------- #
             modelR = self.get_values_cpteR(cpteR, result)
+            # --------------------- VALORES CPTE CU --------------------- #
+            modelCU = self.get_values_cpteCU(modelG, modelT, modelP, modelD, modelC, modelR, result)
 
-            componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_c': modelC,'component_r': modelR}]
+            componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_c': modelC, 'component_r': modelR, 'component_cu': modelCU}]
             valuesCU.append({
                     'id_empresa': result[12],
                     'id_mercado': result[1],
@@ -56,8 +58,7 @@ class CostoUnitarioService(CostoUnitario):
                     'ano': result[13],
                     'mes': result[14],
                     'nt_prop': result[4],
-                    'componentes': componentes,
-                    # 'CUVM': result[11]
+                    'componentes': componentes
                 })
             componentes = []
         return valuesCU
