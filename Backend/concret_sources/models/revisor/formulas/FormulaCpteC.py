@@ -54,6 +54,10 @@ class FormulaCpteC(object):
         
         cpteC['c54'] = cpteC['c51'] + cpteC['c52']
 
+        cpteC['c68'] = cpteC['c70'] * cpteC['c60']
+
+        cpteC['c57'] = cpteC['c68'] + cpteC['c71']
+
         cpteC['c61'] = 2 # cambiar por el valor del gestor de datos (Beta) crear
 
         cpteC['c62'] = (((1 - cpteC['c61']) * cpteC['c5'] * cpteC['c59']) + cpteC['c57'] + cpteC['c58']) / cpteC['c60']

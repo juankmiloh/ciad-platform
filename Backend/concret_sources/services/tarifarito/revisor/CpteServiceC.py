@@ -78,6 +78,10 @@ class CpteServiceC():
                             data['c61'].tolist()[row],  # C61
                             data['c59'].tolist()[row],  # C59
                             data['c57'].tolist()[row],  # C57
+                            data['c68'].tolist()[row],  # C68
+                            data['c69'].tolist()[row],  # C69
+                            data['c70'].tolist()[row],  # C70
+                            data['c71'].tolist()[row],  # C71
                             data['c58'].tolist()[row],  # C58
                             data['c60'].tolist()[row],  # C60
                         ],

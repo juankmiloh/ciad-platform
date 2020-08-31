@@ -31,7 +31,7 @@ class CostoUnitarioService(CostoUnitario):
         cpteD097 = componenteD097.get_values_component_SUI()
         cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5']), self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG)
         cpteC = componenteC.get_values_component_SUI()
-        cpteC = FormulaCpteC().merge_comercializacion(pd.DataFrame(cpteC, columns=['empresa','mercado','ano','mes','nt_prop','c6','c1','c7','c8','c9','c10','c11','c13','c20','c22','c24','c21','c14','c15','c16','c23','c25','c28','c29','c30','c31','c32','c36','c34','c33','c37','c35','c38','c59','c57','c58','c60','c44','c47','c48','c52','c53','c55','c56']), self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG)
+        cpteC = FormulaCpteC().merge_comercializacion(pd.DataFrame(cpteC, columns=['empresa','mercado','ano','mes','nt_prop','c6','c1','c7','c8','c9','c10','c11','c13','c20','c22','c24','c21','c14','c15','c16','c23','c25','c28','c29','c30','c31','c32','c36','c34','c33','c37','c35','c38','c59','c69','c70','c71','c58','c60','c44','c47','c48','c52','c53','c55','c56']), self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG)
         cpteR = pd.DataFrame(componenteR.get_values_component_SUI())
 
         for result in dataCU:
@@ -57,7 +57,6 @@ class CostoUnitarioService(CostoUnitario):
                     'mes': result[14],
                     'nt_prop': result[4],
                     'componentes': componentes,
-                    # 'RM': result[10],
                     # 'CUVM': result[11]
                 })
             componentes = []

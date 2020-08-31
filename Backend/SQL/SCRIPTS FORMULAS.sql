@@ -682,8 +682,8 @@ SELECT
     T9.*,
     T10.*,
     TC2.*,
-    (T10.C1 + T10.C2 + T10.C3 + T9.C4) AS C5,
-    (T10.C1 + T10.C2 + T10.C3 + T9.C4) / TC2.C6 AS C7 
+    (T10.C1 - T10.C2 + T10.C3 + T9.C4) AS C5,
+    (T10.C1 - T10.C2 + T10.C3 + T9.C4) / TC2.C6 AS C7 
 FROM 
 (
     SELECT 
@@ -753,94 +753,41 @@ SELECT
     FT7.CAR_CARG_PERIODO AS MES,
     FT7.CAR_T1669_NT_PROP AS NT_PROP,
     FT3.C6, T9.C1, FT7.C7, FT7.C8, FT7.C9, FT7.C10, FT7.C11, T9.C13, FTC2.C20, FTC2.C22, FTC2.C24, FTC2.C21, T9.C14, T9.C15, T9.C16, FTC2.C23, FTC2.C25, T9.C28, T9.C29, T9.C30,
-    T9.C31, T9.C32, T9.C36, T9.C34, T9.C33, T9.C37, T9.C35, T9.C38, FTC2.C59, FT2.C57, T9.C58, FTC2.C60, T9.C44, T9.C47, T9.C48, T10.C52, T10.C53, FTC2.C55, FT2.C56 
+    T9.C31, T9.C32, T9.C36, T9.C34, T9.C33, T9.C37, T9.C35, T9.C38, FTC2.C59, FT2.C69, FT2.C70, FT2.C71, T9.C58, FTC2.C60, T9.C44, T9.C47, T9.C48, T10.C52, T10.C53, FTC2.C55, FT2.C56 
 FROM 
 (
-    SELECT 
-        CERTIFICADO.QUA_EST_ESTADO, RUPS.ARE_ESP_NOMBRE,
-        FTE2.ID_EMPRESA, FTE2.ID_MERCADO, 
-        FECHAS_TIPO_GARANTIA_1, TO_NUMBER(NVL(FTE2.TIPO_GARANTIA_1, 0)) AS C56, 
-        FECHAS_TIPO_GARANTIA_2, TO_NUMBER(NVL(FTE2.TIPO_GARANTIA_2, 0)) AS C57, 
-        FECHAS_TIPO_GARANTIA_3, TO_NUMBER(NVL(FTE2.TIPO_GARANTIA_3, 0)) AS C57_1 
-    FROM 
+    SELECT CERTIFICADO.QUA_EST_ESTADO, RUPS.*, FTE2.* FROM 
     (
-        SELECT ID_EMPRESA, NVL(TIPO_GARANTIA_1, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_1, NVL(TIPO_GARANTIA_2, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_2, NVL(TIPO_GARANTIA_3, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_3 FROM 
+        SELECT 
+            VGSTR.*  
+        FROM
         (
-            SELECT ID_EMPRESA, CAR_T1667_TIPO_GARANTIA, VALOR FROM 
+            SELECT VUTG.*, TPG3.TIPO_GARANTIA_3 AS C71 FROM 
             (
                 SELECT 
-                    ID_EMPRESA,
-                    CAR_T1667_TIPO_GARANTIA,
-                    CAR_T1667_MES_RECUPERACION,
-                    CAR_CARG_PERIODO,
-                    CASE WHEN CAR_T1667_MES_RECUPERACION > CAR_CARG_PERIODO THEN 'CUMPLE' ELSE 'NO CUMPLE' END AS VALOR 
+                    FECHAS.*,
+                    TPG1_2.TIPO_GARANTIA_1 AS C56,
+                    TPG1_2.TIPO_GARANTIA_2 AS C69,
+                    NVL(TPG1_2.TIPO_GARANTIA_2 / SUM_VENTAS_REGULADOS.SUMC60, 0) AS C70
                 FROM 
-                    ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
-                WHERE 
-                    CAR_CARG_ANO = :ANIO_ARG 
-                    AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                    AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                    AND CAR_T1667_TIPO_GARANTIA IN (1, 2, 3) 
-            )
-        )
-        PIVOT 
-        (
-            MAX(VALOR) 
-            FOR 
-                CAR_T1667_TIPO_GARANTIA 
-            IN ('1' AS TIPO_GARANTIA_1, '2' AS TIPO_GARANTIA_2, '3' AS TIPO_GARANTIA_3) 
-        )
-    ) FECHAS,
-    (
-        SELECT TPG3.ID_EMPRESA, TPG3.ID_MERCADO, TPG1_2.TIPO_GARANTIA_1, TPG1_2.TIPO_GARANTIA_2, TPG3.TIPO_GARANTIA_3 FROM 
-        (
-            SELECT ID_EMPRESA, NVL(TO_CHAR(TIPO_GARANTIA_1), 0) AS TIPO_GARANTIA_1, NVL(TO_CHAR(TIPO_GARANTIA_2), 0) AS TIPO_GARANTIA_2 FROM 
-            (
-                SELECT ID_EMPRESA, CAR_T1667_TIPO_GARANTIA, VALOR FROM 
                 (
-                    SELECT 
-                        ID_EMPRESA,
-                        CAR_T1667_TIPO_GARANTIA,
-                        NVL(CASE WHEN CAR_T1667_TIPO_GARANTIA = 1 THEN SUM(CAR_T1667_COSTO_A_RECUPERAR) ELSE SUM(CAR_T1667_COSTO_A_RECUPERAR) END, 0) AS VALOR 
-                    FROM 
-                        ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
-                    WHERE 
-                        CAR_CARG_ANO = :ANIO_ARG 
-                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                        AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                        AND CAR_T1667_TIPO_GARANTIA IN (1, 2) 
-                    GROUP BY ID_EMPRESA, CAR_T1667_TIPO_GARANTIA
-                )
-            )
-            PIVOT 
-            (
-                MAX(VALOR) 
-                FOR 
-                    CAR_T1667_TIPO_GARANTIA 
-                IN ('1' AS TIPO_GARANTIA_1, '2' AS TIPO_GARANTIA_2) 
-            )
-        ) TPG1_2,
-        (
-            SELECT MERCADOS.ID_MERCADO, MERCADOS.NOM_MERCADO, GRT3.* FROM 
-            (
-                SELECT ID_EMPRESA, RUPS.ARE_ESP_SECUE, RUPS.ARE_ESP_NOMBRE, GARANTIAS3.CAR_T1667_NIT_BENEFICIARIO, GARANTIAS3.TIPO_GARANTIA_3 FROM 
-                (
-                    SELECT ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, NVL(TO_CHAR(TIPO_GARANTIA_1), 0) AS TIPO_GARANTIA_1, NVL(TO_CHAR(TIPO_GARANTIA_2), 0) AS TIPO_GARANTIA_2, NVL(TO_CHAR(TIPO_GARANTIA_3), 0) AS TIPO_GARANTIA_3 FROM 
+                    SELECT ID_EMPRESA, NVL(TIPO_GARANTIA_1, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_1, NVL(TIPO_GARANTIA_2, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_2, NVL(TIPO_GARANTIA_3, 'SIN VALOR') AS FECHAS_TIPO_GARANTIA_3 FROM 
                     (
-                        SELECT ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, CAR_T1667_TIPO_GARANTIA, VALOR FROM 
+                        SELECT ID_EMPRESA, CAR_T1667_TIPO_GARANTIA, VALOR FROM 
                         (
                             SELECT 
                                 ID_EMPRESA,
-                                CAR_T1667_NIT_BENEFICIARIO,
                                 CAR_T1667_TIPO_GARANTIA,
-                                NVL(SUM(CAR_T1667_COSTO_A_RECUPERAR), 0) AS VALOR 
+                                CAR_T1667_MES_RECUPERACION,
+                                CAR_CARG_PERIODO,
+                                CASE WHEN CAR_T1667_MES_RECUPERACION > CAR_CARG_PERIODO THEN 'CUMPLE' ELSE 'NO CUMPLE' END AS VALOR 
                             FROM 
                                 ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
                             WHERE 
                                 CAR_CARG_ANO = :ANIO_ARG 
                                 AND CAR_CARG_PERIODO = :PERIODO_ARG 
                                 AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                            GROUP BY ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, CAR_T1667_TIPO_GARANTIA
+                                AND CAR_T1667_TIPO_GARANTIA IN (1, 2, 3) 
                         )
                     )
                     PIVOT 
@@ -850,52 +797,132 @@ FROM
                             CAR_T1667_TIPO_GARANTIA 
                         IN ('1' AS TIPO_GARANTIA_1, '2' AS TIPO_GARANTIA_2, '3' AS TIPO_GARANTIA_3) 
                     )
-                ) GARANTIAS3,
+                ) FECHAS,
                 (
-                    SELECT ARE_ESP_NOMBRE, ARE_ESP_SECUE, ARE_ESP_NIT FROM RUPS.ARE_ESP_EMPRESAS
-                ) RUPS
-                WHERE GARANTIAS3.CAR_T1667_NIT_BENEFICIARIO = RUPS.ARE_ESP_NIT
-            ) GRT3,
+                    SELECT ID_EMPRESA, NVL(TIPO_GARANTIA_1, 0) AS TIPO_GARANTIA_1, NVL(TIPO_GARANTIA_2, 0) AS TIPO_GARANTIA_2 FROM 
+                    (
+                        SELECT 
+                            ID_EMPRESA,
+                            CAR_T1667_TIPO_GARANTIA,
+                            NVL(CASE WHEN CAR_T1667_TIPO_GARANTIA = 1 THEN SUM(CAR_T1667_COSTO_A_RECUPERAR) ELSE SUM(CAR_T1667_COSTO_A_RECUPERAR) END, 0) AS VALOR 
+                        FROM 
+                            ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
+                        WHERE 
+                            CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                            AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND CAR_T1667_TIPO_GARANTIA IN (1, 2) 
+                        GROUP BY ID_EMPRESA, CAR_T1667_TIPO_GARANTIA
+                    )
+                    PIVOT 
+                    (
+                        MAX(VALOR) 
+                        FOR 
+                            CAR_T1667_TIPO_GARANTIA 
+                        IN ('1' AS TIPO_GARANTIA_1, '2' AS TIPO_GARANTIA_2) 
+                    )
+                ) TPG1_2,
+                (
+                    SELECT 
+                        SUM(SUM_VENTAS_REGULADOS.VRI + SUM_VENTAS_REGULADOS.VRR) AS SUMC60 
+                    FROM 
+                    (
+                        SELECT MERCADO, NVL(SUM(VRI), 0) AS VRI, NVL(SUM(VRR), 0) AS VRR FROM (
+                        SELECT 
+                            TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
+                            CASE WHEN CAR_T1743_TIPO_FACT = 1 THEN (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) END AS VRI,
+                            CASE WHEN CAR_T1743_TIPO_FACT <> 1 THEN 
+                                CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END 
+                            END AS VRR 
+                        FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
+                        WHERE 
+                            IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS2 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_T1743_TIPO_TARIFA = 1 
+                        ) GROUP BY MERCADO
+                    ) SUM_VENTAS_REGULADOS 
+                ) SUM_VENTAS_REGULADOS
+            ) VUTG,
             (
-                SELECT 
-                    DISTINCT ID_MERCADO,
-                    ARE_ESP_SECUE,
-                    NOM_MERCADO,
-                    ESTADO 
-                FROM 
-                    CARG_COMERCIAL_E.MERCADO_EMPRESA 
-                WHERE 
-                    ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG 
-                    AND ESTADO = 'A' 
-                    AND NOM_MERCADO NOT LIKE '%Mercado Prueba%' 
-                    AND NOM_MERCADO NOT LIKE '%Mercado de Prueba%' 
-                UNION 
-                SELECT  
-                    20481 AS ID_MERCADO,
-                    20481 AS ARE_ESP_SECUE,
-                    'XM COMPAÑIA DE EXPERTOS EN MERCADOS S.A. E.S.P.' AS NOM_MERCADO,
-                    'A' AS ESTADO 
-                FROM DUAL
-            ) MERCADOS 
-            WHERE GRT3.ARE_ESP_SECUE = MERCADOS.ARE_ESP_SECUE
-        ) TPG3
-        WHERE TPG1_2.ID_EMPRESA = TPG3.ID_EMPRESA
+                SELECT MERCADOS.ID_MERCADO, MERCADOS.NOM_MERCADO, GRT3.* FROM 
+                (
+                    SELECT ID_EMPRESA, RUPS.ARE_ESP_SECUE, RUPS.ARE_ESP_NOMBRE, GARANTIAS3.CAR_T1667_NIT_BENEFICIARIO, GARANTIAS3.TIPO_GARANTIA_3 FROM 
+                    (
+                        SELECT ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, NVL(TIPO_GARANTIA_1, 0) AS TIPO_GARANTIA_1, NVL(TIPO_GARANTIA_2, 0) AS TIPO_GARANTIA_2, NVL(TIPO_GARANTIA_3, 0) AS TIPO_GARANTIA_3 FROM 
+                        (
+                            SELECT ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, CAR_T1667_TIPO_GARANTIA, VALOR FROM 
+                            (
+                                SELECT 
+                                    ID_EMPRESA,
+                                    CAR_T1667_NIT_BENEFICIARIO,
+                                    CAR_T1667_TIPO_GARANTIA,
+                                    NVL(SUM(CAR_T1667_COSTO_A_RECUPERAR), 0) AS VALOR 
+                                FROM 
+                                    ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
+                                WHERE 
+                                    CAR_CARG_ANO = :ANIO_ARG 
+                                    AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                                    AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                                GROUP BY ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, CAR_T1667_TIPO_GARANTIA
+                            )
+                        )
+                        PIVOT 
+                        (
+                            MAX(VALOR) 
+                            FOR 
+                                CAR_T1667_TIPO_GARANTIA 
+                            IN ('1' AS TIPO_GARANTIA_1, '2' AS TIPO_GARANTIA_2, '3' AS TIPO_GARANTIA_3) 
+                        )
+                    ) GARANTIAS3,
+                    (
+                        SELECT ARE_ESP_NOMBRE, ARE_ESP_SECUE, ARE_ESP_NIT FROM RUPS.ARE_ESP_EMPRESAS
+                    ) RUPS
+                    WHERE GARANTIAS3.CAR_T1667_NIT_BENEFICIARIO = RUPS.ARE_ESP_NIT
+                ) GRT3,
+                (
+                    SELECT 
+                        DISTINCT ID_MERCADO,
+                        ARE_ESP_SECUE,
+                        NOM_MERCADO,
+                        ESTADO 
+                    FROM 
+                        CARG_COMERCIAL_E.MERCADO_EMPRESA 
+                    WHERE 
+                        ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG 
+                        AND ESTADO = 'A' 
+                        AND NOM_MERCADO NOT LIKE '%Mercado Prueba%' 
+                        AND NOM_MERCADO NOT LIKE '%Mercado de Prueba%' 
+                    UNION 
+                    SELECT  
+                        20481 AS ID_MERCADO,
+                        20481 AS ARE_ESP_SECUE,
+                        'XM COMPAÑIA DE EXPERTOS EN MERCADOS S.A. E.S.P.' AS NOM_MERCADO,
+                        'A' AS ESTADO 
+                    FROM DUAL
+                ) MERCADOS 
+                WHERE GRT3.ARE_ESP_SECUE = MERCADOS.ARE_ESP_SECUE
+            ) TPG3
+        ) VGSTR
     ) FTE2,
     (
         SELECT ARE_ESP_NOMBRE, ARE_ESP_SECUE, ARE_ESP_NIT FROM RUPS.ARE_ESP_EMPRESAS
     ) RUPS,
     (
-        SELECT 
-            CAR_TIAR_CODIGO,
-            EXTRACT(MONTH FROM QUA_EST_FCHCERT) AS MES_CERTIFICADO,
-            EXTRACT(YEAR FROM QUA_EST_FCHCERT) ANO_CERTIFICADO,
-            QUA_EST_ESTADO 
-        FROM CALIDAD_SUI.FAC_QUA_ESTADO 
-        WHERE 
-            CAR_TIAR_CODIGO = '1667' 
-            AND ARE_ESP_SECUE = :EMPRESA_ARG 
-            AND EXTRACT(YEAR FROM QUA_EST_FCHCERT) = :ANIO_ARG 
-            AND EXTRACT(MONTH FROM QUA_EST_FCHCERT) = :PERIODO_ARG
+        SELECT CASE WHEN EXISTS (
+            SELECT 
+                QUA_EST_ESTADO 
+            FROM CALIDAD_SUI.FAC_QUA_ESTADO 
+            WHERE 
+                CAR_TIAR_CODIGO = '1667' 
+                AND ARE_ESP_SECUE = :EMPRESA_ARG 
+                AND EXTRACT(YEAR FROM QUA_EST_FCHCERT) = :ANIO_ARG 
+                AND EXTRACT(MONTH FROM QUA_EST_FCHCERT) = :PERIODO_ARG
+            ) 
+            THEN 'CERTIFICADO' ELSE 'NO CERTIFICADO' 
+            END AS QUA_EST_ESTADO
+        FROM CALIDAD_SUI.FAC_QUA_ESTADO
+        WHERE ROWNUM = 1
     ) CERTIFICADO
     WHERE FTE2.ID_EMPRESA = RUPS.ARE_ESP_SECUE
 ) FT2,
@@ -1057,70 +1084,41 @@ FROM
         GROUP BY MERCADO
     ) REFACT,
     (
+        SELECT MERCADO, NVL(SUM(VTI), 0) + NVL(SUM(VTR), 0) AS C55 FROM (
         SELECT 
-            FACTURAI.MERCADO,
-            NVL((FACTURAI.VT + REFACT.VT), 0) AS C55 
-        FROM 
-        (
-            SELECT MERCADO, SUM(VT) AS VT FROM (
-            SELECT 
-                TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-                (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) AS VT 
-            FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
-            WHERE 
-                IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_T1743_TIPO_FACT = 1 
-            ) GROUP BY MERCADO
-        ) FACTURAI,
-        (
-            SELECT MERCADO, SUM(VT) AS VT FROM (
-            SELECT 
-                TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-                CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END AS VT 
-            FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
-            WHERE 
-                IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_T1743_TIPO_FACT NOT IN 1 
-            ) GROUP BY MERCADO
-        ) REFACT
+            TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
+            CASE WHEN CAR_T1743_TIPO_FACT = 1 THEN (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) END AS VTI,
+            CASE WHEN CAR_T1743_TIPO_FACT <> 1 THEN 
+                CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END 
+            END AS VTR 
+        FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
+        WHERE 
+            IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
+            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
+            AND CAR_CARG_ANO = :ANIO_ARG 
+        ) GROUP BY MERCADO
     ) VENTAS_TOTALES,
     (
         SELECT 
-            FACTURAI.MERCADO,
-            NVL((FACTURAI.VR + REFACT.VR), 0) AS C60 
+            VENTAS_REGULADOS.MERCADO,
+            VENTAS_REGULADOS.VRI + VENTAS_REGULADOS.VRR AS C60 
         FROM 
         (
-            SELECT MERCADO, SUM(VR) AS VR FROM (
+            SELECT MERCADO, NVL(SUM(VRI), 0) AS VRI, NVL(SUM(VRR), 0) AS VRR FROM (
             SELECT 
                 TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-                (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) AS VR 
+                CASE WHEN CAR_T1743_TIPO_FACT = 1 THEN (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) END AS VRI,
+                CASE WHEN CAR_T1743_TIPO_FACT <> 1 THEN 
+                    CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END 
+                END AS VRR 
             FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
             WHERE 
                 IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
                 AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS2 
                 AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_T1743_TIPO_FACT = 1 
-                AND CAR_T1743_TIPO_TARIFA = 1
-            ) GROUP BY MERCADO
-        ) FACTURAI,
-        (
-            SELECT MERCADO, SUM(VR) AS VR FROM (
-            SELECT 
-                TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-                CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END AS VR 
-            FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
-            WHERE 
-                IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS2 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_T1743_TIPO_FACT NOT IN 1 
                 AND CAR_T1743_TIPO_TARIFA = 1 
             ) GROUP BY MERCADO
-        ) REFACT
+        ) VENTAS_REGULADOS
     ) VENTAS_REGULADOS,
     (
         SELECT 
