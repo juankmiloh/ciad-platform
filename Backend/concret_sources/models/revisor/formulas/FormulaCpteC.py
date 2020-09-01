@@ -1,5 +1,9 @@
 from ....util.ServiceConnection import serviceConnection
 import pandas as pd
+from ....models.revisor.Componente import Componente
+from ....models.revisor.formulas.FormulaCpteP097 import FormulaCpteP097
+from ....models.revisor.formulas.FormulaCpteD097 import FormulaCpteD097
+import sys
 
 class FormulaCpteC(object):
     def __init__(self):
@@ -7,10 +11,45 @@ class FormulaCpteC(object):
         self.connMDB = connection.get_connectionMDB()
         self.meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
-    def merge_comercializacion(self, dataFrame, ano, mes, empresa):
-        cpteC = dataFrame
+    def merge_comercializacion(self, dataFrame, result, ano, mes, empresa, modelG, modelT, modelP, modelD, modelR):
+        # print('MERCADO > ', mercado)
+        # print('EMPRESA > ', empresa)
+        # print('COMPONENTE G > ', modelG)
+        # print('DATAFRAME MERCADO > ', dataFrame)
 
-        #Consutla MongoDB IDANE (Trae solo IPC de 12-2013)
+        # if result == 'No':
+        #     componenteG = Componente("G", ano, mes, empresa, mercado, "No")
+        #     componenteT = Componente("T", ano, mes, empresa, mercado, "2")
+        #     componenteP015 = Componente("P015", ano, mes, empresa, mercado, "No")
+        #     componenteP097 = Componente("P097", ano, mes, empresa, mercado, "No")
+        #     componenteD015 = Componente("D015", ano, mes, empresa, mercado, "No")
+        #     componenteD097 = Componente("D097", ano, mes, empresa, mercado, "No")
+        #     componenteR = Componente("R", ano, mes, empresa, mercado, "No")
+            
+        #     cpteG = pd.DataFrame(componenteG.get_values_component_SUI())
+        #     cpteT = pd.DataFrame(componenteT.get_values_component_SUI())
+        #     cpteP015, numrowsCpteP015 = self.get_props_cpte(componenteP015)
+        #     cpteP097 = componenteP097.get_values_component_SUI()
+        #     cpteP097 = FormulaCpteP097().merge_perdidas_P097(pd.DataFrame(cpteP097, columns=['ano','mes','empresa','mercado','c6','c7','c1','c14','c2','c3','c4','c5']))
+        #     cpteD015, numrowsCpteD015 = self.get_props_cpte(componenteD015)
+        #     cpteD097 = componenteD097.get_values_component_SUI()
+        #     cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5']), ano, mes, empresa)
+        #     cpteR = pd.DataFrame(componenteR.get_values_component_SUI())
+
+        #     # --------------------- VALORES CPTE G --------------------- #
+        #     modelG = self.get_values_cpteG(cpteG, ano, mes, empresa, mercado)
+        #     # --------------------- VALORES CPTE T --------------------- #
+        #     modelT = self.get_values_cpteT(cpteT, ano, mes, empresa, mercado)
+        #     # --------------------- VALORES CPTE P --------------------- #
+        #     modelP = self.get_values_cpteP(numrowsCpteP015, cpteP015, cpteP097, ano, mes, empresa, mercado)
+        #     # --------------------- VALORES CPTE D --------------------- #
+        #     modelD = self.get_values_cpteD(numrowsCpteD015, cpteD015, cpteD097, ano, mes, empresa, mercado)
+        #     # --------------------- VALORES CPTE R --------------------- #
+        #     modelR = self.get_values_cpteR(cpteR, ano, mes, empresa, mercado)
+
+        cpteC = dataFrame.loc[dataFrame['mercado'] == result[1]] # Se busca la fila correspondiente al mercado
+
+        # Consutla MongoDB IDANE (Trae solo IPC de 12-2013)
         gestorDane2013 = self.__getVariablesDane2013(ano)
         cpteC = pd.merge(cpteC, gestorDane2013, on='ano')
         # print("IDANE 2013 - 12 -> ", gestorDane2013)
@@ -23,6 +62,18 @@ class FormulaCpteC(object):
         #Consutla MongoDB comercializacion
         gestorC = self.__getVariablesComercializacion(ano, empresa)
         cpteC = pd.merge(cpteC, gestorC, on='empresa')
+
+        # Formula
+
+        cpteC['c7'] = modelG[0]['cpte_calculado']
+
+        cpteC['c8'] = modelT[0]['cpte_calculado']
+
+        cpteC['c9'] = modelP[0]['cpte_calculado']
+
+        cpteC['c10'] = modelD[0]['cpte_calculado']
+
+        cpteC['c11'] = modelR[0]['cpte_calculado']
 
         cpteC['c5'] = cpteC['c1'] * (1 - cpteC['c2']) * cpteC['c4'] / cpteC['c3']
 
@@ -73,6 +124,11 @@ class FormulaCpteC(object):
         cpteC['c67'] = (cpteC['c63'] / cpteC['c64']) * 100
 
         # print('DATAFRAME cpte C > ', cpteC)
+
+        # sys.stdout = open('log.txt', 'w')
+        # print('Write this to file.')
+
+        cpteC.to_csv(r'D:\export_dataframe.csv', mode='a', index = False, header=True)
 
         return cpteC
     
@@ -136,3 +192,123 @@ class FormulaCpteC(object):
 
         df = pd.DataFrame(obj,columns=['empresa','c2','c19','c45','c46'])
         return df
+
+    #  # Función que devuelve los valores del CPTE y ademas permite saber el numero de filas que retorna
+    # def get_props_cpte(self, cpte):
+    #     df = pd.DataFrame(cpte.get_values_component_SUI())
+    #     numRows = df.shape[0]
+    #     return df, numRows
+
+    # # Función para obtener valor del cpte 'G'
+    # def get_values_cpteG(self, cpteG, ano, mes, empresa, mercado):
+    #     #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO
+    #     find = (cpteG[21] == empresa) & (cpteG[22] == mercado) & (cpteG[19] == ano) & (cpteG[20] == mes)
+    #     calculado_g = cpteG.loc[find][33].tolist()[0]
+    #     modelG = [{ 'value': "G", 'cpte_publicado': 0, 'cpte_calculado': calculado_g, 'label_publicado': 'Componente G publicado:', 'label_calculado': 'Componente G calculado:' }]
+    #     return modelG
+
+    # # Función para obtener valor del cpte 'T'
+    # def get_values_cpteT(self, cpteT, ano, mes, empresa, mercado):
+    #     #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO -               NTPROP
+    #     find = (cpteT[0] == empresa) & (cpteT[1] == mercado) & (cpteT[3] == ano) & (cpteT[4] == mes) & (cpteT[2] == result[4])
+    #     calculado_t = cpteT.loc[find][6].tolist()[0]
+    #     modelT = [{ 'value': "T", 'cpte_publicado': 0, 'cpte_calculado': calculado_t, 'label_publicado': 'Componente T empresa:', 'label_calculado': 'Componente T LAC:' }]
+    #     return modelT
+
+    # # Función para obtener valor del cpte 'P'
+    # # Función que permite crear el objeto de acuerdo al NTPROP del result = Datos publicados por la empresa
+    # def get_values_cpteP(self, numrowsCpteP015, cpteP015, cpteP097, ano, mes, empresa, mercado):
+    #     # print("COMPONENTE | ", numrowsCpteP015, " | CPTEP015 | ", cpteP015, " | CPTEP097 | ", cpteP097, " | RESULT | ", result)
+    #     if numrowsCpteP015 > 0:
+    #         # --------------------- VALORES CPTE P015 --------------------- #
+    #         find = (cpteP015[2] == empresa) & (cpteP015[3] == mercado) & (cpteP015[0] == ano) & (cpteP015[1] == mes)
+    #         if result[4].find('1') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP015.loc[find][28].tolist()[0]
+    #         if result[4].find('2') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP015.loc[find][29].tolist()[0]
+    #         if result[4].find('3') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP015.loc[find][30].tolist()[0]
+    #         if result[4].find('4') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP015.loc[find][31].tolist()[0]
+    #         modelP = [{ 'value': "P015", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P015 publicado:', 'label_calculado': 'Componente P015 calculado:' }]
+    #     else:
+    #         # --------------------- VALORES CPTE P097 --------------------- #
+    #         find = (cpteP097['empresa'] == empresa) & (cpteP097['mercado'] == mercado) & (cpteP097['ano'] == ano) & (cpteP097['mes'] == mes)
+    #         if result[4].find('1') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP097['nt1'].tolist()[0]
+    #         if result[4].find('2') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP097['nt2'].tolist()[0]
+    #         if result[4].find('3') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP097['nt3'].tolist()[0]
+    #         if result[4].find('4') != -1:
+    #             publicado_p = 0
+    #             calculado_p = cpteP097['nt4'].tolist()[0]
+    #         modelP = [{ 'value': "P097", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P097 publicado:', 'label_calculado': 'Componente P097 calculado:' }]
+    #     return modelP
+    
+    # # Función para obtener valor del cpte 'D'
+    # # Función que permite crear el objeto de acuerdo al NTPROP del result = Datos publicados por la empresa
+    # def get_values_cpteD(self, numrowsCpteD015, cpteD015, cpteD097, ano, mes, empresa, mercado):
+    #     # print("COMPONENTE | ", numrowsCpteD015, " | CPTED015 | ", cpteD015, " | CPTED097 | ", cpteD097, " | RESULT | ", result)
+    #     # print("COMPONENTE | ", numrowsCpteD015, " | CPTED015 | ", cpteD015)
+    #     if numrowsCpteD015 > 0:
+    #         # --------------------- VALORES CPTE D015 --------------------- #
+    #         find = (cpteD015[25] == empresa) & (cpteD015[23] == ano) & (cpteD015[24] == mes)
+    #         if result[4].find('1-100') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][17].tolist()[0]
+    #         if result[4].find('1-50') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][18].tolist()[0]
+    #         if result[4].find('1-0') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][19].tolist()[0]
+    #         if result[4].find('2') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][20].tolist()[0]
+    #         if result[4].find('3') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][21].tolist()[0]
+    #         if result[4].find('4') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD015.loc[find][7].tolist()[0]
+    #         modelD = [{ 'value': "D015", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D015 publicado:', 'label_calculado': 'Componente D015 calculado:' }]
+    #     else:
+    #         print("| CPTED097 -> ", cpteD097)
+    #         # --------------------- VALORES CPTE D097 --------------------- #
+    #         find = (cpteD097['empresa'] == empresa) & (cpteD097['ano'] == ano) & (cpteD097['mes'] == mes)
+    #         if result[4].find('1-100') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c23'].tolist()[0]
+    #         if result[4].find('1-50') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c24'].tolist()[0]
+    #         if result[4].find('1-0') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c25'].tolist()[0]
+    #         if result[4].find('2') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c26'].tolist()[0]
+    #         if result[4].find('3') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c27'].tolist()[0]
+    #         if result[4].find('4') != -1:
+    #             publicado_d = 0
+    #             calculado_d = cpteD097['c28'].tolist()[0]
+    #         modelD = [{ 'value': "D097", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D097 publicado:', 'label_calculado': 'Componente D097 calculado:' }]
+    #     return modelD
+
+    # # Función para obtener valor del cpte 'R'
+    # def get_values_cpteR(self, cpteR, ano, mes, empresa, mercado):
+    #     #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO
+    #     find = (cpteR[0] == empresa) & (cpteR[1] == mercado) & (cpteR[2] == ano) & (cpteR[3] == mes)
+    #     calculado_r = cpteR.loc[find][10].tolist()[0]
+    #     modelR = [{ 'value': "R", 'cpte_publicado': result[10], 'cpte_calculado': calculado_r, 'label_publicado': 'Componente R publicado:', 'label_calculado': 'Componente R calculado:' }]
+    #     return modelR

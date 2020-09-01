@@ -38,14 +38,14 @@ class ComponentService(Componente):
         if self._Componente__COMPONENTE == 'D097':
             print('-------------------------- COMPONENTE SELECT "D097" --------------------')
             cpteService = CpteServiceD097()
-        
-        if self._Componente__COMPONENTE == 'C':
-            print('-------------------------- COMPONENTE SELECT "C" --------------------')
-            cpteService = CpteServiceC()
 
         if self._Componente__COMPONENTE == 'R':
             print('-------------------------- COMPONENTE SELECT "R" --------------------')
             cpteService = CpteServiceR()
+
+        if self._Componente__COMPONENTE == 'C':
+            print('-------------------------- COMPONENTE SELECT "C" --------------------')
+            cpteService = CpteServiceC()
         
         jsonValues = cpteService.getData(data)
 

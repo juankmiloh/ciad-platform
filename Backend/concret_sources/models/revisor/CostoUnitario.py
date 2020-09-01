@@ -2,6 +2,7 @@ from ...util.ServiceConnection import serviceConnection
 import os
 import json
 import pandas as pd
+from concret_sources.models.revisor.formulas.FormulaCpteC import FormulaCpteC
 
 
 class CostoUnitario():
@@ -148,9 +149,10 @@ class CostoUnitario():
         return modelD
 
     # Función para obtener valor del cpte 'C'
-    def get_values_cpteC(self, cpteC, result):
-        #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               NTPROP
-        find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14]) & (cpteC['nt_prop'] == result[4])
+    def get_values_cpteC(self, cpte, result, ano, mes, empresa, modelG, modelT, modelP, modelD, modelR):
+        cpteC = FormulaCpteC().merge_comercializacion(cpte, result, ano, mes, empresa, modelG, modelT, modelP, modelD, modelR)
+        #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               
+        find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14])
         calculado_c = cpteC['c64'].tolist()[0]
         modelC = [{ 'value': "C", 'cpte_publicado': result[9], 'cpte_calculado': calculado_c, 'label_publicado': 'Componente C publicado:', 'label_calculado': 'Componente C calculado:' }]
         return modelC
