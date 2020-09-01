@@ -65,51 +65,54 @@ class FormulaCpteC(object):
 
         # Formula
 
-        cpteC['c7'] = modelG[0]['cpte_calculado']
+        cpteC['c7'] = 253.7434
 
-        cpteC['c8'] = modelT[0]['cpte_calculado']
+        cpteC['c8'] = 38.3961
 
-        cpteC['c9'] = modelP[0]['cpte_calculado']
+        cpteC['c9'] = 56.2392
 
-        cpteC['c10'] = modelD[0]['cpte_calculado']
+        cpteC['c10'] = 211.2742
 
-        cpteC['c11'] = modelR[0]['cpte_calculado']
+        cpteC['c11'] = 0.7642
 
         cpteC['c5'] = cpteC['c1'] * (1 - cpteC['c2']) * cpteC['c4'] / cpteC['c3']
 
-        cpteC['c17'] = cpteC['c15'] + cpteC['c16'] + (0.5 * (1 - cpteC['c15'] - cpteC['c16'])) + 0.05
+        cpteC['c17'] = (cpteC['c15'] / 100) + (cpteC['c16'] / 100) + (0.5 * (1 - (cpteC['c15'] / 100) - (cpteC['c16'] / 100))) + 0.05
 
         cpteC['c26'] = cpteC['c20'] + cpteC['c21'] + cpteC['c22'] + cpteC['c23'] + cpteC['c24'] + cpteC['c25']
 
         cpteC['c18'] = (1 - cpteC['c17']) / cpteC['c17']
 
-        cpteC['c27'] = (cpteC['c13'] * (cpteC['c20'] + cpteC['c22'] + cpteC['c24']) + (cpteC['c14'] * cpteC['c21']) + (cpteC['c18'] * cpteC['c23']) + (cpteC['c19'] * cpteC['c25'])) / cpteC['c26']
+        cpteC['c27'] = ((cpteC['c13'] / 100) * (cpteC['c20'] + cpteC['c22'] + cpteC['c24']) + ((cpteC['c14'] / 100) * cpteC['c21']) + (cpteC['c18'] * cpteC['c23']) + ((cpteC['c19'] / 100) * cpteC['c25'])) / cpteC['c26']
 
-        cpteC['c39'] = (cpteC['c32'] * ((1 + cpteC['c36'] / 100) ** (cpteC['c34'] + 0.63)) - cpteC['c1'])
+        # cpteC['c39'] = (cpteC['c32'] * ((1 + cpteC['c36'] / 100) ** (cpteC['c34'] + 0.63)) - cpteC['c1']) # TOMAR ESTA - cuadrarla
+        cpteC['c39'] = (cpteC['c32'] * (((1 + cpteC['c36']) ** (cpteC['c34'] + 0.63)) - 1)) # PRUEBA CON 524
 
-        cpteC['c40'] = (cpteC['c33'] * ((1 + cpteC['c37'] / 100) ** (cpteC['c35'])) - cpteC['c1'])
+        # cpteC['c40'] = (cpteC['c33'] * ((1 + cpteC['c37'] / 100) ** (cpteC['c35'])) - cpteC['c1']) # TOMAR ESTA - cuadrarla
+
+        cpteC['c40'] = (cpteC['c33'] * (((1 + cpteC['c37']) ** (cpteC['c35'])) - 1))
 
         cpteC['c41'] = (cpteC['c39'] - cpteC['c40']) / cpteC['c38']
 
         cpteC['c42'] = 0.00042 + cpteC['c41']
 
-        cpteC['c12'] = 2.73 # cambiar por el valor del gestor de datos (MO) crear
+        cpteC['c12'] = 2.73 / 100 # cambiar por el valor del gestor de datos (MO) crear
 
         cpteC['c43'] = (cpteC['c7'] + cpteC['c8'] + cpteC['c9'] + cpteC['c10'] + cpteC['c11']) * (cpteC['c12'] + cpteC['c27'] + cpteC['c42'])
 
-        cpteC['c49'] = cpteC['c45'] * cpteC['c47'] / 100
+        cpteC['c49'] = cpteC['c45'] * cpteC['c47'] / 100 / 12
         
-        cpteC['c50'] = cpteC['c46'] * cpteC['c48'] / 100
+        cpteC['c50'] = cpteC['c46'] * cpteC['c48'] / 100 / 12
         
         cpteC['c51'] = cpteC['c49'] + cpteC['c50']
         
-        cpteC['c54'] = cpteC['c51'] + cpteC['c52']
+        cpteC['c54'] = cpteC['c52'] + cpteC['c53']
 
         cpteC['c68'] = cpteC['c70'] * cpteC['c60']
 
         cpteC['c57'] = cpteC['c68'] + cpteC['c71']
 
-        cpteC['c61'] = 2 # cambiar por el valor del gestor de datos (Beta) crear
+        cpteC['c61'] = 0 # cambiar por el valor del gestor de datos (Beta) crear
 
         cpteC['c62'] = (((1 - cpteC['c61']) * cpteC['c5'] * cpteC['c59']) + cpteC['c57'] + cpteC['c58']) / cpteC['c60']
 
