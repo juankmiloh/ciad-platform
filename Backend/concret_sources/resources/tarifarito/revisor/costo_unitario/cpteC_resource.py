@@ -21,7 +21,7 @@ class rComponentC(Resource):
         self.__NTPROP_ARG = ntprop if ntprop != "" else "TODOS"
         componentService = ComponentService("C", self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG, "No")
         dataCpte = componentService.get_values_component_SUI()
-        valuesCpte = FormulaCpteC().merge_comercializacion(pd.DataFrame(dataCpte, columns=['empresa','mercado','ano','mes','c6','c1','c13','c20','c22','c24','c21','c14','c15','c16','c23','c25','c28','c29','c30','c31','c32','c36','c34','c33','c37','c35','c38','c59','c69','c70','c71','c58','c60','c44','c47','c48','c55','c56','c52','c53']), 'No', self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, 'No', 'No', 'No', 'No', 'No', self.__MERCADO_ARG)
+        valuesCpte = FormulaCpteC().merge_comercializacion(pd.DataFrame(dataCpte, columns=['empresa','mercado','ano','mes','c6','c1','c7','c8','c9','c10','c11','c13','c20','c22','c24','c21','c14','c15','c16','c23','c25','c28','c29','c30','c31','c32','c36','c34','c33','c37','c35','c38','c59','c69','c70','c71','c58','c60','c44','c47','c48','c55','c56','c52','c53']), self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG)
         # print('jsonValues', valuesCpte)
         jsonValues = componentService.get_model_component(valuesCpte)
         return jsonValues

@@ -70,8 +70,8 @@ class empresasTarifarito(Resource):
         print("________EMPRESA____________")
         print(self.__EMPRESA_ARG)
         print("____________________________")
-        print("_________QUERY______________")
-        print("SQL:", self.__query)
-        print("____________________________")
+        # print("_________QUERY______________")
+        # print("SQL:", self.__query)
+        # print("____________________________")
         cursor.execute(self.__query, EMPRESA_ARG=self.__EMPRESA_ARG)
         return cursor

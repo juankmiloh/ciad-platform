@@ -16,7 +16,6 @@ class CpteServiceC():
                     'mes': data['mes'].tolist()[row],
                     'empresa': data['empresa'].tolist()[row],
                     'mercado': data['mercado'].tolist()[row],
-                    'ntprop': data['nt_prop'].tolist()[row],
                     'values': {
                         'COSTO_BASE_COMERCIALIZACION_ACTUALIZADO': [
                             data['c5'].tolist()[row],  # C5 - CAMBIAR

@@ -149,8 +149,8 @@ class CostoUnitario():
         return modelD
 
     # Función para obtener valor del cpte 'C'
-    def get_values_cpteC(self, cpte, result, ano, mes, empresa, modelG, modelT, modelP, modelD, modelR):
-        cpteC = FormulaCpteC().merge_comercializacion(cpte, result, ano, mes, empresa, modelG, modelT, modelP, modelD, modelR)
+    def get_values_cpteC(self, cpte, result, ano, mes, empresa):
+        cpteC = FormulaCpteC().merge_comercializacion(cpte, ano, mes, empresa, result[1])
         #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               
         find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14])
         calculado_c = cpteC['c64'].tolist()[0]
@@ -166,7 +166,7 @@ class CostoUnitario():
         return modelR
     
     # Función para obtener valor del 'CU'
-    def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelC, modelR, result):
-        calculado_cu = modelG[0]['cpte_calculado'] + modelT[0]['cpte_calculado'] + modelP[0]['cpte_calculado'] + modelD[0]['cpte_calculado'] + modelC[0]['cpte_calculado'] + modelR[0]['cpte_calculado']
+    def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelR, result):
+        calculado_cu = modelG[0]['cpte_calculado'] + modelT[0]['cpte_calculado'] + modelP[0]['cpte_calculado'] + modelD[0]['cpte_calculado'] + 0 + modelR[0]['cpte_calculado']
         modelCU = [{ 'value': "CU", 'cpte_publicado': result[11], 'cpte_calculado': calculado_cu, 'label_publicado': 'CU publicado:', 'label_calculado': 'CU calculado:' }]
         return modelCU

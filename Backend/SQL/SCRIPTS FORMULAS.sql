@@ -679,27 +679,46 @@ FROM
 --- CONSULTA PARA HALLAR VALOR DEL COMPONENTE R - REESTRICCIONES
 ------------------------------------------------------------------------------------------
 SELECT 
-    T9.*,
+    T9_TC2.*,
     T10.*,
-    TC2.*,
-    (T10.C1 - T10.C2 + T10.C3 + T9.C4) AS C5,
-    (T10.C1 - T10.C2 + T10.C3 + T9.C4) / TC2.C6 AS C7 
+    (T10.C1 - T10.C2 + T10.C3 + T9_TC2.C4) AS C5,
+    CASE WHEN T9_TC2.C6 <> 0 THEN (T10.C1 - T10.C2 + T10.C3 + T9_TC2.C4) / T9_TC2.C6 ELSE 0 END AS C7 
 FROM 
 (
-    SELECT 
-        ID_EMPRESA,
-        CAR_1672_ID_MERCADO,
-        CAR_CARG_ANO,
-        CAR_CARG_PERIODO,
-        CAR_1672_AREST AS C4 
-    FROM 
-        ENERGIA_CREG_015.CAR_VAR_COSTO_UNT_PS_CU_119_UR 
-    WHERE 
-        CAR_CARG_ANO = :ANIO_ARG 
-        AND CAR_CARG_PERIODO = :PERIODO_ARG 
-        AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-        AND (CAR_1672_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-) T9,
+    SELECT T9.*, NVL(TC2.C6, 0) AS C6 FROM
+    (
+        SELECT 
+            ID_EMPRESA,
+            CAR_1672_ID_MERCADO,
+            CAR_CARG_ANO,
+            CAR_CARG_PERIODO,
+            CAR_1672_AREST AS C4 
+        FROM 
+            ENERGIA_CREG_015.CAR_VAR_COSTO_UNT_PS_CU_119_UR 
+        WHERE 
+            CAR_CARG_ANO = :ANIO_ARG 
+            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+            AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+            AND (CAR_1672_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+    ) T9
+    LEFT JOIN
+    (
+        SELECT MERCADO AS MERCADO_VT, (SUM(VTI) + SUM(VTR)) AS C6 FROM (
+        SELECT 
+            TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
+            NVL(CASE WHEN CAR_T1743_TIPO_FACT = 1 THEN (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) END, 0) AS VTI,
+            NVL(CASE WHEN CAR_T1743_TIPO_FACT <> 1 THEN 
+                CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END 
+            END, 0) AS VTR 
+        FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
+        WHERE 
+            IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
+            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
+            AND CAR_CARG_ANO = :ANIO_ARG  
+        ) GROUP BY MERCADO
+    ) TC2
+    ON T9.CAR_1672_ID_MERCADO = TC2.MERCADO_VT
+) T9_TC2,
 (
     SELECT 
         CAR_T1671_RTCSA AS C1,
@@ -709,38 +728,7 @@ FROM
     WHERE CAR_CARG_ANO = :ANIO_ARG 
     and CAR_CARG_PERIODO = :PERIODO_ARG 
     AND (CAR_T1671_ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-) T10,
-(
-    SELECT 
-        NVL((FACTURAI.VT + REFACT.VT), 0) AS C6 
-    FROM 
-    (
-        SELECT MERCADO, SUM(VT) AS VT FROM (
-        SELECT 
-            TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-            (CAR_T1743_CONS_USUARIO + CAR_T1743_CONS_CDC) AS VT 
-        FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
-        WHERE 
-            IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
-            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-            AND CAR_CARG_ANO = :ANIO_ARG 
-            AND CAR_T1743_TIPO_FACT = 1 
-        ) GROUP BY MERCADO
-    ) FACTURAI,
-    (
-        SELECT MERCADO, SUM(VT) AS VT FROM (
-        SELECT 
-            TO_NUMBER(SUBSTR(CAR_T1743_MERCADO_NIU, 1, INSTR(CAR_T1743_MERCADO_NIU, '-')-1)) AS MERCADO,
-            CASE WHEN car_t1743_val_rft_cu >=0 THEN (CAR_T1743_RFT_CU*1) + CAR_T1743_RFT_CDC ELSE (CAR_T1743_RFT_CU*-1) + CAR_T1743_RFT_CDC END AS VT 
-        FROM ENERGIA_CREG_015.CAR_T1743_TC2FACTURACION_USU 
-        WHERE 
-            IDENTIFICADOR_EMPRESA = :EMPRESA_ARG 
-            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-            AND CAR_CARG_ANO = :ANIO_ARG 
-            AND CAR_T1743_TIPO_FACT NOT IN 1 
-        ) GROUP BY MERCADO
-    ) REFACT
-) TC2;
+) T10;
 
 ------------------------------------------------------------------------------------------
 --- CONSULTA PARA HALLAR VALOR DEL COMPONENTE C - COMERCIALIZACION
@@ -749,14 +737,66 @@ FROM
 SELECT * FROM 
 (
     SELECT 
-        FT3.ID_EMPRESA, FT3.CAR_T1668_ID_MERCADO, FT3.CAR_CARG_ANO, FT3.CAR_CARG_PERIODO, FT3.C6, T9.C1, T9.C13, NVL(FTC2.C20, 0) AS C20, NVL(FTC2.C22, 0) AS C22, NVL(FTC2.C24, 0) AS C24, NVL(FTC2.C21, 0) AS C21, T9.C14, T9.C15, T9.C16, NVL(FTC2.C23, 0) AS C23, NVL(FTC2.C25, 0) AS C25, T9.C28, T9.C29, T9.C30,
+        FT3.ID_EMPRESA, FT3.CAR_T1668_ID_MERCADO, FT3.CAR_CARG_ANO, FT3.CAR_CARG_PERIODO, FT3.C6, T9.C1, FT7.C7, FT7.C8, FT7.C9, FT7.C10, FT7.C11, T9.C13, NVL(FTC2.C20, 0) AS C20, NVL(FTC2.C22, 0) AS C22, NVL(FTC2.C24, 0) AS C24, NVL(FTC2.C21, 0) AS C21, T9.C14, T9.C15, T9.C16, NVL(FTC2.C23, 0) AS C23, NVL(FTC2.C25, 0) AS C25, T9.C28, T9.C29, T9.C30,
         T9.C31, T9.C32, T9.C36, T9.C34, T9.C33, T9.C37, T9.C35, T9.C38, NVL(FTC2.C59, 0) AS C59, NVL(FT2.C69, 0) AS C69, NVL(FT2.C70, 0) AS C70, NVL(FT2.C71, 0) AS C71, T9.C58, NVL(FTC2.C60, 0) AS C60, T9.C44, T9.C47, T9.C48, NVL(FTC2.C55, 0) AS C55, NVL(FT2.C56, 0) AS C56 
     FROM 
+    (
+        SELECT 
+            CAR_T1669_ID_MERCADO,
+            CAR_T1669_GM AS C7,
+            CAR_T1669_TM AS C8,
+            CAR_T1669_PRNM AS C9,
+            CAR_T1669_DNM AS C10,
+            CAR_T1669_RM AS C11 
+        FROM 
+        (
+            (
+                SELECT FT7.* FROM 
+                (
+                    SELECT * FROM ENERGIA_CREG_015.CAR_COSTO_UNITARIO_119_UR 
+                    WHERE 
+                        (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                        AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                        AND CAR_CARG_ANO = :ANIO_ARG 
+                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                        AND CAR_T1676_ANIO_CORREG IS NULL
+                )FT7 
+                LEFT JOIN 
+                (
+                    SELECT * FROM ENERGIA_CREG_015.CAR_COSTO_UNITARIO_119_UR 
+                    WHERE 
+                        (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                        AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                        AND CAR_CARG_ANO = :ANIO_ARG 
+                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                        AND CAR_T1676_ANIO_CORREG IS NOT NULL
+                )F8 
+                ON FT7.CAR_T1669_ID_MERCADO = F8.CAR_T1669_ID_MERCADO 
+                AND FT7.ID_EMPRESA = F8.ID_EMPRESA 
+                AND FT7.CAR_T1669_NT_PROP = F8.CAR_T1669_NT_PROP 
+                AND FT7.CAR_CARG_ANO = F8.CAR_CARG_ANO 
+                AND FT7.CAR_CARG_PERIODO = F8.CAR_CARG_PERIODO 
+                WHERE (FT7.CAR_T1676_ANIO_CORREG IS NULL AND F8.CAR_T1676_ANIO_CORREG IS NULL) 
+            )
+            UNION 
+            (
+                SELECT * FROM ENERGIA_CREG_015.CAR_COSTO_UNITARIO_119_UR 
+                WHERE 
+                    (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                    AND (CAR_T1669_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                    AND CAR_CARG_ANO = :ANIO_ARG 
+                    AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                    AND CAR_T1676_ANIO_CORREG IS NOT NULL
+            )
+        ) FT7_FT8
+        WHERE CAR_T1669_NT_PROP = '1-100'
+    ) FT7
+    LEFT JOIN 
     (
         SELECT ID_EMPRESA, CAR_T1668_ID_MERCADO, CAR_CARG_ANO, CAR_CARG_PERIODO, CAR_T1668_TARIFA_CFJM AS C6 FROM 
         (
             (
-                SELECT FT3_NULL.* FROM 
+                SELECT FT3.* FROM 
                 (
                     SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
                     WHERE 
@@ -765,7 +805,7 @@ SELECT * FROM
                         AND CAR_CARG_ANO = :ANIO_ARG 
                         AND CAR_CARG_PERIODO = :PERIODO_ARG 
                         AND CAR_T1668_ANIO_CORREGIDO IS NULL
-                )FT3_NULL 
+                ) FT3
                 LEFT JOIN 
                 (
                     SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
@@ -775,12 +815,12 @@ SELECT * FROM
                         AND CAR_CARG_ANO = :ANIO_ARG 
                         AND CAR_CARG_PERIODO = :PERIODO_ARG 
                         AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-                )FT3_NONULL 
-                ON FT3_NULL.CAR_T1668_ID_MERCADO = FT3_NONULL.CAR_T1668_ID_MERCADO 
-                AND FT3_NULL.ID_EMPRESA = FT3_NONULL.ID_EMPRESA 
-                AND FT3_NULL.CAR_CARG_ANO = FT3_NONULL.CAR_CARG_ANO 
-                AND FT3_NULL.CAR_CARG_PERIODO = FT3_NONULL.CAR_CARG_PERIODO 
-                WHERE (FT3_NULL.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT3_NONULL.CAR_T1668_ANIO_CORREGIDO IS NULL)
+                ) FT4
+                ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
+                AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
+                AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
+                AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
+                WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
             )
             UNION 
             (
@@ -792,9 +832,10 @@ SELECT * FROM
                     AND CAR_CARG_PERIODO = :PERIODO_ARG 
                     AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
             )
-        ) FT3 
-        GROUP BY ID_EMPRESA, CAR_T1668_ID_MERCADO, CAR_CARG_ANO, CAR_CARG_PERIODO, CAR_T1668_TARIFA_CFJM 
+        ) FT3_FT4 
+        GROUP BY ID_EMPRESA, CAR_T1668_ID_MERCADO, CAR_CARG_ANO, CAR_CARG_PERIODO, CAR_T1668_TARIFA_CFJM
     )FT3 
+    ON FT7.CAR_T1669_ID_MERCADO = FT3.CAR_T1668_ID_MERCADO 
     LEFT JOIN 
     (
         SELECT 
@@ -830,7 +871,7 @@ SELECT * FROM
             AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
             AND (CAR_1672_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
     ) T9 
-    ON FT3.CAR_T1668_ID_MERCADO = T9.CAR_1672_ID_MERCADO 
+    ON FT7.CAR_T1669_ID_MERCADO = T9.CAR_1672_ID_MERCADO 
     LEFT JOIN 
     (
         SELECT * FROM 
@@ -953,7 +994,7 @@ SELECT * FROM
         ) USUARIOS 
         WHERE VENTAS.MERCADO = USUARIOS.CAR_T1732_ID_MERCADO
     )FTC2 
-    ON FT3.CAR_T1668_ID_MERCADO = FTC2.MERCADO 
+    ON FT7.CAR_T1669_ID_MERCADO = FTC2.MERCADO 
     LEFT JOIN 
     (
         SELECT CERTIFICADO.QUA_EST_ESTADO, RUPS.*, FTE2.* FROM 
@@ -985,7 +1026,7 @@ SELECT * FROM
                                     ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
                                 WHERE 
                                     CAR_CARG_ANO = :ANIO_ARG 
-                                    AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                                    AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
                                     AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
                                     AND CAR_T1667_TIPO_GARANTIA IN (1, 2, 3) 
                             )
@@ -1009,7 +1050,7 @@ SELECT * FROM
                                 ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
                             WHERE 
                                 CAR_CARG_ANO = :ANIO_ARG 
-                                AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1  
                                 AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
                                 AND CAR_T1667_TIPO_GARANTIA IN (1, 2) 
                             GROUP BY ID_EMPRESA, CAR_T1667_TIPO_GARANTIA
@@ -1062,7 +1103,7 @@ SELECT * FROM
                                         ENERGIA_CREG_015.CAR_GARANTIA_FINANCIERA 
                                     WHERE 
                                         CAR_CARG_ANO = :ANIO_ARG 
-                                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                                        AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1  
                                         AND (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
                                     GROUP BY ID_EMPRESA, CAR_T1667_NIT_BENEFICIARIO, CAR_T1667_TIPO_GARANTIA
                                 )
@@ -1127,7 +1168,7 @@ SELECT * FROM
         ) CERTIFICADO
         WHERE FTE2.ID_EMPRESA = RUPS.ARE_ESP_SECUE
     ) FT2 
-    ON FT3.CAR_T1668_ID_MERCADO = FT2.ID_MERCADO
+    ON FT7.CAR_T1669_ID_MERCADO = FT2.ID_MERCADO
 ) FORMATOS,
 (
     SELECT 
@@ -1138,51 +1179,3 @@ SELECT * FROM
     AND CAR_CARG_PERIODO = :PERIODO_ARG 
     AND (CAR_T1671_ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG)
 ) T10;
-
------------------- TENIENDO EN CUENTA ANIO Y MES CORREGIDO FT3 ----------------
--------------------------------------------------------------------------------------------------------------
--- CONSULTA FT3
--------------------------------------------------------------------------------------------------------------
-SELECT CAR_T1668_ID_MERCADO, MAX(CAR_T1668_TARIFA_CFJM) FROM 
-(
-    (
-        SELECT FT3_NULL.* FROM 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                AND CAR_T1668_ANIO_CORREGIDO IS NULL
-        )FT3_NULL 
-        LEFT JOIN 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-        )FT3_NONULL 
-        ON FT3_NULL.CAR_T1668_ID_MERCADO = FT3_NONULL.CAR_T1668_ID_MERCADO 
-        AND FT3_NULL.ID_EMPRESA = FT3_NONULL.ID_EMPRESA 
-        AND FT3_NULL.CAR_CARG_ANO = FT3_NONULL.CAR_CARG_ANO 
-        AND FT3_NULL.CAR_CARG_PERIODO = FT3_NONULL.CAR_CARG_PERIODO 
-        WHERE (FT3_NULL.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT3_NONULL.CAR_T1668_ANIO_CORREGIDO IS NULL) 
-    )
-    UNION 
-    (
-        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-        WHERE 
-            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-            AND CAR_CARG_ANO = :ANIO_ARG 
-            AND CAR_CARG_PERIODO = :PERIODO_ARG 
-            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-    )
-) FT3
-GROUP BY CAR_T1668_ID_MERCADO, CAR_T1668_TARIFA_CFJM;
-
-
