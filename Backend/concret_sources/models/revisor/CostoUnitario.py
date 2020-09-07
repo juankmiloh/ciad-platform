@@ -2,6 +2,8 @@ from ...util.ServiceConnection import serviceConnection
 import os
 import json
 import pandas as pd
+from concret_sources.models.revisor.formulas.FormulaCpteP097 import FormulaCpteP097
+from concret_sources.models.revisor.formulas.FormulaCpteD097 import FormulaCpteD097
 from concret_sources.models.revisor.formulas.FormulaCpteC import FormulaCpteC
 
 
@@ -14,8 +16,7 @@ class CostoUnitario():
         self.__EMPRESA_ARG = empresa
         self.__MERCADO_ARG = mercado
         self.__NTPROP_ARG = ntprop
-        connection = serviceConnection()
-        self.cursor = connection.get_connectionSUI()
+        self.connection = serviceConnection()
 
     # Se obtienen los valores publicados por la empresa en FT7
     def getCostoUnitario(self):
@@ -33,14 +34,15 @@ class CostoUnitario():
         return data
 
     def execute_query(self):
+        self.cursor = self.connection.get_connectionSUI()
         self.cursor.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
         return self.cursor
 
     # Función que devuelve los valores del CPTE y ademas permite saber el numero de filas que retorna
-    def get_props_cpte(self, cpte):
-        df = pd.DataFrame(cpte.get_values_component_SUI())
-        numRows = df.shape[0]
-        return df, numRows
+    # def get_props_cpte(self, cpte):
+    #     df = pd.DataFrame(cpte.get_values_component_SUI())
+    #     numRows = df.shape[0]
+    #     return df, numRows
 
     # Función para obtener valor del cpte 'G'
     def get_values_cpteG(self, cpteG, result):
@@ -60,8 +62,9 @@ class CostoUnitario():
 
     # Función para obtener valor del cpte 'P'
     # Función que permite crear el objeto de acuerdo al NTPROP del result = Datos publicados por la empresa
-    def get_values_cpteP(self, numrowsCpteP015, cpteP015, cpteP097, result):
+    def get_values_cpteP(self, cpteP015, cpteP097, result):
         # print("COMPONENTE | ", numrowsCpteP015, " | CPTEP015 | ", cpteP015, " | CPTEP097 | ", cpteP097, " | RESULT | ", result)
+        numrowsCpteP015 = cpteP015.shape[0]
         if numrowsCpteP015 > 0:
             # --------------------- VALORES CPTE P015 --------------------- #
             find = (cpteP015[2] == result[12]) & (cpteP015[3] == result[1]) & (cpteP015[0] == result[13]) & (cpteP015[1] == result[14])
@@ -80,6 +83,7 @@ class CostoUnitario():
             modelP = [{ 'value': "P015", 'cpte_publicado': publicado_p, 'cpte_calculado': calculado_p, 'label_publicado': 'Componente P015 publicado:', 'label_calculado': 'Componente P015 calculado:' }]
         else:
             # --------------------- VALORES CPTE P097 --------------------- #
+            cpteP097 = FormulaCpteP097().merge_perdidas_P097(cpteP097)
             find = (cpteP097['empresa'] == result[12]) & (cpteP097['mercado'] == result[1]) & (cpteP097['ano'] == result[13]) & (cpteP097['mes'] == result[14])
             if result[4].find('1') != -1:
                 publicado_p = result[7]
@@ -98,9 +102,10 @@ class CostoUnitario():
     
     # Función para obtener valor del cpte 'D'
     # Función que permite crear el objeto de acuerdo al NTPROP del result = Datos publicados por la empresa
-    def get_values_cpteD(self, numrowsCpteD015, cpteD015, cpteD097, result):
+    def get_values_cpteD(self, cpteD015, cpteD097, result, ano, mes, empresa):
         # print("COMPONENTE | ", numrowsCpteD015, " | CPTED015 | ", cpteD015, " | CPTED097 | ", cpteD097, " | RESULT | ", result)
         # print("COMPONENTE | ", numrowsCpteD015, " | CPTED015 | ", cpteD015)
+        numrowsCpteD015 = cpteD015.shape[0]
         if numrowsCpteD015 > 0:
             # --------------------- VALORES CPTE D015 --------------------- #
             find = (cpteD015[25] == result[12]) & (cpteD015[23] == result[13]) & (cpteD015[24] == result[14])
@@ -124,7 +129,7 @@ class CostoUnitario():
                 calculado_d = cpteD015.loc[find][7].tolist()[0]
             modelD = [{ 'value': "D015", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D015 publicado:', 'label_calculado': 'Componente D015 calculado:' }]
         else:
-            print("| CPTED097 -> ", cpteD097)
+            cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5']), ano, mes, empresa)
             # --------------------- VALORES CPTE D097 --------------------- #
             find = (cpteD097['empresa'] == result[12]) & (cpteD097['ano'] == result[13]) & (cpteD097['mes'] == result[14])
             if result[4].find('1-100') != -1:
@@ -166,7 +171,7 @@ class CostoUnitario():
         return modelR
     
     # Función para obtener valor del 'CU'
-    def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelR, result):
-        calculado_cu = modelG[0]['cpte_calculado'] + modelT[0]['cpte_calculado'] + modelP[0]['cpte_calculado'] + modelD[0]['cpte_calculado'] + 0 + modelR[0]['cpte_calculado']
+    def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelR, modelC, result):
+        calculado_cu = modelG[0]['cpte_calculado'] + modelT[0]['cpte_calculado'] + modelP[0]['cpte_calculado'] + modelD[0]['cpte_calculado'] + modelR[0]['cpte_calculado'] + modelC[0]['cpte_calculado']
         modelCU = [{ 'value': "CU", 'cpte_publicado': result[11], 'cpte_calculado': calculado_cu, 'label_publicado': 'CU publicado:', 'label_calculado': 'CU calculado:' }]
         return modelCU

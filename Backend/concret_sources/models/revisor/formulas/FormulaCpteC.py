@@ -13,10 +13,10 @@ class FormulaCpteC(object):
 
     def merge_comercializacion(self, dataFrame, ano, mes, empresa, mercado):
 
-        print('ANO > ', ano)
-        print('MES > ', mes)
-        print('EMPRESA > ', empresa)
-        print('MERCADO > ', mercado)
+        # print('ANO > ', ano)
+        # print('MES > ', mes)
+        # print('EMPRESA > ', empresa)
+        # print('MERCADO > ', mercado)
 
         cpteC = dataFrame.loc[dataFrame['mercado'] == mercado] # Se busca la fila correspondiente al mercado
 
