@@ -1,6 +1,7 @@
 from .....services.tarifarito.revisor.CostoUnitarioService import CostoUnitarioService
 from flask import request
 from flask_restful import Resource
+import time
 
 
 class rCostoUnitario(Resource):
@@ -14,4 +15,5 @@ class rCostoUnitario(Resource):
         cuService = CostoUnitarioService(self.__ANIO_ARG, self.__PERIODO_ARG, self.__EMPRESA_ARG, self.__MERCADO_ARG, self.__NTPROP_ARG)
         dataCU = cuService.getCostoUnitario()
         jsonValues = cuService.get_model_cu(dataCU)
+        print(f"finished at {time.strftime('%X')}")
         return jsonValues

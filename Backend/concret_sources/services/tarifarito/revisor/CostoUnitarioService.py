@@ -3,6 +3,7 @@ from ....models.revisor.Componente import Componente
 import pandas as pd
 import asyncio
 import time
+import threading
 
 
 class CostoUnitarioService(CostoUnitario):
@@ -12,9 +13,7 @@ class CostoUnitarioService(CostoUnitario):
     def get_model_cu(self, dataCU):
         valuesCU = []
         componentes = []
-        asyncio.run(self.init_componentes())
-
-        # print(self.myDict)
+        self.init_componentes()
 
         for result in dataCU:
             # --------------------- VALORES CPTE G --------------------- #
@@ -46,7 +45,7 @@ class CostoUnitarioService(CostoUnitario):
             componentes = []
         return valuesCU
 
-    async def init_componentes(self):
+    def init_componentes(self):
         print(f"started at {time.strftime('%X')}")
         self.myDict = {}
         componenteG = Componente("G", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
@@ -57,22 +56,56 @@ class CostoUnitarioService(CostoUnitario):
         componenteD097 = Componente("D097", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
         componenteR = Componente("R", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
         componenteC = Componente("C", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
-        
-        # Schedule calls *concurrently*:
-        await asyncio.gather(
-            self.get_values(0.1, {'key': 'G', 'values': componenteG}),
-            self.get_values(0.1, {'key': 'T', 'values': componenteT}),
-            self.get_values(0.1, {'key': 'P015', 'values': componenteP015}),
-            self.get_values(0.1, {'key': 'P097', 'values': componenteP097}),
-            self.get_values(0.1, {'key': 'D015', 'values': componenteD015}),
-            self.get_values(0.1, {'key': 'D097', 'values': componenteD097}),
-            self.get_values(0.1, {'key': 'R', 'values': componenteR}),
-            self.get_values(0.1, {'key': 'C', 'values': componenteC}),
-        )
 
-    async def get_values(self, delay, cpte):
-        print('KEY > ', cpte['key'])
-        await asyncio.sleep(delay)
+        t1 = threading.Thread(target=self.get_values, args=({'key': 'G', 'values': componenteG},)) 
+        t2 = threading.Thread(target=self.get_values, args=({'key': 'T', 'values': componenteT},))
+        t3 = threading.Thread(target=self.get_values, args=({'key': 'P015', 'values': componenteP015},))
+        t4 = threading.Thread(target=self.get_values, args=({'key': 'P097', 'values': componenteP097},))
+        t5 = threading.Thread(target=self.get_values, args=({'key': 'D015', 'values': componenteD015},))
+        t6 = threading.Thread(target=self.get_values, args=({'key': 'D097', 'values': componenteD097},))
+        t7 = threading.Thread(target=self.get_values, args=({'key': 'R', 'values': componenteR},))
+        t8 = threading.Thread(target=self.get_values, args=({'key': 'C', 'values': componenteC},))
+
+        # starting thread 8
+        t8.start()
+        # starting thread 6
+        t6.start()
+        # starting thread 2
+        t2.start()
+        # starting thread 3
+        t3.start()
+        # starting thread 4
+        t4.start()
+        # starting thread 5
+        t5.start()
+        # starting thread 1
+        t1.start()
+        # starting thread 7
+        t7.start()
+
+        # wait until thread 1 is completely executed
+        t1.join()
+        # wait until thread 2 is completely executed
+        t2.join()
+        # wait until thread 3 is completely executed
+        t3.join()
+        # wait until thread 4 is completely executed
+        t4.join()
+        # wait until thread 5 is completely executed
+        t5.join()
+        # wait until thread 6 is completely executed
+        t6.join()
+        # wait until thread 7 is completely executed
+        t7.join()
+        # wait until thread 8 is completely executed
+        t8.join()
+
+        # todos threads completely executed
+        print("Done!")
+        print(f"finished at {time.strftime('%X')}")
+
+    def get_values(self, cpte):
+        # print('CPTE > ', cpte['key'])
         if cpte['key'] == 'P097':
             self.myDict[cpte['key']] = pd.DataFrame(cpte['values'].get_values_component_SUI(), columns=['ano','mes','empresa','mercado','c6','c7','c1','c14','c2','c3','c4','c5'])
         elif cpte['key'] == 'D097':
@@ -81,4 +114,3 @@ class CostoUnitarioService(CostoUnitario):
             self.myDict[cpte['key']] = pd.DataFrame(cpte['values'].get_values_component_SUI(), columns=['empresa','mercado','ano','mes','c6','c1','c7','c8','c9','c10','c11','c13','c20','c22','c24','c21','c14','c15','c16','c23','c25','c28','c29','c30','c31','c32','c36','c34','c33','c37','c35','c38','c59','c69','c70','c71','c58','c60','c44','c47','c48','c55','c56','c52','c53'])
         else:
             self.myDict[cpte['key']] = pd.DataFrame(cpte['values'].get_values_component_SUI())
-        print(f"finished at {time.strftime('%X')}")
