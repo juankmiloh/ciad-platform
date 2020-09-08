@@ -48,6 +48,7 @@ class CostoUnitarioService(CostoUnitario):
     def init_componentes(self):
         print(f"started at {time.strftime('%X')}")
         self.myDict = {}
+        self.myDictCpte = {}
         componenteG = Componente("G", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
         componenteT = Componente("T", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, self._CostoUnitario__NTPROP_ARG)
         componenteP015 = Componente("P015", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
@@ -57,50 +58,24 @@ class CostoUnitarioService(CostoUnitario):
         componenteR = Componente("R", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
         componenteC = Componente("C", self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG, self._CostoUnitario__MERCADO_ARG, "No")
 
-        t1 = threading.Thread(target=self.get_values, args=({'key': 'G', 'values': componenteG},)) 
-        t2 = threading.Thread(target=self.get_values, args=({'key': 'T', 'values': componenteT},))
-        t3 = threading.Thread(target=self.get_values, args=({'key': 'P015', 'values': componenteP015},))
-        t4 = threading.Thread(target=self.get_values, args=({'key': 'P097', 'values': componenteP097},))
-        t5 = threading.Thread(target=self.get_values, args=({'key': 'D015', 'values': componenteD015},))
-        t6 = threading.Thread(target=self.get_values, args=({'key': 'D097', 'values': componenteD097},))
-        t7 = threading.Thread(target=self.get_values, args=({'key': 'R', 'values': componenteR},))
-        t8 = threading.Thread(target=self.get_values, args=({'key': 'C', 'values': componenteC},))
+        self.myDictCpte['cpteG'] = threading.Thread(target=self.get_values, args=({'key': 'G', 'values': componenteG},)) 
+        self.myDictCpte['cpteT'] = threading.Thread(target=self.get_values, args=({'key': 'T', 'values': componenteT},))
+        self.myDictCpte['cpteP015'] = threading.Thread(target=self.get_values, args=({'key': 'P015', 'values': componenteP015},))
+        self.myDictCpte['cpteP097'] = threading.Thread(target=self.get_values, args=({'key': 'P097', 'values': componenteP097},))
+        self.myDictCpte['cpteD015'] = threading.Thread(target=self.get_values, args=({'key': 'D015', 'values': componenteD015},))
+        self.myDictCpte['cpteD097'] = threading.Thread(target=self.get_values, args=({'key': 'D097', 'values': componenteD097},))
+        self.myDictCpte['cpteR'] = threading.Thread(target=self.get_values, args=({'key': 'R', 'values': componenteR},))
+        self.myDictCpte['cpteC'] = threading.Thread(target=self.get_values, args=({'key': 'C', 'values': componenteC},))
 
-        # starting thread 8
-        t8.start()
-        # starting thread 6
-        t6.start()
-        # starting thread 2
-        t2.start()
-        # starting thread 3
-        t3.start()
-        # starting thread 4
-        t4.start()
-        # starting thread 5
-        t5.start()
-        # starting thread 1
-        t1.start()
-        # starting thread 7
-        t7.start()
+        # starting thread
+        for cpte in self.myDictCpte:
+            self.myDictCpte[cpte].start()
 
-        # wait until thread 1 is completely executed
-        t1.join()
-        # wait until thread 2 is completely executed
-        t2.join()
-        # wait until thread 3 is completely executed
-        t3.join()
-        # wait until thread 4 is completely executed
-        t4.join()
-        # wait until thread 5 is completely executed
-        t5.join()
-        # wait until thread 6 is completely executed
-        t6.join()
-        # wait until thread 7 is completely executed
-        t7.join()
-        # wait until thread 8 is completely executed
-        t8.join()
+        # wait until thread is completely executed
+        for cpte in self.myDictCpte:
+            self.myDictCpte[cpte].join()
 
-        # todos threads completely executed
+        # All threads completely executed
         print("Done!")
         print(f"finished at {time.strftime('%X')}")
 
