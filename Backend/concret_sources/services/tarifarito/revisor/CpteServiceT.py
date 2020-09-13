@@ -1,4 +1,3 @@
-from ....util.ServiceConnection import serviceConnection
 import os
 import json
 

@@ -38,9 +38,11 @@ class Componente():
         self.cursorSUI = self.connection.get_connectionSUI()
         print('-- CPTE -- ', self.__COMPONENTE)
         if self.__NTPROP_ARG == "No":
-            if self.__COMPONENTE == 'R':
+            if self.__COMPONENTE == 'DTUN':
+                self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG)
+            elif self.__COMPONENTE == 'R':
                 self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, PERIODO_ARG_MENOS1=self.__PERIODO_ARG - 1, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
-            if self.__COMPONENTE == 'C':
+            elif self.__COMPONENTE == 'C':
                 self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, PERIODO_ARG_MENOS1=self.__PERIODO_ARG - 1, PERIODO_ARG_MENOS2=self.__PERIODO_ARG - 2, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
             else:
                 self.cursorSUI.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)

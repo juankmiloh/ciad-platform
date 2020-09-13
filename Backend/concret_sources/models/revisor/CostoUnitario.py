@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from concret_sources.models.revisor.formulas.FormulaCpteP097 import FormulaCpteP097
 from concret_sources.models.revisor.formulas.FormulaCpteD097 import FormulaCpteD097
+from concret_sources.models.revisor.formulas.FormulaCpteDtun import FormulaCpteDtun
 from concret_sources.models.revisor.formulas.FormulaCpteC import FormulaCpteC
 
 
@@ -37,12 +38,6 @@ class CostoUnitario():
         self.cursor = self.connection.get_connectionSUI()
         self.cursor.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
         return self.cursor
-
-    # Función que devuelve los valores del CPTE y ademas permite saber el numero de filas que retorna
-    # def get_props_cpte(self, cpte):
-    #     df = pd.DataFrame(cpte.get_values_component_SUI())
-    #     numRows = df.shape[0]
-    #     return df, numRows
 
     # Función para obtener valor del cpte 'G'
     def get_values_cpteG(self, cpteG, result):
@@ -152,6 +147,37 @@ class CostoUnitario():
                 calculado_d = cpteD097['c28'].tolist()[0]
             modelD = [{ 'value': "D097", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D097 publicado:', 'label_calculado': 'Componente D097 calculado:' }]
         return modelD
+
+    # Función para obtener valor del cpte 'D'
+    def get_values_cpteDtun(self, cpteDtun, result):
+        numrowsCpteDtun = cpteDtun.shape[0]
+        if numrowsCpteDtun > 0:
+            # --------------------- VALORES CPTE DTUN 015 --------------------- #
+            mercado = result[1]
+            cpteDtun = FormulaCpteDtun().merge_perdidas_Dtun(cpteDtun, mercado)
+            if result[4].find('1-100') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c1"].tolist()[0]
+            if result[4].find('1-50') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c3"].tolist()[0]
+            if result[4].find('1-0') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c4"].tolist()[0]
+            if result[4].find('2') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c5"].tolist()[0]
+            if result[4].find('3') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c6"].tolist()[0]
+            if result[4].find('4') != -1:
+                publicado_dtun = result[8]
+                calculado_dtun = cpteDtun["c7"].tolist()[0]
+            modelD = [{ 'value': "DTUN", 'cpte_publicado': publicado_dtun, 'cpte_calculado': calculado_dtun, 'label_publicado': 'Componente DTUN publicado:', 'label_calculado': 'Componente DTUN calculado:' }]
+        else:
+            modelD = [{ 'value': "DTUN", 'cpte_publicado': 0, 'cpte_calculado': 0, 'label_publicado': 'Componente DTUN publicado:', 'label_calculado': 'Componente DTUN calculado:' }]
+        return modelD
+
 
     # Función para obtener valor del cpte 'C'
     def get_values_cpteC(self, cpte, result, ano, mes, empresa):

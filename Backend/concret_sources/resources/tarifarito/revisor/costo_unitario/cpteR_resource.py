@@ -8,8 +8,7 @@ import json
 
 class rComponentR(Resource):
     def __init__(self):
-        connection = serviceConnection()
-        self.connMDB = connection.get_connectionMDB()
+        self.connection = serviceConnection()
     
     def get(self, anio=0, mes=0, empresa=0, mercado=0):
         self.__ANIO_ARG = anio if anio != 0 else 0
@@ -22,6 +21,7 @@ class rComponentR(Resource):
         return jsonValues
 
     def post(self):
+        self.connMDB = self.connection.get_connectionMDB()
         req = request.args.get('params')
         self.connMDB.componentes.insert_one(
             json.loads(req)

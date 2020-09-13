@@ -23,12 +23,14 @@ from concret_sources.resources.tarifarito.gestor.info_comercial_resource import 
 from concret_sources.resources.tarifarito.gestor.resolucion_resource import gD097Resolucion
 from concret_sources.resources.tarifarito.gestor.error_resource import gD097Error
 from concret_sources.resources.tarifarito.gestor.perdidas_stn_resource import gPerdidasSTN
+from concret_sources.resources.tarifarito.gestor.info_add import gInfoADD
 from concret_sources.resources.tarifarito.revisor.costo_unitario.componentes_MDB import rComponentesMDB
 from concret_sources.resources.tarifarito.revisor.costo_unitario.costo_unitario_resource import rCostoUnitario
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteG_resource import rComponentG
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteT_resource import rComponentT
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP097_resource import rComponentP097
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteP015_resource import rComponentP015
+from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteDtun_resource import rComponentDtun
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD097_resource import rComponentD097
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteD015_resource import rComponentD015
 from concret_sources.resources.tarifarito.revisor.costo_unitario.cpteC_resource import rComponentC
@@ -203,6 +205,12 @@ class SourceController():
             path + "/g_perdidasSTN/<int:anio>/<string:mercado>",
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
+
+        self.__api.add_resource(gInfoADD,
+            path + "/g_infoADD",
+            path + "/g_infoADD/<int:mercado>",
+            methods=['GET', 'POST', 'PUT', 'DELETE']
+        )
     
     #--------------------------------------------------------------------------------------------		
     # -- SERVICIOS DEL REVISOR DEL TARIFARITO
@@ -253,6 +261,13 @@ class SourceController():
             methods=['GET', 'POST', 'PUT', 'DELETE']
         )
 
+        self.__api.add_resource(rComponentDtun,
+            path + "/r_componentDtun",
+            path + "/r_componentDtun/<int:anio>/<int:mes>/<int:empresa>",
+            path + "/r_componentDtun/<int:anio>/<int:mes>/<int:empresa>/<int:mercado>",
+            methods=['GET', 'POST', 'PUT', 'DELETE']
+        )
+        
         self.__api.add_resource(rComponentD097,
             path + "/r_componentD097",
             path + "/r_componentD097/<int:anio>/<int:mes>/<int:empresa>",
