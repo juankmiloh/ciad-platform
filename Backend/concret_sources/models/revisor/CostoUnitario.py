@@ -121,7 +121,7 @@ class CostoUnitario():
                 calculado_d = cpteD015.loc[find][21].tolist()[0]
             if result[4].find('4') != -1:
                 publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][7].tolist()[0]
+                calculado_d = cpteD015.loc[find][23].tolist()[0]
             modelD = [{ 'value': "D015", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D015 publicado:', 'label_calculado': 'Componente D015 calculado:' }]
         else:
             cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5']), ano, mes, empresa)

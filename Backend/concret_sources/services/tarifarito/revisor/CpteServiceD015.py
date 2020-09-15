@@ -24,6 +24,20 @@ class CpteServiceD015():
                     ],
                     'CARGO_STR_NT4': [
                         result[16],  # C17
+                    ],
+                    'CD4': [
+                        result[4],  # C5
+                    ],
+                    'PERDIDAS': [
+                        result[5],  # C6
+                        result[6],  # C7
+                        result[7],  # C8
+                        result[8],  # C9
+                    ],
+
+
+                    'CARGO_STR_NT4': [
+                        result[16],  # C17
                         result[4],  # C5
                         result[5],  # C6
                         result[6],  # C7
