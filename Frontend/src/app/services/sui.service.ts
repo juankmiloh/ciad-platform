@@ -12,8 +12,8 @@ export class SuiService {
   constructor(public http: HttpClient) { }
 
   // serverUrl = 'http://192.168.2.15:5055';
-  // serverUrl = 'http://localhost:5056';
-  serverUrl = 'http://172.16.44.9:5056';
+  serverUrl = 'http://localhost:5055';
+  // serverUrl = 'http://172.16.44.9:5055';
 
   verifyConnectionSUI() {
     return new Promise((resolve, reject) => {

@@ -26,4 +26,4 @@ CORS(app, supports_credentials=True)
 SourceController (api)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5056)
+    app.run(host='0.0.0.0', port=5055)
