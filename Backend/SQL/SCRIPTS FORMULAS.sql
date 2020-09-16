@@ -1142,7 +1142,7 @@ SELECT * FROM
                         SELECT 
                             20481 AS ID_MERCADO,
                             20481 AS ARE_ESP_SECUE,
-                            'XM COMPAÑIA DE EXPERTOS EN MERCADOS S.A. E.S.P.' AS NOM_MERCADO,
+                            'XM COMPANIA DE EXPERTOS EN MERCADOS S.A. E.S.P.' AS NOM_MERCADO,
                             'A' AS ESTADO 
                         FROM DUAL
                     ) MERCADOS 

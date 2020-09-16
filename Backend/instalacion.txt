@@ -22,3 +22,16 @@ sudo /usr/bin/python3.6 -m pip install cx_oracle ó sudo python3 -m pip install 
 ----------------------------------
 PARA LEVANTAR EL SERVIDOR:
         1. /usr/bin/python3.6 main.py ó python3 main.py
+
+
+-> COMANDO PARA VER QUE APLICACIONES ESTAN CORRIENDO POR LOS PUERTOS DE LINUX
+netstat -tanp
+
+-> COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
+sudo fuser -k 8080/tcp
+
+-> COMANDO PARA RESTAURAR UNA BASE DE DATOS MONGO EN LINUX
+pc-17741@1pc7-220-17741:~$ mongorestore --port 27017 -d tarifarito /home/pc-17741/Documentos/juankmilo/Backup_mongodb/tarifarito
+
+-> COMANDO PARA BORRAR UNA CARPETA
+ rm -rf ciad-platform
