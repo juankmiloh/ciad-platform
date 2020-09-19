@@ -1,4 +1,5 @@
 from ...util.ServiceConnection import serviceConnection
+import math
 import os
 import json
 import pandas as pd
@@ -103,28 +104,28 @@ class CostoUnitario():
         numrowsCpteD015 = cpteD015.shape[0]
         if numrowsCpteD015 > 0:
             # --------------------- VALORES CPTE D015 --------------------- #
-            find = (cpteD015[25] == result[12]) & (cpteD015[23] == result[13]) & (cpteD015[24] == result[14])
+            find = (cpteD015[29] == result[12]) & (cpteD015[27] == result[13]) & (cpteD015[28] == result[14])
             if result[4].find('1-100') != -1:
-                publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][17].tolist()[0]
-            if result[4].find('1-50') != -1:
-                publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][18].tolist()[0]
-            if result[4].find('1-0') != -1:
-                publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][19].tolist()[0]
-            if result[4].find('2') != -1:
-                publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][20].tolist()[0]
-            if result[4].find('3') != -1:
-                publicado_d = result[8]
+                publicado_d = cpteD015.loc[find][0].tolist()[0]
                 calculado_d = cpteD015.loc[find][21].tolist()[0]
+            if result[4].find('1-50') != -1:
+                publicado_d = cpteD015.loc[find][0].tolist()[0]
+                calculado_d = cpteD015.loc[find][21].tolist()[0]
+            if result[4].find('1-0') != -1:
+                publicado_d = cpteD015.loc[find][0].tolist()[0]
+                calculado_d = cpteD015.loc[find][21].tolist()[0]
+            if result[4].find('2') != -1:
+                publicado_d = cpteD015.loc[find][1].tolist()[0]
+                calculado_d = cpteD015.loc[find][24].tolist()[0]
+            if result[4].find('3') != -1:
+                publicado_d = cpteD015.loc[find][2].tolist()[0]
+                calculado_d = cpteD015.loc[find][25].tolist()[0]
             if result[4].find('4') != -1:
-                publicado_d = result[8]
-                calculado_d = cpteD015.loc[find][23].tolist()[0]
+                publicado_d = cpteD015.loc[find][3].tolist()[0]
+                calculado_d = cpteD015.loc[find][26].tolist()[0]
             modelD = [{ 'value': "D015", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D015 publicado:', 'label_calculado': 'Componente D015 calculado:' }]
         else:
-            cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5']), ano, mes, empresa)
+            cpteD097 = FormulaCpteD097().merge_perdidas_D097(pd.DataFrame(cpteD097, columns=['ano','mes','empresa','mercado','c5','DT1','DT2','DT3','DT4']), ano, mes, empresa)
             # --------------------- VALORES CPTE D097 --------------------- #
             find = (cpteD097['empresa'] == result[12]) & (cpteD097['ano'] == result[13]) & (cpteD097['mes'] == result[14])
             if result[4].find('1-100') != -1:
@@ -146,7 +147,7 @@ class CostoUnitario():
                 publicado_d = result[8]
                 calculado_d = cpteD097['c28'].tolist()[0]
             modelD = [{ 'value': "D097", 'cpte_publicado': publicado_d, 'cpte_calculado': calculado_d, 'label_publicado': 'Componente D097 publicado:', 'label_calculado': 'Componente D097 calculado:' }]
-        return modelD
+        return modelD, numrowsCpteD015
 
     # Función para obtener valor del cpte 'D'
     def get_values_cpteDtun(self, cpteDtun, result):
@@ -178,16 +179,6 @@ class CostoUnitario():
             modelD = [{ 'value': "DTUN", 'cpte_publicado': 0, 'cpte_calculado': 0, 'label_publicado': 'Componente DTUN publicado:', 'label_calculado': 'Componente DTUN calculado:' }]
         return modelD
 
-
-    # Función para obtener valor del cpte 'C'
-    def get_values_cpteC(self, cpte, result, ano, mes, empresa):
-        cpteC = FormulaCpteC().merge_comercializacion(cpte, ano, mes, empresa, result[1])
-        #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               
-        find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14])
-        calculado_c = cpteC['c64'].tolist()[0]
-        modelC = [{ 'value': "C", 'cpte_publicado': result[9], 'cpte_calculado': calculado_c, 'label_publicado': 'Componente C publicado:', 'label_calculado': 'Componente C calculado:' }]
-        return modelC
-
     # Función para obtener valor del cpte 'R'
     def get_values_cpteR(self, cpteR, result):
         #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO
@@ -195,6 +186,22 @@ class CostoUnitario():
         calculado_r = cpteR.loc[find][10].tolist()[0]
         modelR = [{ 'value': "R", 'cpte_publicado': result[10], 'cpte_calculado': calculado_r, 'label_publicado': 'Componente R publicado:', 'label_calculado': 'Componente R calculado:' }]
         return modelR
+    
+    # Función para obtener valor del cpte 'C'
+    def get_values_cpteC(self, cpte, result, ano, mes, empresa):
+        cpteC = FormulaCpteC().merge_comercializacion(cpte, ano, mes, empresa, result[1])
+        #       EMPRESA -                              MERCADO -                         ANIO -                      PERIODO -               
+        find = (cpteC['empresa'] == result[12]) & (cpteC['mercado'] == result[1]) & (cpteC['ano'] == result[13]) & (cpteC['mes'] == result[14])
+        calculado_c = 0
+        if cpteC.shape[0] != 0:
+            if math.isnan(cpteC['c64'].tolist()[0]):
+                calculado_c = 0
+            else:
+                calculado_c = cpteC['c64'].tolist()[0]
+        else:
+            calculado_c = 0
+        modelC = [{ 'value': "C", 'cpte_publicado': result[9], 'cpte_calculado': calculado_c, 'label_publicado': 'Componente C publicado:', 'label_calculado': 'Componente C calculado:' }]
+        return modelC
     
     # Función para obtener valor del 'CU'
     def get_values_cpteCU(self, modelG, modelT, modelP, modelD, modelR, modelC, result):

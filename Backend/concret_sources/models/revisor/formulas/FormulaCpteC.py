@@ -46,12 +46,11 @@ class FormulaCpteC(object):
 
         cpteC['c27'] = ((cpteC['c13'] / 100) * (cpteC['c20'] + cpteC['c22'] + cpteC['c24']) + ((cpteC['c14'] / 100) * cpteC['c21']) + (cpteC['c18'] * cpteC['c23']) + ((cpteC['c19'] / 100) * cpteC['c25'])) / cpteC['c26']
 
-        # cpteC['c39'] = (cpteC['c32'] * ((1 + cpteC['c36'] / 100) ** (cpteC['c34'] + 0.63)) - cpteC['c1']) # TOMAR ESTA - cuadrarla
-        cpteC['c39'] = (cpteC['c32'] * (((1 + cpteC['c36']) ** (cpteC['c34'] + 0.63)) - 1)) # PRUEBA CON 524
+        cpteC['c39'] = (cpteC['c32'] * (((1 + cpteC['c36'] / 100) ** (cpteC['c34'] + 0.63)) - 1)) # TOMAR ESTA
+        # cpteC['c39'] = (cpteC['c32'] * (((1 + cpteC['c36']) ** (cpteC['c34'] + 0.63)) - 1)) # PRUEBA CON 524
 
-        # cpteC['c40'] = (cpteC['c33'] * ((1 + cpteC['c37'] / 100) ** (cpteC['c35'])) - cpteC['c1']) # TOMAR ESTA - cuadrarla
-
-        cpteC['c40'] = (cpteC['c33'] * (((1 + cpteC['c37']) ** (cpteC['c35'])) - 1))
+        cpteC['c40'] = (cpteC['c33'] * (((1 + cpteC['c37'] / 100) ** (cpteC['c35'])) - 1)) # TOMAR ESTA
+        # cpteC['c40'] = (cpteC['c33'] * (((1 + cpteC['c37']) ** (cpteC['c35'])) - 1)) # PRUEBA CON 524
 
         cpteC['c41'] = (cpteC['c39'] - cpteC['c40']) / cpteC['c38']
 

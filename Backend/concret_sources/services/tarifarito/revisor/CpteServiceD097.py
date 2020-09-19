@@ -24,10 +24,20 @@ class CpteServiceD097():
                     ],
                     'CARGO_STR_NT4': [
                         data['c16'].tolist()[0],  # C16
+                    ],
+                    'CD4': [
                         data['c5'].tolist()[0],  # C5
+                    ],
+                    'PR1': [
                         data['c8'].tolist()[0],  # C8
+                    ],
+                    'PR2': [
                         data['c9'].tolist()[0],  # C9
+                    ],
+                    'PR3': [
                         data['c10'].tolist()[0],  # C10
+                    ],
+                    'PR4': [
                         data['c11'].tolist()[0],  # C11
                     ],
                     'PR1-2': [
@@ -50,11 +60,23 @@ class CpteServiceD097():
                     ],
                     'CARGO_SDL_NT3': [
                         data['c22'].tolist()[0],  # C22
+                    ],
+                    'IPP_DIC_2017': [
                         data['c6'].tolist()[0],  # C6
+                    ],
+                    'IPP_M_1': [
                         data['c7'].tolist()[0],  # C7
+                    ],
+                    'CDI': [
                         data['c1'].tolist()[0],  # C1
+                    ],
+                    'CDM': [
                         data['c2'].tolist()[0],  # C2
+                    ],
+                    'CD2': [
                         data['c3'].tolist()[0],  # C3
+                    ],
+                    'CD3': [
                         data['c4'].tolist()[0],  # C4
                     ],
                     'COMPONENTE_NT1_OR': [

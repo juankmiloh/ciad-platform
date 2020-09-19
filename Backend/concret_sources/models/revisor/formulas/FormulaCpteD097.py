@@ -9,37 +9,27 @@ class FormulaCpteD097(object):
 
     def merge_perdidas_D097(self, dataFrame, ano, mes, empresa):
         #Consulta SQL
-        cpteD097 = dataFrame #C5
-
-        print("DATAFRAME D097 -> ", cpteD097)
+        cpteD097 = dataFrame
 
         #Consutla MongoDB perdidas
         gestorPerdidas = self.__getVariablesPerdidas()
 
         cpteD097 = pd.merge(cpteD097, gestorPerdidas, on='mercado')
 
-        print("DATAFRAME D097 - perdidas -> ", cpteD097)
-
         #Consutla MongoDB distribucion
         gestorD = self.__getVariablesDistribucion(ano, empresa)
 
         cpteD097 = pd.merge(cpteD097, gestorD, on='empresa')
-
-        print("DATAFRAME D097 - distribucion -> ", cpteD097)
         
         #Consutla MongoDB IDANE (trae solo IPP)
         gestorDane = self.__getVariablesDane(ano, mes)
 
         cpteD097 = pd.merge(cpteD097, gestorDane, on='mes')
-
-        # print("DATAFRAME D097 - IDANE -> ", cpteD097)
         
         #Consutla MongoDB IDANE (Trae solo IPC de 12-2007)
         gestorDane2007 = self.__getVariablesDane2007(ano)
 
         cpteD097 = pd.merge(cpteD097, gestorDane2007, on='ano')
-
-        # print("DATAFRAME D097 - IDANE2007 -> ", cpteD097)
 
         cpteD097['c13'] = cpteD097['c5'] / (1 - cpteD097['c8'] / 100)
         cpteD097['c14'] = cpteD097['c5'] / (1 - cpteD097['c9'] / 100)
@@ -60,7 +50,7 @@ class FormulaCpteD097(object):
         cpteD097['c27'] = cpteD097['c22'] + cpteD097['c15']
         cpteD097['c28'] = cpteD097['c16']
 
-        print("DATAFRAME D097 - COMPLETO -> ", cpteD097)
+        # print("DATAFRAME D097 - COMPLETO -> ", cpteD097)
 
         return cpteD097
 
@@ -84,7 +74,7 @@ class FormulaCpteD097(object):
             obj.append([no_mercado,pr12,pr1,pr2,pr3,pr4])
 
         df = pd.DataFrame(obj,columns=['mercado','c12','c8','c9','c10','c11'])
-        print('DF -> ', df)
+        # print('DF -> ', df)
         return df
 
     def __getVariablesDistribucion(self, ano, empresa):

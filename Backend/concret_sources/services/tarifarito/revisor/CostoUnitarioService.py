@@ -23,7 +23,7 @@ class CostoUnitarioService(CostoUnitario):
             # --------------------- VALORES CPTE P --------------------- #
             modelP = self.get_values_cpteP(self.myDict['P015'], self.myDict['P097'], result)
             # --------------------- VALORES CPTE D --------------------- #
-            modelD = self.get_values_cpteD(self.myDict['D015'], self.myDict['D097'], result, self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG)
+            modelD, numrowsCpteD015 = self.get_values_cpteD(self.myDict['D015'], self.myDict['D097'], result, self._CostoUnitario__ANIO_ARG, self._CostoUnitario__PERIODO_ARG, self._CostoUnitario__EMPRESA_ARG)
             # --------------------- VALORES CPTE DTUN --------------------- #
             modelDtun = self.get_values_cpteDtun(self.myDict['DTUN'], result)
             # --------------------- VALORES CPTE R --------------------- #
@@ -33,8 +33,10 @@ class CostoUnitarioService(CostoUnitario):
             # --------------------- VALORES CPTE CU --------------------- #
             modelCU = self.get_values_cpteCU(modelG, modelT, modelP, modelD, modelR, modelC, result)
 
-            componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_dtun': modelDtun, 'component_r': modelR, 'component_c': modelC, 'component_cu': modelCU}]
-            # componentes = [{'component_g': modelG, 'component_t': modelT, 'component_r': modelR}]
+            if numrowsCpteD015 > 0:
+                componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_dtun': modelDtun, 'component_r': modelR, 'component_c': modelC, 'component_cu': modelCU}]
+            else:
+                componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_r': modelR, 'component_c': modelC, 'component_cu': modelCU}]
             valuesCU.append({
                     'id_empresa': result[12],
                     'id_mercado': result[1],
