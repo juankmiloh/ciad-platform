@@ -55,6 +55,6 @@
         "        AND NOM_MERCADO NOT LIKE '%Mercado de Prueba%'",
         ") MERCADO ",
         "WHERE FT7_FT8.CAR_T1669_ID_MERCADO = MERCADO.ID_MERCADO ",
-        "ORDER BY CAR_T1669_ID_MERCADO ASC"
+        "ORDER BY CAR_T1669_ID_MERCADO, CAR_T1669_NT_PROP"
     ]
 }
