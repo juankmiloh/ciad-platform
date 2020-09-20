@@ -38,14 +38,14 @@ class CostoUnitarioService(CostoUnitario):
             else:
                 componentes = [{'component_g': modelG, 'component_t': modelT, 'component_p': modelP, 'component_d': modelD, 'component_r': modelR, 'component_c': modelC, 'component_cu': modelCU}]
             valuesCU.append({
-                    'id_empresa': result[12],
-                    'id_mercado': result[1],
-                    'mercado': result[18],
-                    'ano': result[13],
-                    'mes': result[14],
-                    'nt_prop': result[4],
-                    'componentes': componentes
-                })
+                'id_empresa': result[12],
+                'id_mercado': result[1],
+                'mercado': result[18],
+                'ano': result[13],
+                'mes': result[14],
+                'nt_prop': result[4],
+                'componentes': componentes
+            })
             componentes = []
         return valuesCU
 

@@ -1224,151 +1224,140 @@ SELECT * FROM
 ------------------------------------------------------------------------------------------
 --- CONSULTA PARA OBTENER VALORES DE TARIFAS
 ------------------------------------------------------------------------------------------
-
-SELECT 
-    MES_CONSULTADO.ID_EMPRESA AS EMPRESA,
-    MES_CONSULTADO.CAR_T1668_ID_MERCADO AS MERCADO,
-    MES_CONSULTADO.CAR_CARG_ANO AS ANO,
-    MES_CONSULTADO.CAR_CARG_PERIODO AS PERIODO,
-    MES_CONSULTADO.CAR_T1668_ESTRATO_SECTOR AS ESTRATO,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL1_100_OR AS M1TARIFA1_100,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL1_100_OR AS MTARIFA1_100,
-    MES_CONSULTADO.CAR_T1668_PORCENTAJE_SUB100_OR AS PORCENTAJE1_100,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL1_50_OR AS M1TARIFA1_50,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL1_50_OR AS MTARIFA1_50,
-    MES_CONSULTADO.CAR_T1668_PORCENTAJE_SUB50_OR AS PORCENTAJE1_50,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL1_00_OR AS M1TARIFA1_0,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL1_00_OR AS MTARIFA1_0,
-    MES_CONSULTADO.CAR_T1668_PORCENTAJE_SUB00_OR AS PORCENTAJE1_0,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL2 AS M1TARIFA_2,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL2 AS MTARIFA_2,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL3 AS M1TARIFA_3,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL3 AS MTARIFA_3,
-    MES_ANTERIOR.CAR_T1668_TARIFA_NIVEL4 AS M1TARIFA_4,
-    MES_CONSULTADO.CAR_T1668_TARIFA_NIVEL4 AS MTARIFA_4 
-FROM 
-(
-    (
-        SELECT FT3.* FROM 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-                AND CAR_T1668_CARGO_HORARIO = 4 
-                AND CAR_T1668_ANIO_CORREGIDO IS NULL
-        ) FT3 
-        LEFT JOIN 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-                AND CAR_T1668_CARGO_HORARIO = 4 
-                AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-        ) FT4 
-        ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
-        AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
-        AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
-        AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
-        WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
-    )
-    UNION 
-    (
-        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-        WHERE 
-            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-            AND CAR_CARG_ANO = :ANIO_ARG 
-            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
-            AND CAR_T1668_CARGO_HORARIO = 4 
-            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-    )
-) MES_ANTERIOR,
-(
-    (
-        SELECT FT3.* FROM 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                AND CAR_T1668_CARGO_HORARIO = 4 
-                AND CAR_T1668_ANIO_CORREGIDO IS NULL
-        ) FT3 
-        LEFT JOIN 
-        (
-            SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-            WHERE 
-                (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                AND CAR_CARG_ANO = :ANIO_ARG 
-                AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                AND CAR_T1668_CARGO_HORARIO = 4 
-                AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-        ) FT4 
-        ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
-        AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
-        AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
-        AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
-        WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
-    )
-    UNION 
-    (
-        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-        WHERE 
-            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-            AND CAR_CARG_ANO = :ANIO_ARG 
-            AND CAR_CARG_PERIODO = :PERIODO_ARG 
-            AND CAR_T1668_CARGO_HORARIO = 4 
-            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-    )
-) MES_CONSULTADO 
-WHERE 
-    MES_ANTERIOR.CAR_T1668_ID_MERCADO = MES_CONSULTADO.CAR_T1668_ID_MERCADO 
-    AND MES_ANTERIOR.CAR_T1668_ESTRATO_SECTOR = MES_CONSULTADO.CAR_T1668_ESTRATO_SECTOR 
-    AND MES_CONSULTADO.CAR_T1668_ESTRATO_SECTOR NOT IN (9, 10);
-
----------
-
 SELECT * FROM 
 (
     SELECT * FROM 
     (
-        SELECT 
-            FT3_FT4.ID_EMPRESA AS EMPRESA,
-            FT3_FT4.CAR_T1668_ID_MERCADO AS MERCADO,
-            FT3_FT4.CAR_CARG_ANO AS ANO,
-            FT3_FT4.CAR_CARG_PERIODO AS PERIODO,
-            FT3_FT4.CAR_T1668_ESTRATO_SECTOR AS ESTRATO,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL1_100_OR AS TARIFA1_100,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL1_50_OR AS TARIFA1_50,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL1_00_OR AS TARIFA1_0,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL2 AS TARIFA_2,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL3 AS TARIFA_3,
-            FT3_FT4.CAR_T1668_TARIFA_NIVEL4 AS TARIFA_4 
-        FROM 
+        SELECT * FROM 
         (
+            SELECT 
+                FT3_FT4.ID_EMPRESA AS EMPRESA,
+                FT3_FT4.CAR_T1668_ID_MERCADO AS MERCADO,
+                FT3_FT4.CAR_CARG_ANO AS ANO,
+                FT3_FT4.CAR_CARG_PERIODO AS PERIODO,
+                FT3_FT4.CAR_T1668_ESTRATO_SECTOR AS ESTRATO,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_100_OR AS TARIFA1_100,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_50_OR AS TARIFA1_50,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_00_OR AS TARIFA1_0,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL2 AS TARIFA_2,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL3 AS TARIFA_3,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL4 AS TARIFA_4 
+            FROM 
             (
-                SELECT FT3.* FROM 
+                (
+                    SELECT FT3.* FROM 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NULL
+                    ) FT3 
+                    LEFT JOIN 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
+                    ) FT4 
+                    ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
+                    AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
+                    AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
+                    AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
+                    WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
+                )
+                UNION 
                 (
                     SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
                     WHERE 
                         (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
                         AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
                         AND CAR_CARG_ANO = :ANIO_ARG 
-                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                        AND CAR_CARG_PERIODO = :PERIODO_ARG_MENOS1 
                         AND CAR_T1668_CARGO_HORARIO = 4 
-                        AND CAR_T1668_ANIO_CORREGIDO IS NULL
-                ) FT3 
-                LEFT JOIN 
+                        AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
+                )
+            ) FT3_FT4
+            WHERE FT3_FT4.CAR_T1668_ESTRATO_SECTOR NOT IN (9, 10)
+        )
+        UNPIVOT (
+            (TARIFA)
+            FOR NT_PROP
+            IN (
+                (TARIFA1_100) AS '1_100', 
+                (TARIFA1_50) AS '1_50',
+                (TARIFA1_0) AS '1_0',
+                (TARIFA_2) AS '2',
+                (TARIFA_3) AS '3',
+                (TARIFA_4) AS '4' 
+            )
+        )
+    )
+    PIVOT 
+    (
+        MAX(TARIFA) 
+        FOR 
+            ESTRATO 
+        IN (1 AS ESTRATO1, 2 AS ESTRATO2, 3 AS ESTRATO3, 4 AS ESTRATO4, 5 AS ESTRATO5, 6 AS ESTRATO6, 7 AS ESTRATO7, 8 AS ESTRATO8) 
+    )
+    ORDER BY MERCADO, NT_PROP
+) TARIFAS_MES_ANTERIOR,
+(
+    SELECT * FROM 
+    (
+        SELECT * FROM 
+        (
+            SELECT 
+                FT3_FT4.ID_EMPRESA AS EMPRESA,
+                FT3_FT4.CAR_T1668_ID_MERCADO AS MERCADO,
+                FT3_FT4.CAR_CARG_ANO AS ANO,
+                FT3_FT4.CAR_CARG_PERIODO AS PERIODO,
+                FT3_FT4.CAR_T1668_ESTRATO_SECTOR AS ESTRATO,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_100_OR AS TARIFA1_100,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_50_OR AS TARIFA1_50,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL1_00_OR AS TARIFA1_0,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL2 AS TARIFA_2,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL3 AS TARIFA_3,
+                FT3_FT4.CAR_T1668_TARIFA_NIVEL4 AS TARIFA_4 
+            FROM 
+            (
+                (
+                    SELECT FT3.* FROM 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NULL
+                    ) FT3 
+                    LEFT JOIN 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
+                    ) FT4 
+                    ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
+                    AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
+                    AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
+                    AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
+                    WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
+                )
+                UNION 
                 (
                     SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
                     WHERE 
@@ -1378,45 +1367,118 @@ SELECT * FROM
                         AND CAR_CARG_PERIODO = :PERIODO_ARG 
                         AND CAR_T1668_CARGO_HORARIO = 4 
                         AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-                ) FT4 
-                ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
-                AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
-                AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
-                AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
-                WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
+                )
+            ) FT3_FT4
+            WHERE FT3_FT4.CAR_T1668_ESTRATO_SECTOR NOT IN (9, 10)
+        )
+        UNPIVOT (
+            (TARIFA)
+            FOR NT_PROP
+            IN (
+                (TARIFA1_100) AS '1_100', 
+                (TARIFA1_50) AS '1_50',
+                (TARIFA1_0) AS '1_0',
+                (TARIFA_2) AS '2',
+                (TARIFA_3) AS '3',
+                (TARIFA_4) AS '4' 
             )
-            UNION 
-            (
-                SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
-                WHERE 
-                    (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
-                    AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
-                    AND CAR_CARG_ANO = :ANIO_ARG 
-                    AND CAR_CARG_PERIODO = :PERIODO_ARG 
-                    AND CAR_T1668_CARGO_HORARIO = 4 
-                    AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
-            )
-        ) FT3_FT4
-        WHERE FT3_FT4.CAR_T1668_ESTRATO_SECTOR NOT IN (9, 10)
-    )
-    UNPIVOT (
-        (TARIFA)
-        FOR NT_PROP
-        IN (
-            (TARIFA1_100) AS '1_100', 
-            (TARIFA1_50) AS '1_50',
-            (TARIFA1_0) AS '1_0',
-            (TARIFA_2) AS '2',
-            (TARIFA_3) AS '3',
-            (TARIFA_4) AS '4' 
         )
     )
-)
-PIVOT 
+    PIVOT 
+    (
+        MAX(TARIFA) 
+        FOR 
+            ESTRATO 
+        IN (1 AS ESTRATO1, 2 AS ESTRATO2, 3 AS ESTRATO3, 4 AS ESTRATO4, 5 AS ESTRATO5, 6 AS ESTRATO6, 7 AS ESTRATO7, 8 AS ESTRATO8) 
+    )
+    ORDER BY MERCADO, NT_PROP
+) TARIFAS_MES_CONSULTADO,
 (
-    MAX(TARIFA) 
-    FOR 
-        ESTRATO 
-    IN (1 AS ESTRATO1, 2 AS ESTRATO2, 3 AS ESTRATO3, 4 AS ESTRATO4, 5 AS ESTRATO5, 6 AS ESTRATO6, 7 AS ESTRATO7, 8 AS ESTRATO8) 
-)
-ORDER BY MERCADO, NT_PROP;
+    SELECT * FROM 
+    (
+        SELECT * FROM 
+        (
+            SELECT 
+                FT3_FT4.ID_EMPRESA AS EMPRESA,
+                FT3_FT4.CAR_T1668_ID_MERCADO AS MERCADO,
+                FT3_FT4.CAR_CARG_ANO AS ANO,
+                FT3_FT4.CAR_CARG_PERIODO AS PERIODO,
+                FT3_FT4.CAR_T1668_ESTRATO_SECTOR AS ESTRATO,
+                CAR_T1668_PORCENTAJE_SUB100_OR AS PORCENTAJE_SUB1_100,
+                CAR_T1668_PORCENTAJE_SUB50_OR AS PORCENTAJE_SUB1_50,
+                CAR_T1668_PORCENTAJE_SUB00_OR AS PORCENTAJE_SUB1_0,
+                0 AS PORCENTAJE_SUB2,
+                0 AS PORCENTAJE_SUB3,
+                0 AS PORCENTAJE_SUB4 
+            FROM 
+            (
+                (
+                    SELECT FT3.* FROM 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NULL
+                    ) FT3 
+                    LEFT JOIN 
+                    (
+                        SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                        WHERE 
+                            (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                            AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                            AND CAR_CARG_ANO = :ANIO_ARG 
+                            AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                            AND CAR_T1668_CARGO_HORARIO = 4 
+                            AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
+                    ) FT4 
+                    ON FT3.CAR_T1668_ID_MERCADO = FT4.CAR_T1668_ID_MERCADO 
+                    AND FT3.ID_EMPRESA = FT4.ID_EMPRESA 
+                    AND FT3.CAR_CARG_ANO = FT4.CAR_CARG_ANO 
+                    AND FT3.CAR_CARG_PERIODO = FT4.CAR_CARG_PERIODO 
+                    WHERE (FT3.CAR_T1668_ANIO_CORREGIDO IS NULL AND FT4.CAR_T1668_ANIO_CORREGIDO IS NULL)
+                )
+                UNION 
+                (
+                    SELECT * FROM ENERGIA_CREG_015.CAR_TARIFAS_PUBLICADAS 
+                    WHERE 
+                        (ID_EMPRESA = :EMPRESA_ARG OR 0 = :EMPRESA_ARG) 
+                        AND (CAR_T1668_ID_MERCADO = :MERCADO_ARG OR 0 = :MERCADO_ARG) 
+                        AND CAR_CARG_ANO = :ANIO_ARG 
+                        AND CAR_CARG_PERIODO = :PERIODO_ARG 
+                        AND CAR_T1668_CARGO_HORARIO = 4 
+                        AND CAR_T1668_ANIO_CORREGIDO IS NOT NULL
+                )
+            ) FT3_FT4
+            WHERE FT3_FT4.CAR_T1668_ESTRATO_SECTOR NOT IN (9, 10)
+        )
+        UNPIVOT (
+            (PORCENTAJE_SUB) 
+            FOR NT_PROP 
+            IN (
+                (PORCENTAJE_SUB1_100) AS '1_100',
+                (PORCENTAJE_SUB1_50) AS '1_50',
+                (PORCENTAJE_SUB1_0) AS '1_0',
+                (PORCENTAJE_SUB2) AS '2',
+                (PORCENTAJE_SUB3) AS '3',
+                (PORCENTAJE_SUB4) AS '4' 
+            )
+        )
+    )
+    PIVOT 
+    (
+        MAX(PORCENTAJE_SUB) 
+        FOR 
+            ESTRATO 
+        IN (1 AS ESTRATO1, 2 AS ESTRATO2, 3 AS ESTRATO3, 4 AS ESTRATO4, 5 AS ESTRATO5, 6 AS ESTRATO6, 7 AS ESTRATO7, 8 AS ESTRATO8) 
+    )
+    ORDER BY MERCADO, NT_PROP
+) PORCENTAJE_SUB 
+WHERE 
+    TARIFAS_MES_CONSULTADO.MERCADO = TARIFAS_MES_ANTERIOR.MERCADO 
+    AND TARIFAS_MES_CONSULTADO.NT_PROP = TARIFAS_MES_ANTERIOR.NT_PROP 
+    AND TARIFAS_MES_CONSULTADO.MERCADO = PORCENTAJE_SUB.MERCADO 
+    AND TARIFAS_MES_CONSULTADO.NT_PROP = PORCENTAJE_SUB.NT_PROP;

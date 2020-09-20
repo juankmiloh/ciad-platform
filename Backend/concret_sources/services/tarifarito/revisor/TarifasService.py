@@ -13,16 +13,22 @@ class TarifasService(Tarifas):
         print(f"started at {time.strftime('%X')}")
         valuesTarifas = []
         tarifas = []
+        self.data = dataTarifas
+        calculoTarifas = self.get_values_tarifas(pd.DataFrame(self.data), self._Tarifas__ANIO_ARG, self._Tarifas__PERIODO_ARG)
 
-        for result in dataTarifas:
-            tarifas = [{'ESTRATO 1': result[5], 'ESTRATO 2': result[6], 'ESTRATO 3': result[7], 'ESTRATO 4': result[8], 'ESTRATO 5': result[9], 'ESTRATO 6': result[10], 'INDUSTRIAL': result[11], 'COMERCIAL': result[12]}]
+        for result in self.data:
+            # --------------------- VALORES CALCULO TARIFAS / ESTRATOS --------------------- #
+            # calculoTarifas = self.get_values_tarifas(pd.DataFrame(self.data), result)
+
+            tarifas = [{'ESTRATO 1': calculoTarifas['estrato1'], 'ESTRATO 2': calculoTarifas['estrato2'], 'ESTRATO 3': calculoTarifas['estrato3'], 'ESTRATO 4': calculoTarifas['estrato4'], 'ESTRATO 5': calculoTarifas['estrato5'], 'ESTRATO 6': calculoTarifas['estrato6'], 'INDUSTRIAL': calculoTarifas['industrial'], 'COMERCIAL': calculoTarifas['comercial']}]
+            
             valuesTarifas.append({
-                    'id_empresa': result[0],
-                    'id_mercado': result[1],
-                    'ano': result[2],
-                    'mes': result[3],
-                    'nt_prop': result[4],
-                    'tarifas': tarifas
-                })
+                'id_empresa': result[0],
+                'id_mercado': result[1],
+                'ano': result[2],
+                'mes': result[3],
+                'nt_prop': result[4],
+                'tarifas': tarifas
+            })
             tarifas = []
         return valuesTarifas

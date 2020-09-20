@@ -2,7 +2,7 @@ from ...util.ServiceConnection import serviceConnection
 import math
 import os
 import json
-import pandas as pd
+from concret_sources.models.revisor.formulas.FormulaTarifas import FormulaTarifas
 
 
 class Tarifas():
@@ -30,5 +30,16 @@ class Tarifas():
 
     def execute_query(self):
         self.cursor = self.connection.get_connectionSUI()
-        self.cursor.execute(self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG)
+        self.cursor.execute(
+            self.__query, ANIO_ARG=self.__ANIO_ARG, PERIODO_ARG=self.__PERIODO_ARG, 
+            PERIODO_ARG_MENOS1=self.__PERIODO_ARG - 1, EMPRESA_ARG=self.__EMPRESA_ARG, MERCADO_ARG=self.__MERCADO_ARG
+        )
         return self.cursor
+
+    # Función para calcular tarifas
+    def get_values_tarifas(self, dataframe, ano, periodo):
+        # print('RESULT > ', result[1])
+        # print('dataframe > ', dataframe[1])
+        # find = (dataframe[1] == result[1]) & (dataframe[4] == result[4])
+        tarifas = FormulaTarifas().calcular_tarifas(dataframe, ano, periodo)
+        return tarifas

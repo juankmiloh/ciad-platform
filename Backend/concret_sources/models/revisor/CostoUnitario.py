@@ -42,6 +42,7 @@ class CostoUnitario():
 
     # Función para obtener valor del cpte 'G'
     def get_values_cpteG(self, cpteG, result):
+        # print('cpteG > ', cpteG)
         #       EMPRESA -                   MERCADO -                  ANIO -                      PERIODO
         find = (cpteG[21] == result[12]) & (cpteG[22] == result[1]) & (cpteG[19] == result[13]) & (cpteG[20] == result[14])
         calculado_g = cpteG.loc[find][33].tolist()[0]
