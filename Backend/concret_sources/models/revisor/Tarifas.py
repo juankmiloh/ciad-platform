@@ -38,8 +38,5 @@ class Tarifas():
 
     # Función para calcular tarifas
     def get_values_tarifas(self, dataframe, ano, periodo):
-        # print('RESULT > ', result[1])
-        # print('dataframe > ', dataframe[1])
-        # find = (dataframe[1] == result[1]) & (dataframe[4] == result[4])
         tarifas = FormulaTarifas().calcular_tarifas(dataframe, ano, periodo)
         return tarifas
