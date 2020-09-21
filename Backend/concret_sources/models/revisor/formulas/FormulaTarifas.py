@@ -53,16 +53,31 @@ class FormulaTarifas(object):
         tarifas.loc[np.isnan(tarifas['CT_COMERCIAL']), 'CT_COMERCIAL'] = 0 # Validamos si es NaN
 
         # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 1
-        tarifas['CPS_E1'] = (1 - tarifas['CT_E1'] / tarifas[21])
+        tarifas['CPS_E1'] = (1 - tarifas['CT_E1'] / tarifas[21]) * 100
         tarifas.loc[np.isnan(tarifas['CPS_E1']), 'CPS_E1'] = 0 # Validamos si es NaN
         
         # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 2
-        tarifas['CPS_E2'] = (1 - tarifas['CT_E2'] / tarifas[21])
+        tarifas['CPS_E2'] = (1 - tarifas['CT_E2'] / tarifas[21]) * 100
         tarifas.loc[np.isnan(tarifas['CPS_E2']), 'CPS_E2'] = 0 # Validamos si es NaN
         
         # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
-        tarifas['CPS_E3'] = (1 - tarifas['CT_E3'] / tarifas[21])
+        tarifas['CPS_E3'] = (1 - tarifas['CT_E3'] / tarifas[21]) * 100
         tarifas.loc[np.isnan(tarifas['CPS_E3']), 'CPS_E3'] = 0 # Validamos si es NaN
+
+        # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
+        tarifas['CPS_E4'] = 0
+
+        # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
+        tarifas['CPS_E5'] = 0
+
+        # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
+        tarifas['CPS_E6'] = 0
+
+        # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
+        tarifas['CPS_INDUSTRIAL'] = 0
+
+        # CALCULO PORCENTAJE SUBSIDIOS ESTRATO 3
+        tarifas['CPS_COMERCIAL'] = 0
         
         # print('data TARIFAS -> ', tarifas)
 
