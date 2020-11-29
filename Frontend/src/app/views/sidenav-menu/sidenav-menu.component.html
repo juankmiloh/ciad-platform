@@ -46,10 +46,14 @@
                 <mat-icon aria-label="Side nav toggle icon">insert_chart</mat-icon>
                 <span style="padding-left: 3%;">Tarifarito | Grupo Tarifario</span>
             </mat-list-item> -->
-            <mat-list-item routerLink="/procesos-dieg" (click)="close('Procesos DIEG')" [routerLinkActive]="['is-active']">
+            <!-- <mat-list-item routerLink="/procesos-dieg" (click)="close('Procesos DIEG')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">donut_small</mat-icon>
                 <span style="padding-left: 3%;">Procesos DIEG</span>
-            </mat-list-item>
+            </mat-list-item> -->
+            <a mat-list-item href="http://localhost:9527" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
+                <mat-icon aria-label="Side nav toggle icon">donut_small</mat-icon>
+                <span style="padding-left: 3%;">Procesos DIEG</span>
+            </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <div style="padding-top: 5%;">
