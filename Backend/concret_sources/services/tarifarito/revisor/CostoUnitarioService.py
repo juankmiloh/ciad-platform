@@ -40,7 +40,7 @@ class CostoUnitarioService(CostoUnitario):
             valuesCU.append({
                 'id_empresa': result[12],
                 'id_mercado': result[1],
-                'mercado': result[18],
+                'mercado': result[20],
                 'ano': result[13],
                 'mes': result[14],
                 'nt_prop': result[4],

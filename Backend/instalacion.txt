@@ -14,6 +14,7 @@ PARA LEVANTAR EL SERVIDOR:
 COMANDOS UTILIZADOS PARA INSTALAR EN LINUX DE LA SUPER
 -------------------------------------------------------
 sudo apt install virtualenv
+sudo apt install python3-pip
 sudo python3 -m pip install pymongo
 sudo /usr/bin/python3.6 -m pip install Flask ó sudo python3 -m pip install Flask
 sudo /usr/bin/python3.6 -m pip install -U flask-cors ó sudo python3 -m pip install flask-cors
