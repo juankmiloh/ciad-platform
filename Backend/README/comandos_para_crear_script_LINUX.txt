@@ -31,7 +31,7 @@
 	cd /lib/systemd/system/
 
 2. Crear el script del servicio
-	sudo nano sample.service
+	sudo nano sampleTarifarito.service
 
 3. Escribir en el script lo siguiente:
 	[Unit]
@@ -40,7 +40,7 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/procesosDIEG/Frontend/
+	WorkingDirectory=/home/jherreraa/tarifas/tarifarito/
 	Type=simple
 	Restart=always
 	RestartSec=1
@@ -51,28 +51,28 @@
 	WantedBy=multi-user.target
 
 4. Comando para que el servicio se inicie con el sistema
-	sudo systemctl enable sample
+	sudo systemctl enable sampleTarifarito
 
 5. Comando para iniciar nuestro servicio
-	sudo systemctl start sample
+	sudo systemctl start sampleTarifarito
 
 6. Comando para detener el servicio
-	sudo systemctl stop sample
+	sudo systemctl stop sampleTarifarito
 
 7. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
 	sudo systemctl daemon-reload
 
 8. Comando para saber si el servicio esta habilitado
-	sudo systemctl is-enabled sample
+	sudo systemctl is-enabled sampleTarifarito
 
 9. Comando para saber si el servicio esta activo
-	sudo systemctl is-active sample
+	sudo systemctl is-active sampleTarifarito
 
 10. Comando para reiniciar un servicio
-	sudo systemctl restart sample
+	sudo systemctl restart sampleTarifarito
 
 11. Comando para saber estado del servicio (Muestra la consola de node)
-	sudo systemctl status sample
+	sudo systemctl status sampleTarifarito
 
 *. Comando para listar todos los servicios que estan corriendo
 	sudo systemctl list-unit-files --type service --all
@@ -159,7 +159,7 @@
 	cd /lib/systemd/system/
 
 2. Crear el script del servicio
-	sudo nano serverProcesosDIEG.service
+	sudo nano serverTarifarito.service
 
 3. Escribir en el script lo siguiente:
 	[Unit]
@@ -168,7 +168,7 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/procesosDIEG/Backend/
+	WorkingDirectory=/home/jherreraa/tarifas/ciad-platform/Backend
 	Type=simple
 	Restart=always
 	RestartSec=1
@@ -179,28 +179,28 @@
 	WantedBy=multi-user.target
 
 4. Comando para que el servicio se inicie con el sistema
-	sudo systemctl enable serverProcesosDIEG
+	sudo systemctl enable serverTarifarito
 
 5. Comando para iniciar nuestro servicio
-	sudo systemctl start serverProcesosDIEG
+	sudo systemctl start serverTarifarito
 
 6. Comando para detener el servicio
-	sudo systemctl stop serverProcesosDIEG
+	sudo systemctl stop serverTarifarito
 
 7. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
 	sudo systemctl daemon-reload
 
 8. Comando para saber si el servicio esta habilitado
-	sudo systemctl is-enabled serverProcesosDIEG
+	sudo systemctl is-enabled serverTarifarito
 
 9. Comando para saber si el servicio esta activo
-	sudo systemctl is-active serverProcesosDIEG
+	sudo systemctl is-active serverTarifarito
 
 10. Comando para reiniciar un servicio
-	sudo systemctl restart serverProcesosDIEG
+	sudo systemctl restart serverTarifarito
 
 11. Comando para saber estado del servicio (Muestra la consola de node)
-	sudo systemctl status serverProcesosDIEG
+	sudo systemctl status serverTarifarito
 
 *. Comando para listar todos los servicios que estan corriendo
 	sudo systemctl list-unit-files --type service --all
