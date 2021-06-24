@@ -1,0 +1,70 @@
+---------------------------------------
+# LINUX PYTHON 3.X
+---------------------------------------
+sudo apt install python3-pip
+
+---------------------------------------
+# COMANDOS LINUX PARA INICIAR EL PROYECTO EN UN ENTORNO VIRTUAL (USAR ESTE METODO)
+---------------------------------------
+sudo apt install virtualenv
+source .venv/bin/activate
+pip install -r requirements.txt
+-> Ejecutar el servidor: flask run
+
+----- INICIAR ENTORNO VIRTUAL EN PC DE LA SSPD ---
+pip install virtualenv
+--- para iniciar entorno virtual ---
+1. sudo su
+2. python3 -m venv venv -- comando para crear carpeta con entorno virtual --- no ejecutar sino una vez
+3. source venv/bin/activate
+4. pip install -r requirements.txt -- instalar dependencias --- no ejecutar sino una vez
+-> Ejecutar el servidor: flask run -h 0.0.0.0 -p 5055 -- luego de instalar las dependencias
+
+--------------
+# Borrar un directorio
+-------------- 
+rm -rfv venv
+
+-> COMANDO PARA BORRAR UNA CARPETA
+ rm -rf ciad-platform
+
+-> COMANDOS PARA ACTUALIZAR REPOSITORIO DE LA PLATAFORMA Y EL BACKEND PYTHON EN EL COMPUTADOR DE LA SUPER (FORZAR PULL)
+git reset --hard HEAD
+git pull
+
+---------------------------------------
+# COMANDOS WINDOWS PARA INICIAR EL PROYECTO EN UN ENTORNO VIRTUAL
+---------------------------------------
+py -3 -m venv .venv
+.venv\scripts\activate
+pip install -r requirements.txt
+-> Ejecutar el servidor: flask run
+
+---------------------------------------
+# COMANDOS PARA INICIAR EL PROYECTO EN EL EQUIPO LOCAL
+---------------------------------------
+sudo python3 -m pip install Flask
+sudo python3 -m pip install flask-cors
+sudo python3 -m pip install flask-Injector
+sudo python3 -m pip install flask-sqlalchemy
+sudo python3 -m pip install pandas
+sudo python3 -m pip install Flask-Script
+sudo python3 -m pip install psycopg2 ó sudo python3 -m pip install psycopg2-binary
+sudo apt-get install libmysqlclient-dev
+sudo -H pip3 install mysqlclient
+# sudo python3 -m pip install flask-restful
+
+---------------------------------------
+# COMANDOS PARA CONFIGURAR SERVIDOR EN AZURE APP SERVICES
+---------------------------------------
+1. Luego de instalar AZURE_CLI - correr el siguiente comando "pip install azure-cli==2.0.75" https://pypi.org/project/azure-cli/
+2. Configurar la variable de entorno que permite instalar librerias de python asi:
+    -> az webapp config appsettings set --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+    -> az webapp config appsettings set --settings WEBSITES_PORT=80 (Para nodejs)
+    -> az webapp config appsettings set --settings PORT=8000 (Para nodejs)
+3. Comando Asociar el App Services al proyecto:
+    -> az webapp up --sku F1 --name unigrasaswebservices
+4. Comando Para actualizar el proyecto en AZURE:
+    -> az webapp up
+5. Comando para ver en tiempo real la consola del proyecto:
+    -> az webapp log tail

@@ -1,0 +1,47 @@
+_______________________________ ERROR QUE GENERA ___________________________________________________________________________________
+
+cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded: "libclntsh.so: 
+cannot open shared object file: No such file or directory". See https://oracle.github.io/odpi/doc/installation.html#linux for help
+____________________________________________________________________________________________________________________________________
+
+_______________________________ SOLUCION ___________________________________________________________________________________
+
+https://oracle.github.io/odpi/doc/installation.html#linux <----------- SOLUCION
+
+____________________________________________________________________________________________________________________________________
+
+To run ODPI-C applications with Oracle Instant Client zip files:
+
+1. Download an Oracle 21, 19, 18, 12, or 11.2 “Basic” or “Basic Light” zip file matching your application 64-bit or 32-bit architecture:
+
+    x86-64 64-bit 
+    (Comando para descargar en LINUX)
+    [sudo curl -O https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basic-linux.x64-21.1.0.0.0.zip]
+
+    x86 32-bit
+
+    ARM (aarch64) 64-bit
+
+2. Unzip the package into a directory that is accessible to your application. For example:
+
+    mkdir -p /opt/oracle
+    cd /opt/oracle
+    unzip instantclient-basic-linux.x64-21.1.0.0.0.zip
+
+3. Install the operating system libaio package with sudo or as the root user. For example:
+
+    sudo apt-get install libaio1 [----- Este funciono -----]
+
+    sudo yum install libaio
+    On some Linux distributions this package is called libaio1 instead.
+
+On recent Linux versions, such as Oracle Linux 8, you may also need to install the libnsl package when using Oracle Instant Client 19.
+
+4. If there is no other Oracle software on the machine that will be impacted, permanently add Instant Client to the runtime link path. For example, with sudo or as the root user:
+
+    sudo sh -c "echo /opt/oracle/instantclient_21_1 > /etc/ld.so.conf.d/oracle-instantclient.conf"
+    sudo ldconfig
+
+Alternatively, set the environment variable LD_LIBRARY_PATH to the appropriate directory for the Instant Client version. For example:
+
+    export LD_LIBRARY_PATH=/opt/oracle/instantclient_21_1:$LD_LIBRARY_PATH [----- No fue necesario -----]

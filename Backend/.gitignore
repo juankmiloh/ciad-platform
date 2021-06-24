@@ -5,3 +5,5 @@
 /.sass-cache
 /bower_components
 *.swp
+.venv
+venv

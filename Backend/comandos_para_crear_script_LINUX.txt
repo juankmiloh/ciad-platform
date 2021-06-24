@@ -1,0 +1,318 @@
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR EL SCRIPT DE EJECUCION DEL SERVIDOR NODE (VUEJS) EN LINUX
+---------------------------------------------------------------------------
+
+-----
+1. Crear script en la carpeta del frontend para correr el servidor
+-----
+	nano server.sh
+
+-----
+2. Escribir en el script el comando a ejecutar:
+-----
+	#!/bin/bash
+	# echo hola mundo nodejs
+	npm run dev
+
+-----
+3. Darle permisos de ejecucion al script
+-----
+	chmod +x ./server.sh
+
+-----
+4. Ejecutar script desde la terminal (Estando en la ruta del script)
+-----
+	./server.sh
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de nodejs (VUEJS)
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano sample.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de VUEJS
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/procesosDIEG/Frontend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server.sh start
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable sample
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start sample
+
+6. Comando para detener el servicio
+	sudo systemctl stop sample
+
+7. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
+	sudo systemctl daemon-reload
+
+8. Comando para saber si el servicio esta habilitado
+	sudo systemctl is-enabled sample
+
+9. Comando para saber si el servicio esta activo
+	sudo systemctl is-active sample
+
+10. Comando para reiniciar un servicio
+	sudo systemctl restart sample
+
+11. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status sample
+
+*. Comando para listar todos los servicios que estan corriendo
+	sudo systemctl list-unit-files --type service --all
+
+*. COMANDO PARA VER QUE APLICACIONES ESTAN CORRIENDO POR LOS PUERTOS DE LINUX
+	netstat -tanp
+
+*. COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
+	sudo fuser -k 9527/tcp
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de nodejs de desarrollo / pruebas (VUEJS)
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano samplePruebas.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de VUEJS
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Frontend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server_pruebas.sh start
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable samplePruebas
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start samplePruebas
+
+6. Comando para detener el servicio
+	sudo systemctl stop samplePruebas
+
+7. Comando para reiniciar un servicio
+	sudo systemctl restart samplePruebas
+
+8. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status samplePruebas
+
+--------------------------------------------------------------------------------------
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR EL SCRIPT DE EJECUCION DEL SERVIDOR PYTHON (backend) EN LINUX
+---------------------------------------------------------------------------
+
+-----
+1. Crear script en la carpeta del frontend para correr el servidor
+-----
+	nano server.sh
+
+-----
+2. Escribir en el script el comando a ejecutar:
+-----
+	#!/bin/bash
+	# echo levantar servidor python
+	source venv/bin/activate
+	flask run -h 0.0.0.0 -p 5055
+
+-----
+3. Darle permisos de ejecucion al script
+-----
+	chmod +x ./server.sh
+
+-----
+4. Ejecutar script desde la terminal (Estando en la ruta del script)
+-----
+	./server.sh
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de PYTHON (backend)
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano serverProcesosDIEG.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de PYTHON
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/procesosDIEG/Backend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server.sh start
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable serverProcesosDIEG
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start serverProcesosDIEG
+
+6. Comando para detener el servicio
+	sudo systemctl stop serverProcesosDIEG
+
+7. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
+	sudo systemctl daemon-reload
+
+8. Comando para saber si el servicio esta habilitado
+	sudo systemctl is-enabled serverProcesosDIEG
+
+9. Comando para saber si el servicio esta activo
+	sudo systemctl is-active serverProcesosDIEG
+
+10. Comando para reiniciar un servicio
+	sudo systemctl restart serverProcesosDIEG
+
+11. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status serverProcesosDIEG
+
+*. Comando para listar todos los servicios que estan corriendo
+	sudo systemctl list-unit-files --type service --all
+
+*. COMANDO PARA VER QUE APLICACIONES ESTAN CORRIENDO POR LOS PUERTOS DE LINUX
+	netstat -tanp
+
+*. COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
+	sudo fuser -k 9527/tcp
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de desarrollo / pruebas PYTHON (backend) [No olvidar crear el entorno virtual antes de ejecutar el script]
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano serverPruebasProcesosDIEG.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de PYTHON
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Backend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server_pruebas.sh start
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable serverPruebasProcesosDIEG
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start serverPruebasProcesosDIEG
+
+6. Comando para detener el servicio
+	sudo systemctl stop serverPruebasProcesosDIEG
+
+7. Comando para reiniciar un servicio
+	sudo systemctl restart serverPruebasProcesosDIEG
+
+8. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status serverPruebasProcesosDIEG
+
+--------------------------------------------------------------------------------------
+
+-- comando para decirle al sistema que lea y ejecute el script (no fue necesario)
+update-rc.d mi-script.sh defaults
+
+LINKS EXPLICATIVOS
+--------------------------------------------------------------------------------------
+https://www.atareao.es/tutorial/trabajando-con-systemd/como-crear-un-servicio-con-systemd/ (este sirve)
+https://geekytheory.com/crear-un-servicio-en-linux
+https://ubunlog.com/iniciar-scripts-al-inicio-ubuntu/
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Hacer peticion http (PYTHON)
+---------------------------------------------------------------------------
+0. Se le dan permisos de lectura al sistema del script que se quiere ejecutar:
+	sudo chmod +x peticionhttp.py
+
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano pythonhttp.service
+	#sudo nano /lib/systemd/system/pythonhttp.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Peticion http
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/azureuser/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=azureuser
+	ExecStart=/usr/bin/python3 peticionhttp.py
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable pythonhttp
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start pythonhttp
+
+6. Comando para detener el servicio
+	sudo systemctl stop pythonhttp
+
+7. Comando para reiniciar un servicio
+	sudo systemctl restart pythonhttp
+
+8. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
+	sudo systemctl daemon-reload
+
+9. Comando para saber si el servicio esta habilitado
+	sudo systemctl is-enabled pythonhttp
+
+10. Comando para saber si el servicio esta activo
+	sudo systemctl is-active pythonhttp
+
+11. Comando para saber estado del servicio (Muestra la consola)
+	sudo systemctl status pythonhttp
