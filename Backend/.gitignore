@@ -1,9 +1,16 @@
-/.vscode
-/node_modules
-/dist
-/.tmp
-/.sass-cache
-/bower_components
-*.swp
+.DS_Store
+* __pycache__
+*.pyc
+**/*.pyc
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
 .venv
 venv
+src/assets
