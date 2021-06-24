@@ -18,7 +18,7 @@ pip install virtualenv
 2. python3 -m venv venv -- comando para crear carpeta con entorno virtual --- no ejecutar sino una vez
 3. source venv/bin/activate
 4. pip install -r requirements.txt -- instalar dependencias --- no ejecutar sino una vez
--> Ejecutar el servidor: flask run -h 0.0.0.0 -p 5055 -- luego de instalar las dependencias
+-> Ejecutar el servidor: python main.py -- luego de instalar las dependencias
 
 --------------
 # Borrar un directorio

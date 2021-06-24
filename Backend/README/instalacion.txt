@@ -31,8 +31,24 @@ netstat -tanp
 -> COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
 sudo fuser -k 8080/tcp
 
+__________________________________________________________
+Backup y restaurar base de datos mongodb WINDOWS
+__________________________________________________________
+*Comando para hacer backup:
+
+    C:\Program Files\MongoDB\Server\4.2\bin>mongodump --db tarifarito
+
+    (El backup se crea en la carpeta C:\Program Files\MongoDB\Server\4.2\bin\dump)
+
+*Comando para restaurar:
+
+     (Descomprimir el archivo en disco local C:)
+
+     C:\Program Files\MongoDB\Server\4.2\bin>mongorestore --port 27017 -d tarifarito C:\tarifarito
+
 -> COMANDO PARA RESTAURAR UNA BASE DE DATOS MONGO EN LINUX
 pc-17741@1pc7-220-17741:~$ mongorestore --port 27017 -d tarifarito /home/pc-17741/Documentos/juankmilo/Backup_mongodb/tarifarito
+___________________________________________________________
 
 -> COMANDO PARA BORRAR UNA CARPETA
  rm -rf ciad-platform
