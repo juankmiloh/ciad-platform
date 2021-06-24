@@ -48,7 +48,14 @@ __________________________________________________________
 
 -> COMANDO PARA RESTAURAR UNA BASE DE DATOS MONGO EN LINUX
 pc-17741@1pc7-220-17741:~$ mongorestore --port 27017 -d tarifarito /home/pc-17741/Documentos/juankmilo/Backup_mongodb/tarifarito
+pc-17741@1pc7-220-17741:~$ mongorestore --port 27017 -d tarifarito /home/jherreraa/tarifas/ciad-platform/Backend/backupbd/tarifarito
 ___________________________________________________________
+
+Comando para borrar base de datos mongodb LINUX
+__________________________________________________________
+1. use tarifarito
+2. db.dropDatabase()
+3. show databases (opcional)
 
 -> COMANDO PARA BORRAR UNA CARPETA
  rm -rf ciad-platform
