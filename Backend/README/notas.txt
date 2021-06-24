@@ -26,7 +26,7 @@ pip install virtualenv
 rm -rfv venv
 
 -> COMANDO PARA BORRAR UNA CARPETA
- rm -rf ciad-platform
+rm -rf ciad-platform
 
 -> COMANDOS PARA ACTUALIZAR REPOSITORIO DE LA PLATAFORMA Y EL BACKEND PYTHON EN EL COMPUTADOR DE LA SUPER (FORZAR PULL)
 git reset --hard HEAD
@@ -38,7 +38,7 @@ git pull
 py -3 -m venv .venv
 .venv\scripts\activate
 pip install -r requirements.txt
--> Ejecutar el servidor: flask run
+-> Ejecutar el servidor: python main.py
 
 ---------------------------------------
 # COMANDOS PARA INICIAR EL PROYECTO EN EL EQUIPO LOCAL
