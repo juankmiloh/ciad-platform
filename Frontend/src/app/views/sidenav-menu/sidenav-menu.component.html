@@ -5,7 +5,7 @@
             <div>
                 <img src="../assets/img/logo_sm.jpg" class='imgSmRedonda'>
             </div>
-            <label style="padding-left: 3%;"><span style="color: #303F9F;">Superservicios</span> CIAD</label>
+            <label style="padding-left: 3%;"><span style="color: #303F9F;">Superservicios</span></label>
             <div style="padding-left: 10%;">
                 <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="close('na')">
                     <mat-icon aria-label="Side nav toggle icon">keyboard_arrow_left</mat-icon>
@@ -26,19 +26,19 @@
                 <mat-icon aria-label="Side nav toggle icon">perm_phone_msg</mat-icon>
                 <span style="padding-left: 3%;">Mapa de PQR's</span>
             </mat-list-item> -->
-            <a mat-list-item href="http://localhost/heatmap_pqrs/frontend/src/" target="_blank" (click)="close('Mapa de PQR´s')">
+            <!-- <a mat-list-item href="http://localhost/heatmap_pqrs/frontend/src/" target="_blank" (click)="close('Mapa de PQR´s')">
                 <mat-icon aria-label="Side nav toggle icon">perm_phone_msg</mat-icon>
                 <span style="padding-left: 3%;">Mapa de PQR's</span>
-            </a>
-            <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
+            </a> -->
+            <!-- <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">phonelink_ring</mat-icon>
                 <span style="padding-left: 3%;">Twitter - GeoIncidencias</span>
-            </mat-list-item>
-            <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
+            </mat-list-item> -->
+            <!-- <mat-list-item routerLink="#" (click)="close('na')" [routerLinkActive]="['is-active']">
                 <mat-icon aria-label="Side nav toggle icon">psychology</mat-icon>
                 <span style="padding-left: 3%;">Roxanne</span>
-            </mat-list-item>
-            <a mat-list-item href="http://localhost:9527/#/login?redirect=%2Fdashboard" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
+            </mat-list-item> -->
+            <a mat-list-item href="http://172.16.32.13:5058" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
                 <mat-icon aria-label="Side nav toggle icon">insert_chart</mat-icon>
                 <span style="padding-left: 3%;">Tarifarito | Grupo Tarifario</span>
             </a>
@@ -50,22 +50,23 @@
                 <mat-icon aria-label="Side nav toggle icon">donut_small</mat-icon>
                 <span style="padding-left: 3%;">Procesos DIEG</span>
             </mat-list-item> -->
-            <a mat-list-item href="http://localhost:9527" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
+            <a mat-list-item href="http://172.16.32.13:5056" target="_blank" (click)="close('Tarifarito | Grupo Tarifario')">
                 <mat-icon aria-label="Side nav toggle icon">donut_small</mat-icon>
                 <span style="padding-left: 3%;">Procesos DIEG</span>
             </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <div style="padding-top: 5%;">
-            <label style="cursor:pointer; padding-left: 5%; font-weight: 400; text-align: center;">Acerca de Superservicios CIAD - SDEGC</label>
+            <label style="cursor:pointer; padding-left: 5%; font-weight: 400; text-align: center;">Acerca de SDEGC - Superservicios</label>
         </div>
     </mat-sidenav>
 
     <mat-sidenav-content>
         <mat-toolbar color="primary">
-            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.open()">
+            <!-- Icono de hamburguesa que permite la función del menu lateral -->
+            <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.open()">
 				<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-            </button>
+            </button> -->
             <span style="padding-left: 1%;">{{ opcion }}</span>
             <!-- <p>Closed due to: {{reason}}</p> -->
         </mat-toolbar>
