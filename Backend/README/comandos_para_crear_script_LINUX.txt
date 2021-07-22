@@ -12,7 +12,7 @@
 -----
 	#!/bin/bash
 	# echo hola mundo nodejs
-	npm run dev
+	ng serve --port 5064
 
 -----
 3. Darle permisos de ejecucion al script
@@ -25,22 +25,22 @@
 	./server.sh
 
 ---------------------------------------------------------------------------
--- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de nodejs (VUEJS)
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de nodejs (ANGULAR)
 ---------------------------------------------------------------------------
 1. Entrar al directorio:
 	cd /lib/systemd/system/
 
 2. Crear el script del servicio
-	sudo nano sampleTarifarito.service
+	sudo nano sampleInterrupciones.service
 
 3. Escribir en el script lo siguiente:
 	[Unit]
-	Description=Iniciar servidor de VUEJS
+	Description=Iniciar servidor de ANGULAR
 	After=network.target
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/tarifas/tarifarito/
+	WorkingDirectory=/home/jherreraa/tarifas/ciad-platform/Frontend
 	Type=simple
 	Restart=always
 	RestartSec=1
@@ -51,28 +51,28 @@
 	WantedBy=multi-user.target
 
 4. Comando para que el servicio se inicie con el sistema
-	sudo systemctl enable sampleTarifarito
+	sudo systemctl enable sampleInterrupciones
 
 5. Comando para iniciar nuestro servicio
-	sudo systemctl start sampleTarifarito
+	sudo systemctl start sampleInterrupciones
 
 6. Comando para detener el servicio
-	sudo systemctl stop sampleTarifarito
+	sudo systemctl stop sampleInterrupciones
 
 7. Comando para recargar servicios luego de pararlos y/o modificarlos (Opcional)
 	sudo systemctl daemon-reload
 
 8. Comando para saber si el servicio esta habilitado
-	sudo systemctl is-enabled sampleTarifarito
+	sudo systemctl is-enabled sampleInterrupciones
 
 9. Comando para saber si el servicio esta activo
-	sudo systemctl is-active sampleTarifarito
+	sudo systemctl is-active sampleInterrupciones
 
 10. Comando para reiniciar un servicio
-	sudo systemctl restart sampleTarifarito
+	sudo systemctl restart sampleInterrupciones
 
 11. Comando para saber estado del servicio (Muestra la consola de node)
-	sudo systemctl status sampleTarifarito
+	sudo systemctl status sampleInterrupciones
 
 *. Comando para listar todos los servicios que estan corriendo
 	sudo systemctl list-unit-files --type service --all
