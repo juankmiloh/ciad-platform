@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'map-page', component: MapInterrupcionComponent },
   { path: 'tarifarito', component: TarifaritoComponent },
   { path: 'procesos-dieg', component: ProcesosDiegComponent },
-  { path: '',   redirectTo: '/home', pathMatch: 'full' },
+  { path: '',   redirectTo: '/map-page', pathMatch: 'full' },
 ];
 
 @NgModule({

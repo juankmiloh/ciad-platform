@@ -59,6 +59,8 @@ class empresasTarifarito(Resource):
                     'cod_empresa': result[0],
                     'nombre': result[1],
                     'servicio': result[2],
+                    'sigla': result[3],
+                    'NIT': result[4]
                 }
             )
         return empresas

@@ -14,14 +14,14 @@ export class SidenavMenuComponent {
 
   @ViewChild('sidenav') sidenav: MatSidenav;
 
-  opcion = 'SDEGC - CIAD | Superservicios';
+  opcion = 'SDEGC | Superservicios';
 
   close(reason: string) {
     if (reason !== 'na') {
       if (reason === 'Mapa de PQR´s' || reason === 'Tarifarito | Grupo Tarifario') {
         this.sidenav.close();
         this.router.navigateByUrl('/');
-        this.opcion = 'SDEGC - CIAD | Superservicios';
+        this.opcion = 'SDEGC | Superservicios';
       } else {
         this.opcion = reason;
         this.sidenav.close();
