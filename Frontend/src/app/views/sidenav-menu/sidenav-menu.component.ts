@@ -14,7 +14,7 @@ export class SidenavMenuComponent {
 
   @ViewChild('sidenav') sidenav: MatSidenav;
 
-  opcion = 'SDEGC | Superservicios';
+  opcion = 'Mapa de Interrupciones para el Servicio de Energía';
 
   close(reason: string) {
     if (reason !== 'na') {
