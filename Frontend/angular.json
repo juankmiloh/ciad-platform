@@ -72,8 +72,8 @@
                     "options": {
                         "browserTarget": "ciad-platform:build",
                         "ssl": true,
-                        "sslCert": "ssl/ip_sspd/server.crt",
-                        "sslKey": "ssl/ip_sspd/server.key"
+                        "sslCert": "ssl/ip_pruebas_otic/server.crt",
+                        "sslKey": "ssl/ip_pruebas_otic/server.key"
                     },
                     "configurations": {
                         "production": {
