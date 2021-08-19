@@ -439,9 +439,9 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     const [CSVLayer] = await loadModules(['esri/layers/CSVLayer']);
     // const urlOptions = 'http://localhost:5055/i_interrupcion/2016/7/604/32'; <-- NO DEVUELVE RESULTADOS VALIDAR CON UN ALERT
     // const urlOptions = `http://172.16.32.13:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
-    // const urlOptions = `http://localhost:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
+    const urlOptions = `http://localhost:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
     // --- Server pruebas OTIC ---- //
-    const urlOptions = `http://172.16.2.43:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
+    // const urlOptions = `http://172.16.2.43:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
     // const urlOptions = 'assets/file_interrupciones1.csv';
     console.log(urlOptions);
     this.dataCSV = d3.csv(urlOptions);
