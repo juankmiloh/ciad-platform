@@ -443,7 +443,7 @@ export class MapInterrupcionComponent implements OnInit, OnDestroy {
     // --- Server pruebas OTIC ---- //
     const urlOptions = `https://172.16.2.43:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
     // --- Server produccion OTIC ---- //
-    // const urlOptions = `http://172.16.1.255:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
+    // const urlOptions = `https://172.16.1.255:5055/i_interrupcion/${options.ano}/${options.mes + 1}/${options.empresa}/${options.causa}`;
     console.log(urlOptions);
     this.dataCSV = d3.csv(urlOptions);
 
