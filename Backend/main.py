@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_restful import Api, reqparse
+from flask_restful import Api
 from source_controller import SourceController
+
+context = ('server.crt', 'server.key')
 
 app = Flask(__name__)
 api = Api(app)
@@ -26,4 +28,4 @@ CORS(app, supports_credentials=True)
 SourceController (api)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5055)
+    app.run(host='0.0.0.0', port=5055, ssl_context=context, threaded=True, debug=True)
