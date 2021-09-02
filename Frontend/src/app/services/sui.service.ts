@@ -14,7 +14,7 @@ export class SuiService {
   // serverUrl = 'http://192.168.2.15:5055';
   // serverUrl = 'http://localhost:5055';
   // serverUrl = 'http://172.16.32.13:5055/';
-  serverUrl = 'http://172.16.2.43:5055/'; // Servidor pruebas OTIC
+  serverUrl = 'https://172.16.2.43:5055/'; // Servidor pruebas OTIC
   // serverUrl = 'http://172.16.1.255:5055/'; // Servidor produccion OTIC
 
 
