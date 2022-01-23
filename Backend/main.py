@@ -23,9 +23,10 @@ CORS(app, resources={r"/i_interrupcion/*": {"origins": "*"}})
 
 CORS(app, resources={r"/tarifarito/api/*": {"origins": "*"}})
 
-CORS(app, supports_credentials=True)
+# CORS(app, supports_credentials=True)
 
 SourceController (api)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5055, ssl_context=context, threaded=True, debug=True)
+    # app.run(host='0.0.0.0', port=5055, ssl_context=context, threaded=True, debug=True)
+    app.run(host='0.0.0.0', port=5055, threaded=True, debug=True)

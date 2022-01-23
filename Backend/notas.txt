@@ -1,0 +1,2 @@
+Comando para iniciar servicio de Mongo en PC de la SSPD --> sudo service mongod start
+https://dba.stackexchange.com/questions/181693/mongodb-exception-connect-failed
